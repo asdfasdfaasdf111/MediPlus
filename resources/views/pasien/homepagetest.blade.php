@@ -18,7 +18,7 @@
     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center">
       <div class="container px-5">
         <div class="col-md-6">
-          <h2 class="display-4 fw-bold" style="color: #000000;">Mudah, Cepat, dan Tanpa Antri babayo.</h2>
+          <h2 class="display-4 fw-bold" style="color: #000000;">Mudah, Cepat, dan Tanpa Antri babayos.</h2>
           <p class="lead" style="color: #000000;">
             Pilih jadwal pemeriksaan, daftar online, dan langsung datang sesuai waktu yang Anda tentukan.
           </p>

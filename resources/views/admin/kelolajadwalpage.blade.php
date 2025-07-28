@@ -1,3 +1,23 @@
+<a href="{{ route('admin.homepage')}}">
+    Homepage
+</a>
+
+<a href="{{ route('admin.keloladokterpage')}}">
+    Kelola Dokter
+</a>
+
+<a href="{{ route('admin.kelolapetugaspage')}}">
+    Kelola Petugas
+</a>
+
+<a href="{{ route('admin.kelolajadwalpage')}}">
+    Kelola Jadwal
+</a>
+
+<a href="{{ route('admin.logaktivitaspage')}}">
+    Log Aktivitas
+</a>
+
 <form action="{{ route('admin.updateJadwal')}}" method ="POST">
     @csrf
     <div>
@@ -29,22 +49,3 @@
     <button type='submit'>Update Jumlah Pasien</button>
 </form>
 
-<a href="{{ route('admin.homepage')}}">
-    Homepage
-</a>
-
-<a href="{{ route('admin.keloladokterpage')}}">
-    Kelola Dokter
-</a>
-
-<a href="{{ route('admin.kelolapetugaspage')}}">
-    Kelola Petugas
-</a>
-
-<a href="{{ route('admin.kelolajadwalpage')}}">
-    Kelola Jadwal
-</a>
-
-<a href="{{ route('admin.logaktivitaspage')}}">
-    Log Aktivitas
-</a>

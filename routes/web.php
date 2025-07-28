@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DokterController;
+use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -73,8 +75,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.logaktivitaspage');
     })->name('admin.logaktivitaspage');
 
+    Route::get('/tambahakundokterpage', function () {
+        return view('admin.tambahakundokterpage');
+    })->name('admin.tambahakundokterpage');
+
+    Route::get('/tambahakunpetugaspage', function () {
+        return view('admin.tambahakunpetugaspage');
+    })->name('admin.tambahakunpetugaspage');
+
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
     Route::post('/updateJumlahPasien', [RumahSakitController::class, 'updateJumlahPasien'])->name('admin.updateJumlahPasien');
+    Route::post('/tambahAkunDokter', [DokterController::class, 'tambahAkunDokter'])->name('admin.tambahAkunDokter');
+    Route::post('/tambahAkunPetugas', [PetugasController::class, 'tambahAkunPetugas'])->name('admin.tambahAkunPetugas');
+    Route::delete('/hapusAkunPetugas/{id}', [PetugasController::class, 'hapusAkunPetugas'])->name('admin.hapusAkunPetugas');
+    Route::delete('/hapusAkunDokter/{id}', [DokterController::class, 'hapusAkunDokter'])->name('admin.hapusAkunDokter');
 
 });
 

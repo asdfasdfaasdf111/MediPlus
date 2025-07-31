@@ -43,9 +43,23 @@ Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logou
 
 
 //Homepage per Role
-Route::get('/superadmin/homepage', function(){
-    return view('superadmin.homepage');
-})->middleware('auth', 'verified', 'role:superadmin');
+// Route::get('/superadmin/homepage', function(){
+//     return view('superadmin.homepage');
+// })->middleware('auth', 'verified', 'role:superadmin');
+
+Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')->group(function () {
+    Route::get('/homepage', function () {
+        return view('superadmin.homepage');
+    })->name('superadmin.homepage');
+
+    Route::get('/addnew', function () {
+        return view('superadmin.addnew');
+    })->name('superadmin.addnew');
+
+    Route::get('/edit', function() {
+        return view('superadmin.edit');
+    })->name('superadmin.addnew');
+});
 
 // Route::get('/admin/homepage', function(){
 //     $admin = auth()->user()->admin;

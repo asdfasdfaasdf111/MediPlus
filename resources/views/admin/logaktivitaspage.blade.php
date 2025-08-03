@@ -1,12 +1,3 @@
-<div>
-    Log Aktivitas: 
-    <ul>
-        @foreach ($admin->rumahsakit->log as $log)
-            <li>{{$log}}</li>
-        @endforeach
-    </ul>
-</div>
-
 <a href="{{ route('admin.homepage')}}">
     Homepage
 </a>
@@ -26,3 +17,13 @@
 <a href="{{ route('admin.logaktivitaspage')}}">
     Log Aktivitas
 </a>
+
+<div>
+    Log Aktivitas: 
+    <ul>
+        @foreach ($admin->rumahsakit->log as $log)
+            <li>{{$log}}</li>
+        @endforeach
+    </ul>
+</div>
+

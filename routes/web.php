@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
 use App\Models\RumahSakit;
@@ -110,20 +111,11 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     })->name('pasien.pendaftaran');
 });
 
+Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
+    Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
-// URL sementara buat aku bikin frontend homepage.
-Route::get('/pasien/homepagetest', function () {
-    return view('pasien.homepagetest');
+    Route::get('/pendaftaran', function(){
+        return view('pasien.pendaftaran');
+    })->name('pasien.pendaftaran');
+
 });
-
-
-
-//--------------------------------
-// Route::get('/pasien/homepage', function(){
-//     return view('pasien.homepage');
-// })->middleware('auth', 'role:pasien');
-
-// Route::get('/pasien/pendaftaran', function(){
-//     return view('pasien.pendaftaran');
-// })->middleware('auth', 'role:pasien')->name('pasien.pendaftaran');
-

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RumahSakit;
-use App\Models\User;
 use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class RumahSakitController extends Controller
@@ -32,12 +32,14 @@ class RumahSakitController extends Controller
     }
 
     public function countRS(){
-        $rumahSakit = RumahSakit::all();
-        return view('superadmin.homepage');
+        $rumahSakit = RumahSakit::where('super_admin_id', auth()->id())->get();
+        return view('superadmin.homepage', [
+            'rumahSakit' => $rumahSakit
+        ]);
     }
 
     public function addNew(){
-        return view('superadmin.homepage');
+        return view('superadmin.addnew');
     }
 
     public function store(Request $request){
@@ -54,7 +56,11 @@ class RumahSakitController extends Controller
         $rumahSakit = RumahSakit::create([
             'nama' => $request->nama_rs,
             'alamat' => $request->alamat,
-            'noTelepon' => $request->noTelepon
+            'noTelepon' => $request->noTelepon,
+            'jamBuka' => '08:00',
+            'jamTutup' => '17:00',
+            'jumlahPasien' => 5,
+            'super_admin_id' => auth()->id()
         ]);
 
         $userAdmin = User::create([
@@ -74,6 +80,11 @@ class RumahSakitController extends Controller
         return redirect(route('superadmin.homepage'))->with('success', 'Rumah Sakit berhasil ditambahkan.');
     }
 
+    public function homepage(){
+        $rumahSakit = RumahSakit::where('super_admin_id', auth()->id())->get();
+        return redirect(route('superadmin.homepage'));
+    }
+
     public function editData(RumahSakit $rumahSakit){
         return view('superadmin.edit', compact('rumahSakit'));
     }
@@ -89,7 +100,7 @@ class RumahSakitController extends Controller
             'noTelepon' => 'nullable|string|max:10',
 
             'nama_admin' => 'nullable|string|max:100',
-            'email' => 'nullable|email|unique:users,email,'.$userAdmin->$id,
+            'email' => 'nullable|email|unique:users,email,'.$userAdmin->id,
             'password' => 'nullable|confirmed|min:8'
         ]);
 
@@ -105,11 +116,11 @@ class RumahSakitController extends Controller
             'password' => $request->password ? Hash::make($request->password) : $userAdmin->password
         ]);
 
-        return redirect(route('superadmin.homepage'))->with('success', 'Data berhasil diupdate');
+        return redirect('/superadmin/homepage')->with('success', 'Data berhasil diupdate');
     }
 
     public function deleteData(RumahSakit $rumahSakit){
         $rumahSakit->delete();
-        return redirect(route('superadmin.homepage'))->with('success', 'Data berhasil dihapus');
+        return redirect('/superadmin/homepage')->with('success', 'Data berhasil dihapus');
     }
 }

@@ -48,53 +48,51 @@
             </ul>
         </div>
 
-        <div class="col-md-10 p-4 bg-light">
-            {{-- Header atas: Search + Tambah Akun --}}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="flex-grow-1 me-3">
-                    <form action="" method="GET"> 
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="search" placeholder="Cari Dokter">
-                            <button class="btn btn-outline-secondary" type="submit">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
-                    </form>
+<div class="col-md-10 p-4 bg-light">
+    {{-- Header atas: Search + Tambah Akun --}}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-grow-1 me-3">
+            <form action="" method="GET"> 
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Cari Dokter">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
                 </div>
-                <div class="col-md-2">
-                    <a href="{{ route('admin.tambahakundokterpage') }}" class="btn btn-primary w-100">
-                        <i class="bi bi-plus"></i> Tambah Akun
-                    </a>
-                </div>
-            </div>
+            </form>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ route('admin.tambahakundokterpage') }}" class="btn btn-primary w-100">
+                <i class="bi bi-plus"></i> Tambah Akun
+            </a>
+        </div>
+    </div>
         
-            {{-- Daftar Dokter --}}
-            <div class="row">
-                @foreach ($dokters as $dok)
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="bg-white shadow-sm rounded p-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <img src="{{ asset('images/user-icon.png') }}" alt="Foto Dokter" class="rounded-circle me-3" width="50" height="50">
-                                <div>
-                                    <h6 class="mb-0 fw-bold">{{ $dok->user->name }}</h6>
-                                    <small class="text-muted">{{ $dok->spesialis }}</small><br>
-                                    <small class="text-muted">{{ $dok->user->email }}</small>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">Id: {{ $dok->id }} </small>
-                                <form action="{{ route('admin.hapusAkunDokter', $dok->user->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
-                            </div>
+    {{-- Daftar Dokter --}}
+    <div class="row">
+        @foreach ($dokters as $dok)
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="bg-white shadow-sm rounded p-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="{{ asset('images/user-icon.png') }}" alt="Foto Dokter" class="rounded-circle me-3" width="50" height="50">
+                        <div>
+                            <h6 class="mb-0 fw-bold">{{ $dok->user->name }}</h6>
+                            <small class="text-muted">{{ $dok->spesialis }}</small><br>
+                            <small class="text-muted">{{ $dok->user->email }}</small>
                         </div>
                     </div>
-                @endforeach
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Id: {{ $dok->id }} </small>
+                        <form action="{{ route('admin.hapusAkunDokter', $dok->user->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Hapus
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
+        @endforeach
     </div>
 </div>

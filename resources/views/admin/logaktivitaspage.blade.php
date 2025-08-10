@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log Aktivitas</title>
+    <title>Homepage Admin</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
 </head>
-<body class="bg-white text-dark">
 
+<body class="bg-white text-dark">
     @include('layout.navbar2')
 
 <div class="container-fluid">
@@ -46,32 +45,39 @@
             </ul>
         </div>
 
-<a href="{{ route('admin.homepage')}}">
-    Homepage
-</a>
-
-<a href="{{ route('admin.keloladokterpage')}}">
-    Kelola Dokter
-</a>
-
-<a href="{{ route('admin.kelolapetugaspage')}}">
-    Kelola Petugas
-</a>
-
-<a href="{{ route('admin.kelolajadwalpage')}}">
-    Kelola Jadwal
-</a>
-
-<a href="{{ route('admin.logaktivitaspage')}}">
-    Log Aktivitas
-</a>
-
-<div>
+        <div class="col-md-10 p-4 bg-light">
+            <div class="bg-white shadow-sm rounded p-4">
+                    <h5 class="fw-bold text-primary mb-3">Log Terbaru</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Jam</th>
+                                    <th>Nama Petugas</th>
+                                    <th>Aktivitas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($admin->rumahsakit->log as $log)
+                                    <tr>
+                                        <td>{{ $log->tanggal }}</td>
+                                        <td>{{ $log->jam }}</td>
+                                        <td>{{ $log->petugas->user->name }}</td>
+                                        <td>{{ $log->aktivitas }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+{{-- <div>
     Log Aktivitas: 
     <ul>
         @foreach ($admin->rumahsakit->log as $log)
             <li>{{$log}}</li>
         @endforeach
     </ul>
-</div>
+</div> --}}
 

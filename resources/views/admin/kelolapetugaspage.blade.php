@@ -6,8 +6,8 @@
     <title>Kelola Petugas</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
 </head>
+
 <body class="bg-white text-dark">
 
     @include('layout.navbar2')
@@ -67,6 +67,7 @@
             </div>
 
         {{-- Daftar Petugas --}}
+    <div class="row">
         @foreach ($admin->rumahsakit->petugas as $ptg)
             <div class="col-12 col-md-6 col-lg-4 mb-4">
                 <div class="bg-white shadow-sm rounded p-3">
@@ -90,5 +91,5 @@
                 </div>
             </div>
         @endforeach
-
+    </div>
     </div>

@@ -6,10 +6,9 @@
     <title>Homepage Admin</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
 </head>
-<body class="bg-white text-dark">
 
+<body class="bg-white text-dark">
     @include('layout.navbar2')
 
 <div class="container-fluid">

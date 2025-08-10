@@ -68,7 +68,7 @@
 
         {{-- Daftar Petugas --}}
     <div class="row">
-        @foreach ($admin->rumahsakit->petugas as $ptg)
+        @foreach ($petugass as $ptg)
             <div class="col-12 col-md-6 col-lg-4 mb-4">
                 <div class="bg-white shadow-sm rounded p-3">
                     <div class="d-flex align-items-center mb-2">
@@ -80,6 +80,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">Id: {{ $ptg->id }}</small>
+
                         <form action="{{ route('admin.hapusAkunPetugas', $ptg->user->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
                             @csrf
                             @method('DELETE')

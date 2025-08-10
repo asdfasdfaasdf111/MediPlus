@@ -49,4 +49,23 @@ class PetugasController extends Controller
         // $user->sendEmailVerificationNotification();
         return redirect()->route('admin.kelolapetugaspage')->with('success', 'Akun petugas berhasil dibuat!');
     }
+
+    public function tampilkanPetugas(Request $request)
+    {
+        $admin = auth()->user()->admin;
+        $rumahSakit = $admin->rumahSakit;
+
+        $petugass = $rumahSakit->petugas()
+            ->when($request->search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->get();
+
+            
+
+        return view('admin.kelolapetugaspage', compact('petugass'));
+    }
 }

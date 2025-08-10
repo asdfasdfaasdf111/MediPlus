@@ -48,7 +48,6 @@
             </ul>
         </div>
 
-
 <div class="col-md-10 p-4 bg-light">
     {{-- Header atas: Search + Tambah Akun --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -68,10 +67,10 @@
             </a>
         </div>
     </div>
-
+        
     {{-- Daftar Dokter --}}
     <div class="row">
-        @foreach ($admin->rumahSakit->dokter as $dok)
+        @foreach ($dokters as $dok)
             <div class="col-12 col-md-6 col-lg-4 mb-4">
                 <div class="bg-white shadow-sm rounded p-3">
                     <div class="d-flex align-items-center mb-2">

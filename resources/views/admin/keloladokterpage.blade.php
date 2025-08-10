@@ -27,11 +27,15 @@
 
 {{-- Buat class dll nya w masih copas punya gemini, nanti ubah" aja kalo mau --}}
 <div>
+    <form method="GET" action="">
+        <input type="text" name="search" placeholder="Cari dokter..." value="{{ request('search') }}">
+        <button type="submit">Cari</button>
+    </form>
     <a href="{{ route('admin.tambahakundokterpage') }}" class="btn btn-primary">
         Tambah Akun
     </a>
     <div class="row">
-        @foreach ($admin->rumahSakit->dokter as $dok)
+        @foreach ($dokters as $dok)
             <div class="col-12 col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">

@@ -52,4 +52,24 @@ class DokterController extends Controller
         // $user->sendEmailVerificationNotification();
         return redirect()->route('admin.keloladokterpage')->with('success', 'Akun dokter berhasil dibuat!');
     }
+
+    public function tampilkanDokter(Request $request)
+    {
+        $admin = auth()->user()->admin;
+        $rumahSakit = $admin->rumahSakit;
+
+        $dokters = $rumahSakit->dokter()
+            ->when($request->search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhere('spesialis', 'like', "%{$search}%");
+            })
+            ->get();
+
+            
+
+        return view('admin.keloladokterpage', compact('dokters'));
+    }
 }

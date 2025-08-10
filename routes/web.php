@@ -60,13 +60,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.homepage');
     })->name('admin.homepage');
 
-    Route::get('/keloladokterpage', function () {
-        return view('admin.keloladokterpage');
-    })->name('admin.keloladokterpage');
-
-    Route::get('/kelolapetugaspage', function () {
-        return view('admin.kelolapetugaspage');
-    })->name('admin.kelolapetugaspage');
+    Route::get('/keloladokterpage', [DokterController::class, 'tampilkanDokter'])->name('admin.keloladokterpage');
+    Route::get('/kelolapetugaspage', [PetugasController::class, 'tampilkanPetugas'])->name('admin.kelolapetugaspage');
 
     Route::get('/kelolajadwalpage', function () {
         return view('admin.kelolajadwalpage');

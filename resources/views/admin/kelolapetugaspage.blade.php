@@ -12,31 +12,6 @@
 
     @include('layout.navbar2')
 
-<a href="{{ route('admin.kelolapetugaspage')}}">
-    Kelola Petugas
-</a>
-
-<a href="{{ route('admin.kelolajadwalpage')}}">
-    Kelola Jadwal
-</a>
-
-<a href="{{ route('admin.logaktivitaspage')}}">
-    Log Aktivitas
-</a>
-
-{{-- Buat class dll nya w masih copas punya gemini, nanti ubah" aja kalo mau --}}
-<div>
-    <a href="{{ route('admin.tambahakunpetugaspage') }}" class="btn btn-primary">
-        Tambah Akun
-    </a>
-    <div class="row">
-        @foreach ($petugass as $ptg)
-            <div class="col-12 col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $ptg->user->name }}</h5>
-                        <p class="card-text">{{ $ptg->user->email }}</p>
-
 <div class="container-fluid">
     <div class="row">
 
@@ -70,10 +45,7 @@
                 </li>
             </ul>
         </div>
-        <form method="GET" action="">
-            <input type="text" name="search" placeholder="Cari petugas..." value="{{ request('search') }}">
-            <button type="submit">Cari</button>
-        </form>
+
         <div class="col-md-10 p-4 bg-light">
             {{-- Header atas: Search + Tambah Akun --}}
             <div class="d-flex justify-content-between align-items-center mb-4">

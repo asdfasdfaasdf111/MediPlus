@@ -15,7 +15,14 @@
                 <h3>{{ $rs->nama }}</h3>
                 <p class="">{{ $rs->alamat }}</p>
                 <p class="">{{ $rs->noTelepon }}</p>
-                <a href="{{ route('superadmin.edit', $rs->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                <form action="{{ route('superadmin.edit', $rs) }}" method="GET" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                </form>
+                <form action="{{ route('superadmin.delete', $rs->id)}}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
             </div>
         </div>
     @endforeach

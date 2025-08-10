@@ -54,8 +54,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')
     Route::get('/homepage', [RumahSakitController::class, 'countRS'])->name('superadmin.homepage');
     Route::get('/addnew', [RumahSakitController::class, 'addNew'])->name('superadmin.addnew');
     Route::post('/addnew', [RumahSakitController::class, 'store'])->name('superadmin.submit');
-    Route::get('/edit', [RumahSakitController::class, 'editData'])->name('superadmin.edit');
+    Route::get('/{rumahSakit}/edit', [RumahSakitController::class, 'editData'])->name('superadmin.edit');
     Route::put('/{id}/edit', [RumahSakitController::class, 'updateDataRS'])->name('superadmin.submitdata');
+    Route::delete('{rumahSakit}/delete', [RumahSakitController::class, 'deleteData'])->name('superadmin.delete');
 
     // Route::get('/addnew', function () {
     //     return view('superadmin.addnew');

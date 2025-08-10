@@ -5,24 +5,24 @@
     <div class="form-group">
         <h2 class="">Data Rumah Sakit</h2>
         <label>Nama Rumah Sakit</label>
-        <input type="text" name="nama_rs" value={{ $rumahSakit->nama }}>
+        <input type="text" name="nama_rs" value="{{ $rumahSakit->nama }}">
     </div>
     <div class="form-group">
         <label>Alamat Rumah Sakit</label>
-        <input type="text" name="alamat" value={{ $rumahSakit->alamat }}>
+        <input type="text" name="alamat" value="{{ $rumahSakit->alamat }}">
     </div>
     <div class="form-group">
         <label>No. Telepon Rumah Sakit</label>
-        <input type="text" name="noTelepon" value={{ $rumahSakit->noTelepon }}>
+        <input type="text" name="noTelepon" value="{{ $rumahSakit->noTelepon }}">
     </div>
     <div class="form-group">
         <h2 class="">Data Admin Rumah Sakit</h2>
         <label>Nama Lengkap</label>
-        <input type="text" name="nama_admin" value={{ $admin->name }}>
+        <input type="text" name="nama_admin" value="{{ $rumahSakit->admin->user->name }}">
     </div>
     <div class="form-group">
         <label>Email</label>
-        <input type="text" name="email" value={{ $admin->email }}>
+        <input type="email" name="email" value="{{ $rumahSakit->admin->user->email }}">
     </div>
     <div class="form-group">
         <label>Password</label>

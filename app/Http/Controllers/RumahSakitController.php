@@ -120,7 +120,8 @@ class RumahSakitController extends Controller
     }
 
     public function deleteData(RumahSakit $rumahSakit){
+        $rumahSakit->admin->user->delete();
         $rumahSakit->delete();
-        return redirect('/superadmin/homepage')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('superadmin.homepage')->with('success', 'Data berhasil dihapus');
     }
 }

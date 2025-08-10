@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
+use App\Http\Controllers\SuperAdminController;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -45,9 +46,26 @@ Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logou
 
 
 //Homepage per Role
-Route::get('/superadmin/homepage', function(){
-    return view('superadmin.homepage');
-})->middleware('auth', 'verified', 'role:superadmin');
+// Route::get('/superadmin/homepage', function(){
+//     return view('superadmin.homepage');
+// })->middleware('auth', 'verified', 'role:superadmin');
+
+Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')->group(function () {
+    Route::get('/homepage', [RumahSakitController::class, 'countRS'])->name('superadmin.homepage');
+    Route::get('/addnew', [RumahSakitController::class, 'addNew'])->name('superadmin.addnew');
+    Route::post('/addnew', [RumahSakitController::class, 'store'])->name('superadmin.submit');
+    Route::get('/{rumahSakit}/edit', [RumahSakitController::class, 'editData'])->name('superadmin.edit');
+    Route::put('/{id}/edit', [RumahSakitController::class, 'updateDataRS'])->name('superadmin.submitdata');
+    Route::delete('{rumahSakit}/delete', [RumahSakitController::class, 'deleteData'])->name('superadmin.delete');
+
+    // Route::get('/addnew', function () {
+    //     return view('superadmin.addnew');
+    // })->name('superadmin.addnew');
+
+    // Route::get('/edit', function() {
+    //     return view('superadmin.edit');
+    // })->name('superadmin.addnew');
+});
 
 // Route::get('/admin/homepage', function(){
 //     $admin = auth()->user()->admin;

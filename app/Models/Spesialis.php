@@ -4,32 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+class Spesialis extends Model
 {
+    protected $table = 'spesialiss';
     protected $fillable = [
-        'user_id',
         'rumah_sakit_id',
-        'super_admin_id'
+        'namaSpesialis'
     ];
 
-    public function user()
+    public function jenisPemeriksaan()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(JenisPemeriksaan::class, 'jenis_pemeriksaan_spesialis');
     }
 
     public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
-    }
-
-    public function superAdmin()
-    {
-        return $this->belongsTo(superadmin::class);
-    }
-
-    public function petugas()
-    {
-        return $this->hasMany(Petugas::class);
     }
 
     public function dokter()

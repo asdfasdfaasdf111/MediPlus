@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('kelompokJenisPemeriksaan');
             $table->string('pemakaianKontras');
             $table->time('lamaPemeriksaan');
+            $table->boolean('diDampingiDokter');
             $table->timestamps();
         });
     }

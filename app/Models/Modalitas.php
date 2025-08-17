@@ -17,12 +17,12 @@ class Modalitas extends Model
         'alamatIP'
     ];
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
     }
 
-    public function jenispemeriksaan()
+    public function jenisPemeriksaan()
     {
         return $this->hasMany(JenisPemeriksaan::class);
     }

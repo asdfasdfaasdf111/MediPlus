@@ -11,12 +11,10 @@ class RumahSakit extends Model
         'nama',
         'alamat',
         'noTelepon',
-        'jamBuka',
-        'jamTutup',
         'jumlahPasien'
     ];
 
-    public function superadmin()
+    public function superAdmin()
     {
         return $this->belongsTo(SuperAdmin::class);
     }
@@ -43,7 +41,7 @@ class RumahSakit extends Model
         return $this->hasMany(Modalitas::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class);
     }
@@ -56,6 +54,16 @@ class RumahSakit extends Model
     public function admin()
     {
         return $this->hasOne(Admin::class);
+    }
+
+    public function spesialis()
+    {
+        return $this->hasMany(Spesialis::class);
+    }
+
+    public function jadwalRumahSakit()
+    {
+        return $this->hasMany(JadwalRumahSakit::class);
     }
 
     public function jumlahDokter(){
@@ -81,4 +89,5 @@ class RumahSakit extends Model
         $this->jumlahPasien = $jumlahPasien;
         $this->save();
     }
+
 }

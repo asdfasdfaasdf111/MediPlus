@@ -12,7 +12,8 @@ class JenisPemeriksaan extends Model
         'namaPemeriksaanSpesifik',
         'kelompokJenisPemeriksaan',
         'pemakaianKontras',
-        'lamaPemeriksaan'
+        'lamaPemeriksaan',
+        'diDampingiDokter'
     ];
 
     public function modalitas()
@@ -20,8 +21,13 @@ class JenisPemeriksaan extends Model
         return $this->belongsTo(Modalitas::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class);
+    }
+
+    public function spesialis()
+    {
+        return $this->belongsToMany(Spesialis::class, 'jenis_pemeriksaan_spesialis');
     }
 }

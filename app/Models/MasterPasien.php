@@ -19,4 +19,9 @@ class MasterPasien extends Model
     {
         return $this->hasMany(Pasien::class);
     }
+
+    public function dataPasien()
+    {
+        return $this->hasMany(DataPasien::class);
+    }
 }

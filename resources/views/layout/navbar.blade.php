@@ -27,7 +27,7 @@
 
 
 {{-- INI AKU MAU COBA --}}
-{{-- <nav class="w-100 position-relative border-bottom" style="height: 88px;">
+{{-- {{-- <nav class="w-100 position-relative border-bottom" style="height: 88px;">
   <div class="position-absolute top-0 start-0 p-4">
     <img src="{{ asset('images/Mediplus.png') }}" alt="Logo" height="40">
   </div>
@@ -71,5 +71,4 @@
       <a href="{{ url('/login') }}" class="btn btn-primary px-4 fw-bold">Masuk</a>
     @endif
   </div>
-</nav> --}}
-
+</nav> 

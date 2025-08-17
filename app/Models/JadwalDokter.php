@@ -17,4 +17,20 @@ class JadwalDokter extends Model
     {
         return $this->belongsTo(Dokter::class);
     }
+
+    public function getNamaHariAttribute()
+    {
+        $days = [
+            1 => 'Senin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Kamis',
+            5 => 'Jumat',
+            6 => 'Sabtu',
+            7 => 'Minggu',
+        ];
+
+        //kalo indexnya bukan 1-7, keluarin -
+        return $days[$this->indexJadwal] ?? '-';
+    }
 }

@@ -63,7 +63,8 @@ class RumahSakit extends Model
 
     public function jadwalRumahSakit()
     {
-        return $this->hasMany(JadwalRumahSakit::class);
+        return $this->hasMany(JadwalRumahSakit::class)
+                    ->orderBy('indexJadwal', 'asc');
     }
 
     public function jumlahDokter(){

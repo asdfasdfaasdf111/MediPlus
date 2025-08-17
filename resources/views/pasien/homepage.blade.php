@@ -36,6 +36,9 @@
     <div class="container text-center py-5">
         <h2 class="fw-bold text-primary">Rumah Sakit Mitra</h2>
         {{-- Konten rumah sakit mitra bisa ditambahkan di sini --}}
+        @foreach ($rumahsakits as $rs)
+          <div>{{ $rs->nama }}</div>
+        @endforeach
     </div>
 
     <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>

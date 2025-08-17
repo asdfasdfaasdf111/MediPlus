@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
@@ -77,13 +78,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.homepage');
     })->name('admin.homepage');
 
-    Route::get('/keloladokterpage', function () {
-        return view('admin.keloladokterpage');
-    })->name('admin.keloladokterpage');
-
-    Route::get('/kelolapetugaspage', function () {
-        return view('admin.kelolapetugaspage');
-    })->name('admin.kelolapetugaspage');
+    Route::get('/keloladokterpage', [DokterController::class, 'tampilkanDokter'])->name('admin.keloladokterpage');
+    Route::get('/kelolapetugaspage', [PetugasController::class, 'tampilkanPetugas'])->name('admin.kelolapetugaspage');
 
     Route::get('/kelolajadwalpage', function () {
         return view('admin.kelolajadwalpage');
@@ -128,20 +124,11 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     })->name('pasien.pendaftaran');
 });
 
+Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
+    Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
-// URL sementara buat aku bikin frontend homepage.
-Route::get('/pasien/homepagetest', function () {
-    return view('pasien.homepagetest');
+    Route::get('/pendaftaran', function(){
+        return view('pasien.pendaftaran');
+    })->name('pasien.pendaftaran');
+
 });
-
-
-
-//--------------------------------
-// Route::get('/pasien/homepage', function(){
-//     return view('pasien.homepage');
-// })->middleware('auth', 'role:pasien');
-
-// Route::get('/pasien/pendaftaran', function(){
-//     return view('pasien.pendaftaran');
-// })->middleware('auth', 'role:pasien')->name('pasien.pendaftaran');
-

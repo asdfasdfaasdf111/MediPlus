@@ -72,6 +72,10 @@
             <input type="number" name="jadwal[{{ $jadwal->id }}][jamTutupMenit]" 
                 value="{{ \Carbon\Carbon::parse($jadwal->jamTutup)->format('i') }}" 
                 min="0" max="59" class="w-16 border p-1 text-center">
+            
+            {{-- kalo unchecked, ntr pke nilai yg 0 --}}
+            <input type="hidden" name="jadwal[{{ $jadwal->id }}][buka]" value="0">
+            <input type="checkbox" name="jadwal[{{ $jadwal->id }}][buka]" value="1" {{ $jadwal->buka == 1 ? 'checked' : '' }}>
         </div>
     @endforeach
     {{-- <div>

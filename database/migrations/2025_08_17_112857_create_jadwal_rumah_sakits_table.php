@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('indexJadwal');
             $table->time('jamBuka');
             $table->time('jamTutup');
+            $table->boolean('buka');
             $table->timestamps();
         });
     }

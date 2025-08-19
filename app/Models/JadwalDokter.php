@@ -10,7 +10,8 @@ class JadwalDokter extends Model
         'dokter_id',
         'indexJadwal',
         'jamMulai',
-        'jamSelesai'
+        'jamSelesai',
+        'kerja',
     ];
 
     public function dokter()

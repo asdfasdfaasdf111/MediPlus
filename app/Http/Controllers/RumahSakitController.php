@@ -12,12 +12,29 @@ class RumahSakitController extends Controller
 {
     public function updateJadwal(Request $request){
         $request->validate([
-            'jamBuka' => 'required|date_format:H:i',
-            'jamTutup' => 'required|date_format:H:i|after:jamBuka',
+            'jadwal.*.jamBukaJam' => 'required|between:0,23',
+            'jadwal.*.jamTutupJam' => 'required|between:0,23',
+            'jadwal.*.jamBukaMenit' => 'required|between:0,59',
+            'jadwal.*.jamTutupMenit' => 'required|between:0,59',
         ]);
 
+        $jadwalArray = [];
+
+        foreach ($request->input('jadwal', []) as $index => $jadwal) {
+            $jamBuka  = sprintf("%02d:%02d", $jadwal['jamBukaJam'], $jadwal['jamBukaMenit']);
+            $jamTutup = sprintf("%02d:%02d", $jadwal['jamTutupJam'], $jadwal['jamTutupMenit']);
+            
+            if ($jamTutup <= $jamBuka){
+                return back()->withErrors(['jadwal'.($index+1).'jamBuka' => 'Jam tutup harus lebih besar dari jam buka']);
+            }
+            $jadwalArray[$index] = [
+                'jamBuka'  => $jamBuka,
+                'jamTutup' => $jamTutup,
+                'buka' => $jadwal['buka'],
+            ];
+        }
         $admin = auth()->user()->admin;
-        $admin->rumahSakit->updateJadwal($request->jamBuka, $request->jamTutup);
+        $admin->rumahSakit->updateJadwal($jadwalArray);
         return redirect(route('admin.kelolajadwalpage'));
     }
 

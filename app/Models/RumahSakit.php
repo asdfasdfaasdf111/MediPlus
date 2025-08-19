@@ -80,10 +80,14 @@ class RumahSakit extends Model
                 ->limit(10);
     }
 
-    public function updateJadwal($jamBuka, $jamTutup){
-        $this->jamBuka = $jamBuka;
-        $this->jamTutup = $jamTutup;
-        $this->save();
+    public function updateJadwal($jadwalArray){
+        $jadwalRS = $this->jadwalRumahSakit;
+        for ($i = 0; $i < 7; $i++){
+            $jadwalRS[$i]->jamBuka = $jadwalArray[$i + 1]['jamBuka'];
+            $jadwalRS[$i]->jamTutup = $jadwalArray[$i + 1]['jamTutup'];
+            $jadwalRS[$i]->buka = $jadwalArray[$i + 1]['buka'];
+            $jadwalRS[$i]->save();
+        }
     }
 
     public function updateJumlahPasien($jumlahPasien){

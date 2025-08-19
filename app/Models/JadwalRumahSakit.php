@@ -10,7 +10,8 @@ class JadwalRumahSakit extends Model
         'rumah_sakit_id',
         'indexJadwal',
         'jamBuka',
-        'jamTutup'
+        'jamTutup',
+        'buka',
     ];
 
     public function rumahSakit()

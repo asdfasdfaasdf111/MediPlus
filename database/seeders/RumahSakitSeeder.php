@@ -31,7 +31,7 @@ class RumahSakitSeeder extends Seeder
                 'indexJadwal' => $i,
                 'jamBuka' => '08:00:00',
                 'jamTutup' => '17:00:00',
-                'buka' => ($i <= 5 ? 1 : 0),
+                'buka' => ($i <= 5 ? true : false),
             ]);
         }
     }

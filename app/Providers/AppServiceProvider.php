@@ -23,5 +23,9 @@ class AppServiceProvider extends ServiceProvider
         View::composer('admin.*', function($view){
             $view->with('admin', auth()->user()->admin);
         });
+
+        View::composer('petugas.*', function($view){
+            $view->with('petugas', auth()->user()->petugas);
+        });
     }
 }

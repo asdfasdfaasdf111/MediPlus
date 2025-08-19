@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\JenisPemeriksaanController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
@@ -104,6 +105,31 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::delete('/hapusAkunPetugas/{id}', [PetugasController::class, 'hapusAkunPetugas'])->name('admin.hapusAkunPetugas');
     Route::delete('/hapusAkunDokter/{id}', [DokterController::class, 'hapusAkunDokter'])->name('admin.hapusAkunDokter');
 
+});
+
+Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
+    Route::get('/homepage', function(){
+        return view('petugas.homepage');
+    })->name('petugas.homepage');
+
+    Route::get('/kelolajenispemeriksaan', function(){
+        return view('petugas.kelolajenispemeriksaan');
+    })->name('petugas.kelolajenispemeriksaan');
+
+    Route::get('/kelolamodalitas', function(){
+        return view('petugas.kelolamodalitas');
+    })->name('petugas.kelolamodalitas');
+
+    Route::get('/keloladicom', function(){
+        return view('petugas.keloladicom');
+    })->name('petugas.keloladicom');
+
+    Route::get('/tambahjenispemeriksaanpage', function () {
+        return view('petugas.tambahjenispemeriksaanpage');
+    })->name('petugas.tambahjenispemeriksaanpage');
+
+    Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
+    Route::delete('/hapusJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'hapusJenisPemeriksaan'])->name('petugas.hapusJenisPemeriksaan');
 });
 
 Route::get('/petugas/homepage', function(){

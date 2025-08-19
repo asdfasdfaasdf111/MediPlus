@@ -61,6 +61,12 @@ class RumahSakit extends Model
         return $this->hasMany(Spesialis::class);
     }
 
+    public function jenisPemeriksaan()
+    {
+        return $this->hasMany(JenisPemeriksaan::class)
+                    ->orderBy('namaJenisPemeriksaan', 'asc');
+    }
+
     public function jadwalRumahSakit()
     {
         return $this->hasMany(JadwalRumahSakit::class)

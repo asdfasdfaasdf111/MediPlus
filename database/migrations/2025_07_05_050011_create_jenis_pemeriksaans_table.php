@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('jenis_pemeriksaans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('modalitas_id')->constrained('modalitass')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('namaJenisPemeriksaan');
             $table->string('namaPemeriksaanSpesifik')->nullable();
             $table->string('kelompokJenisPemeriksaan');
-            $table->string('pemakaianKontras');
+            $table->boolean('pemakaianKontras');
             $table->time('lamaPemeriksaan');
             $table->boolean('diDampingiDokter');
             $table->timestamps();

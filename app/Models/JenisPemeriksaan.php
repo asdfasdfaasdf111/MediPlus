@@ -8,6 +8,7 @@ class JenisPemeriksaan extends Model
 {
     protected $fillable = [
         'modalitas_id',
+        'rumah_sakit_id',
         'namaJenisPemeriksaan',
         'namaPemeriksaanSpesifik',
         'kelompokJenisPemeriksaan',
@@ -29,5 +30,10 @@ class JenisPemeriksaan extends Model
     public function spesialis()
     {
         return $this->belongsToMany(Spesialis::class, 'jenis_pemeriksaan_spesialis');
+    }
+
+    public function rumahSakit()
+    {
+        return $this->belongsTo(RumahSakit::class);
     }
 }

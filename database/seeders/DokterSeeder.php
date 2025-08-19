@@ -45,7 +45,7 @@ class DokterSeeder extends Seeder
                 'indexJadwal' => $i,
                 'jamMulai' => '08:00:00',
                 'jamSelesai' => '17:00:00',
-                'kerja' => ($i <= 5 ? 1 : 0),
+                'kerja' => ($i <= 5 ? true : false),
             ]);
         }
 
@@ -73,7 +73,7 @@ class DokterSeeder extends Seeder
                     'indexJadwal' => $j,
                     'jamMulai' => '08:00:00',
                     'jamSelesai' => '17:00:00',
-                    'kerja' => ($i <= 5 ? 1 : 0),
+                    'kerja' => ($i <= 5 ? true : false),
                 ]);
             }
        }

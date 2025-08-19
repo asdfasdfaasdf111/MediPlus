@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             PetugasSeeder::class,
             PasienSeeder::class,
             LogSeeder::class,
+            ModalitasSeeder::class,
+            JenisPemeriksaanSeeder::class,
         ]);
     }
 }

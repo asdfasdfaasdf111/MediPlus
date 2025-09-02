@@ -129,12 +129,10 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     })->name('petugas.tambahjenispemeriksaanpage');
 
     Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
+    Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');
+    // Route::put('/editJenisPemeriksaan/{id}', dd("WTF"))->name('petugas.editJenisPemeriksaan');
     Route::delete('/hapusJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'hapusJenisPemeriksaan'])->name('petugas.hapusJenisPemeriksaan');
 });
-
-Route::get('/petugas/homepage', function(){
-    return view('petugas.homepage');
-})->middleware('auth', 'verified', 'role:petugas');
 
 Route::get('/dokter/homepage', function(){
     return view('dokter.homepage');

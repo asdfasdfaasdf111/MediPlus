@@ -16,15 +16,17 @@ class ModalitasSeeder extends Seeder
     {
         $rumahSakit = RumahSakit::first();
 
-        Modalitas::create([
-            'rumah_sakit_id' => $rumahSakit->id,
-            'namaModalitas' => 'AX',
-            'jenisModalitas' => 'Siemens',
-            'merekModalitas' => 'Angiografi',
-            'tipeModalitas' => 'Artis zee floor',
-            'nomorSeriModalitas' => '136957',
-            'kodeRuang' => 'R001',
-            'alamatIP' => '192.0.0.3',
-        ]);
+        for ($i = 0; $i < 5; $i++){
+            Modalitas::create([
+                'rumah_sakit_id' => $rumahSakit->id,
+                'namaModalitas' => 'AX'.$i,
+                'jenisModalitas' => 'Siemens',
+                'merekModalitas' => 'Angiografi',
+                'tipeModalitas' => 'Artis zee floor',
+                'nomorSeriModalitas' => '136957',
+                'kodeRuang' => 'R001',
+                'alamatIP' => '192.0.0.3',
+            ]);
+        }
     }
 }

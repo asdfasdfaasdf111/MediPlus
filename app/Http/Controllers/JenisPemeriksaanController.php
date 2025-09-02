@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\JenisPemeriksaan;
+use App\Models\Modalitas;
 use Illuminate\Http\Request;
 
 class JenisPemeriksaanController extends Controller
@@ -13,10 +14,8 @@ class JenisPemeriksaanController extends Controller
             'namaJenisPemeriksaan' => 'required|string|max:100',
             'namaPemeriksaanSpesifik' => 'required|string|max:100',
             'kelompokJenisPemeriksaan' => 'required|string|max:100',
-            'lamaPemeriksaan' => 'required|min:0',
+            'lamaPemeriksaan' => 'required|integer|min:1',
         ]);
-
-        $lamaPemeriksaan  = sprintf("%02d:%02d", $request->lamaPemeriksaan / 60, $request->lamaPemeriksaan % 60);
 
         JenisPemeriksaan::create([
             'modalitas_id' => $request->modalitasId,
@@ -25,13 +24,38 @@ class JenisPemeriksaanController extends Controller
             'namaPemeriksaanSpesifik' => $request->namaPemeriksaanSpesifik,
             'kelompokJenisPemeriksaan' => $request->kelompokJenisPemeriksaan,
             'pemakaianKontras' => $request->pemakaianKontras,
-            'lamaPemeriksaan' => $lamaPemeriksaan,
+            'lamaPemeriksaan' => $request->lamaPemeriksaan,
             'diDampingiDokter' => $request->diDampingiDokter,
         ]);
 
         return redirect()->route('petugas.kelolajenispemeriksaan')->with('success', 'Jenis Pemeriksaan berhasil dibuat!');
     }
 
+    public function editJenisPemeriksaan(Request $request, $id){
+        $jenisPemeriksaan = JenisPemeriksaan::findOrFail($id);
+
+        $request->validate([
+            'namaJenisPemeriksaan' => 'required|string|max:100',
+            'namaPemeriksaanSpesifik' => 'required|string|max:100',
+            'kelompokJenisPemeriksaan' => 'required|string|max:100',
+            'lamaPemeriksaan' => 'required|integer|min:1',
+        ]);
+
+        $jenisPemeriksaan->modalitas_id = $request->input('modalitasId');
+        $jenisPemeriksaan->namaJenisPemeriksaan = $request->input('namaJenisPemeriksaan');
+        $jenisPemeriksaan->namaPemeriksaanSpesifik = $request->input('namaPemeriksaanSpesifik');
+        $jenisPemeriksaan->kelompokJenisPemeriksaan = $request->input('kelompokJenisPemeriksaan');
+        $jenisPemeriksaan->pemakaianKontras = $request->input('pemakaianKontras');
+        $jenisPemeriksaan->lamaPemeriksaan = $request->input('lamaPemeriksaan');
+        $jenisPemeriksaan->diDampingiDokter = $request->input('diDampingiDokter');
+
+        $jenisPemeriksaan->save();
+
+        return response()->json([
+            'success' => true,
+            'namaModalitas' => Modalitas::findOrFail($jenisPemeriksaan->modalitas_id)->namaModalitas
+            ]);
+    }
 
     public function hapusJenisPemeriksaan($id){
         $jenisPemeriksaan = JenisPemeriksaan::findOrFail($id);

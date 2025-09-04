@@ -46,10 +46,6 @@ Route::post('/register', [AuthenticationController::class, 'registerPasien'])->n
 Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 
 
-//Homepage per Role
-// Route::get('/superadmin/homepage', function(){
-//     return view('superadmin.homepage');
-// })->middleware('auth', 'verified', 'role:superadmin');
 
 Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')->group(function () {
     Route::get('/homepage', [RumahSakitController::class, 'countRS'])->name('superadmin.homepage');
@@ -59,19 +55,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')
     Route::put('/{id}/edit', [RumahSakitController::class, 'updateDataRS'])->name('superadmin.submitdata');
     Route::delete('{rumahSakit}/delete', [RumahSakitController::class, 'deleteData'])->name('superadmin.delete');
 
-    // Route::get('/addnew', function () {
-    //     return view('superadmin.addnew');
-    // })->name('superadmin.addnew');
-
-    // Route::get('/edit', function() {
-    //     return view('superadmin.edit');
-    // })->name('superadmin.addnew');
 });
-
-// Route::get('/admin/homepage', function(){
-//     $admin = auth()->user()->admin;
-//     return view('admin.homepage', compact('admin'));
-// })->middleware('auth', 'verified', 'role:admin');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/homepage', function () {
@@ -130,5 +114,12 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::get('/pendaftaran', function(){
         return view('pasien.pendaftaran');
     })->name('pasien.pendaftaran');
+});
 
+use App\Http\Controllers\ProfileController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });

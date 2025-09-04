@@ -16,7 +16,7 @@ Route::get('/', function () {
     return view('authentication/login');
 });
 
-//Verification
+//VERIFICATION
 //kalo akun yang ga verified coba akses page yang perlu verification, kena redirect kesini
 Route::get('/email/verify', function (){
     return redirect('/login');

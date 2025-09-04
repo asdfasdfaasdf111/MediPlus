@@ -8,6 +8,7 @@ class Dicom extends Model
 {
     protected $fillable = [
         'modalitas_id',
+        'rumah_sakit_id',
         'alamatIP',
         'netMask',
         'layananDicom',
@@ -19,5 +20,10 @@ class Dicom extends Model
     public function modalitas()
     {
         return $this->belongsTo(Modalitas::class);
+    }
+
+    public function rumahSakit()
+    {
+        return $this->belongsTo(RumahSakit::class);
     }
 }

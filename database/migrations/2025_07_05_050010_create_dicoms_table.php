@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('dicoms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('modalitas_id')->constrained('modalitass')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('alamatIP');
             $table->string('netMask');
             $table->string('layananDicom');

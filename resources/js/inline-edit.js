@@ -43,7 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Update the text fields
                 const viewData = row.querySelectorAll(".view-field");
                 //Biar gak usah nyari namanya di javascript, langsung ambil aja yang dapet dari controller
-                data['modalitasId'] = responseData.namaModalitas;
+                if ('namaModalitas' in responseData){
+                    data['modalitasId'] = responseData.namaModalitas;
+                }
+                else if ('alamatIP' in responseData){
+                    data['modalitasId'] = responseData.alamatIP;
+                }
+                
                 viewData.forEach(view => {
                     if (view.dataset.type !== "checkbox") view.textContent = data[view.dataset.name];
                     else {

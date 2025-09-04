@@ -25,7 +25,7 @@ class ModalitasSeeder extends Seeder
                 'tipeModalitas' => 'Artis zee floor',
                 'nomorSeriModalitas' => '136957',
                 'kodeRuang' => 'R001',
-                'alamatIP' => '192.0.0.3',
+                'alamatIP' => '192.0.0.'.$i,
             ]);
         }
     }

@@ -41,6 +41,11 @@ class RumahSakit extends Model
         return $this->hasMany(Modalitas::class);
     }
 
+    public function dicom()
+    {
+        return $this->hasMany(Dicom::class);
+    }
+
     public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class);

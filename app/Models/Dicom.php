@@ -9,7 +9,6 @@ class Dicom extends Model
     protected $fillable = [
         'modalitas_id',
         'rumah_sakit_id',
-        'alamatIP',
         'netMask',
         'layananDicom',
         'peran',

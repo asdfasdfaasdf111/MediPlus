@@ -15,7 +15,7 @@ class DicomController extends Controller
             'layananDicom' => 'required|string|max:100',
             'peran' => 'required|string|max:100',
             'AET' => 'required|string|max:100',
-            'port' => 'required|string|max:100',
+            'port' => 'required|integer|min:1',
         ]);
 
         $modalitas = Modalitas::findOrFail($request->modalitasId);
@@ -42,14 +42,11 @@ class DicomController extends Controller
             'layananDicom' => 'required|string|max:100',
             'peran' => 'required|string|max:100',
             'AET' => 'required|string|max:100',
-            'port' => 'required|string|max:100',
+            'port' => 'required|integer|min:1',
         ]);
 
         $dicom->modalitas_id = $request->input('modalitasId');
-        
         $modalitas = Modalitas::findOrFail($dicom->modalitas_id);
-        
-        $dicom->alamatIP = $modalitas->alamatIP;
         $dicom->netMask = $request->input('netMask');
         $dicom->layananDicom = $request->input('layananDicom');
         $dicom->peran = $request->input('peran');
@@ -58,9 +55,10 @@ class DicomController extends Controller
 
         $dicom->save();
 
+
         return response()->json([
             'success' => true,
-            'alamatIP' => $dicom->alamatIP,
+            'alamatIP' => $modalitas->alamatIP,
             ]);
     }
 

@@ -17,8 +17,7 @@ class DokterSeeder extends Seeder
    
     public function run(): void
     {
-        $spesialis = Spesialis::first();
-        $rumahsakit = $spesialis->rumahsakit;
+        $rumahsakit = RumahSakit::first();
         $admin = $rumahsakit->admin;
 
         $user = User::create([
@@ -34,7 +33,7 @@ class DokterSeeder extends Seeder
             'user_id'=>$user->id,
             'admin_id'=>$admin->id,
             'rumah_sakit_id'=>$rumahsakit->id,
-            'spesialis_id'=>$spesialis->id,
+            'spesialis'=>'USG',
             'noHP'=>'081234567890'
         ]);
 
@@ -63,7 +62,7 @@ class DokterSeeder extends Seeder
                 'user_id'=>$user->id,
                 'admin_id'=>$admin->id,
                 'rumah_sakit_id'=>$rumahsakit->id,
-                'spesialis_id'=>$spesialis->id,
+                'spesialis'=>'USG',
                 'noHP'=>'081234567890'
             ]);
 

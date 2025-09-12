@@ -10,7 +10,7 @@ class Dokter extends Model
         'user_id',
         'rumah_sakit_id',
         'admin_id',
-        'spesialis_id',
+        'spesialis',
         'noHP'
     ];
 
@@ -42,11 +42,6 @@ class Dokter extends Model
     public function hasilPemeriksaan()
     {
         return $this->hasMany(HasilPemeriksaan::class);
-    }
-
-    public function spesialis()
-    {
-        return $this->belongsTo(Spesialis::class);
     }
 
     public function jadwalDokter()

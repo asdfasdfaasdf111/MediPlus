@@ -58,7 +58,7 @@
             </td>
             <td>
                 <span data-name="port" class="view-field">{{ $dicom->port }}</span>
-                <input type="text" name="port" class="form-control edit-field d-none" value="{{ $dicom->port }}">
+                <input type="number" name="port" min="1" class="w-16 border p-1 text-center edit-field d-none" value="{{ $dicom->port }}">
             </td>
 
             <td>

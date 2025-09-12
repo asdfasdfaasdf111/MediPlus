@@ -40,7 +40,7 @@
 
             <div class="mb-3">
                 <label for="lamaPemeriksaan" class="form-label">Lama Pemeriksaan</label>
-                <input type="number" name="lamaPemeriksaan" min="1" class="w-16 border p-1 text-center">
+                <input type="number" name="lamaPemeriksaan" min="1" class="w-16 border p-1 text-center" value="{{ old('lamaPemeriksaan') }}" required>
                 <label for="lamaPemeriksaan" class="form-label">Menit</label>
             </div>
 

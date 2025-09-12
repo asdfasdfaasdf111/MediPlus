@@ -21,7 +21,6 @@ class DicomSeeder extends Seeder
             Dicom::create([
                 'modalitas_id' => $modalitas->id,
                 'rumah_sakit_id' => $rumahSakit->id,
-                'alamatIP' => $modalitas->alamatIP,
                 'netMask' => '255.255.255.'.$i,
                 'layananDicom' => 'send',
                 'peran' => 'send',

@@ -27,11 +27,6 @@ class JenisPemeriksaan extends Model
         return $this->hasMany(DataPemeriksaan::class);
     }
 
-    public function spesialis()
-    {
-        return $this->belongsToMany(Spesialis::class, 'jenis_pemeriksaan_spesialis');
-    }
-
     public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);

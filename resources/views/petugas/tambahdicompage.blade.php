@@ -40,8 +40,7 @@
 
             <div class="mb-3">
                 <label for="port" class="form-label">Port</label>
-                <input type="text" class="form-control" 
-                    name="port" id="port" placeholder="Port" value="{{ old('port') }}" required>
+                <input type="number" name="port" placeholder="Port" min="1" class="w-16 border p-1 text-center" value="{{ old('port') }}" required>
             </div>
             
 

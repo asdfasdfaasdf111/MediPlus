@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MasterPasien extends Model
 {
-    protected $fillable = [
-        'user_id'
-    ];
+    protected $table = 'master_pasien';
+    protected $fillable = ['user_id'];
 
     public function user()
     {
@@ -17,6 +16,6 @@ class MasterPasien extends Model
 
     public function pasien()
     {
-        return $this->hasMany(Pasien::class);
+        return $this->hasMany(Pasien::class, 'master_pasien_id');
     }
 }

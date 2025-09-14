@@ -135,8 +135,7 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');

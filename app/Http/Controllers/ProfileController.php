@@ -8,13 +8,12 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    public function edit()
+    public function edit(Request $request)
     {
-        $user = Auth::user();
-        // dd($user->name);
-        $pasien = $user->pasien;
+        $user = $request->user();
+        $master = $user->masterPasien()->firstOrCreate([]); //ini buat mastiin ada master
 
-        // return view('profile.edit', compact('user', 'pasien'));
+        $rumahSakitId = $request->query('rumah_sakit');
     }
 
     public function update(Request $request)

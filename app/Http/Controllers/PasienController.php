@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class PasienController extends Controller
 {
     public function homepage(){
-        $data = RumahSakit::all();
+        $data = RumahSakit::orderBy('nama', 'asc')->get();
 
         return view('pasien.homepage', ['rumahsakits'=> $data]);
     }

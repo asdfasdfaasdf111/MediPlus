@@ -18,7 +18,7 @@ class RumahSakitController extends Controller
 
         $admin = auth()->user()->admin;
         $admin->rumahSakit->updateJadwal($request->jamBuka, $request->jamTutup);
-        return redirect(route('admin.kelolajadwalpage'));
+        return redirect(route('admin.kelolajadwalpage'))->with('success', 'Jadwal operasional berhasil diperbarui');
     }
 
     public function updateJumlahPasien(Request $request){
@@ -28,7 +28,7 @@ class RumahSakitController extends Controller
 
         $admin = auth()->user()->admin;
         $admin->rumahSakit->updateJumlahPasien($request->jumlahPasien);
-        return redirect(route('admin.kelolajadwalpage'));
+        return redirect(route('admin.kelolajadwalpage'))->with('success', 'Kuota pasien berhasil diperbarui');
     }
 
     public function countRS(){

@@ -6,6 +6,9 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\KritikSaranController;
+use App\Http\Controllers\PendaftaranController;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +84,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.tambahakunpetugaspage');
     })->name('admin.tambahakunpetugaspage');
 
+    
+
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
     Route::post('/updateJumlahPasien', [RumahSakitController::class, 'updateJumlahPasien'])->name('admin.updateJumlahPasien');
     Route::post('/tambahAkunDokter', [DokterController::class, 'tambahAkunDokter'])->name('admin.tambahAkunDokter');
@@ -98,28 +103,40 @@ Route::get('/dokter/homepage', function(){
     return view('dokter.homepage');
 })->middleware('auth', 'verified', 'role:dokter');
 
-Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
-    Route::get('/homepage', function () {
-        return view('pasien.homepage');
-    });
-
-    Route::get('/pendaftaran', function () {
-        return view('pasien.pendaftaran');
-    })->name('pasien.pendaftaran');
-});
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
-    Route::get('/pendaftaran', function(){
-        return view('pasien.pendaftaran');
-    })->name('pasien.pendaftaran');
-});
+    // 1 : Pilih jadwal
+    Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pasien.pendaftaran');
+    Route::post('/pendaftaran', [PendaftaranController::class, 'storeStep1'])->name('pasien.pendaftaran.storeStep1');
 
-use App\Http\Controllers\ProfileController;
+    //START 2-5 ITU NANTIAN DULU. KERJA PER PAGE
+    // 2 : Tipe Pasien
+    Route::get('/pendaftaran/tipepasien', function(){
+        return view('pasien.pendaftaran.tipepasien');
+    })->name('pasien.pendaftaran.tipepasien');
+
+    // 3 : Form Data Diri
+    Route::get('/pendaftaran/formdatadiri', function(){
+        return view('pasien.pendaftaran.formdatadiri');
+    })->name('pasien.pendaftaran.formdatadiri');
+
+    // 4 : Data Rujukan
+    Route::get('/pendaftaran/datarujukan', function(){
+        return view('pasien.pendaftaran.datarujukan');
+    })->name('pasien.pendaftaran.datarujukan');
+
+    // 5 : Ringkasan
+    Route::get('/pendaftaran/ringkasan', function(){
+        return view('pasien.pendaftaran.ringkasan');
+    })->name('pasien.pendaftaran.ringkasan');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');

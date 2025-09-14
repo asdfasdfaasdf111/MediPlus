@@ -67,4 +67,21 @@ class ModalitasController extends Controller
     
         return redirect()->back()->with('success', 'Modalitas berhasil dihapus.');
     }
+
+    public function tampilkanModalitas(Request $request)
+    {
+        $petugas = auth()->user()->petugas;
+        $rumahSakit = $petugas->rumahSakit;
+        
+        $modalitass = $rumahSakit->modalitas()
+        ->when($request->search, function ($query, $search) {
+            $query->where('namaModalitas', 'like', "%{$search}%")
+            ->orWhere('jenisModalitas', 'like', "%{$search}%")
+            ->orWhere('merekModalitas', 'like', "%{$search}%")
+            ->orWhere('tipeModalitas', 'like', "%{$search}%");
+        })
+        ->get();
+        
+        return view('petugas.kelolamodalitas', compact('modalitass'));
+    }
 }

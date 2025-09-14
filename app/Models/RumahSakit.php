@@ -61,11 +61,6 @@ class RumahSakit extends Model
         return $this->hasOne(Admin::class);
     }
 
-    public function spesialis()
-    {
-        return $this->hasMany(Spesialis::class);
-    }
-
     public function jenisPemeriksaan()
     {
         return $this->hasMany(JenisPemeriksaan::class)

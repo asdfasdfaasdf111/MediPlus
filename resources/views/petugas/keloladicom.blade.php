@@ -11,15 +11,29 @@
     @vite('resources/js/inline-edit.js')
 </head>
 
-<a href='kelolajenispemeriksaan'> Jenis Pemeriksaan </a>
-<a href='kelolamodalitas'> Modalitas </a>
-<a href='keloladicom'> DICOM </a>
+<a href="{{ route('petugas.homepage') }}"> Homepage </a>
+<a href="{{ route('petugas.kelolajenispemeriksaan') }}"> Jenis Pemeriksaan </a>
+<a href="{{ route('petugas.kelolamodalitas') }}"> Modalitas </a>
+<a href="{{ route('petugas.keloladicom') }}"> DICOM </a>
 
-<div class="col-md-2">
-    <a href="{{ route('petugas.tambahdicompage') }}" class="btn btn-primary w-100">
-        <i class="bi bi-plus"></i> Tambah DICOM
-    </a>
-</div>
+<div class="col-md-10 p-4 bg-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex-grow-1 me-3">
+            <form action="" method="GET"> 
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Cari DICOM">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ route('petugas.tambahdicompage') }}" class="btn btn-primary w-100">
+                <i class="bi bi-plus"></i> Tambah DICOM
+            </a>
+        </div>
+    </div>
 
 <table class="table">
     <thead>
@@ -28,7 +42,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($petugas->rumahSakit->dicom as $dicom)
+        @foreach($dicoms as $dicom)
         <tr id="row-{{ $dicom->id }}">
             <td>
                 <span data-name="modalitasId" class="view-field">{{ $dicom->modalitas->alamatIP }}</span>

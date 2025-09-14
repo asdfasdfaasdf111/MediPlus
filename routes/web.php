@@ -9,6 +9,7 @@ use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
+use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -114,17 +115,9 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
         return view('petugas.homepage');
     })->name('petugas.homepage');
 
-    Route::get('/kelolajenispemeriksaan', function(){
-        return view('petugas.kelolajenispemeriksaan');
-    })->name('petugas.kelolajenispemeriksaan');
-
-    Route::get('/kelolamodalitas', function(){
-        return view('petugas.kelolamodalitas');
-    })->name('petugas.kelolamodalitas');
-
-    Route::get('/keloladicom', function(){
-        return view('petugas.keloladicom');
-    })->name('petugas.keloladicom');
+    Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
+    Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
+    Route::get('/keloladicom', [DicomController::class, 'tampilkanDicom'])->name('petugas.keloladicom');
 
     Route::get('/tambahjenispemeriksaanpage', function () {
         return view('petugas.tambahjenispemeriksaanpage');

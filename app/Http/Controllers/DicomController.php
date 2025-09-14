@@ -68,4 +68,23 @@ class DicomController extends Controller
     
         return redirect()->back()->with('success', 'DICOM berhasil dihapus.');
     }
+
+    public function tampilkanDicom(Request $request)
+    {
+        $petugas = auth()->user()->petugas;
+        $rumahSakit = $petugas->rumahSakit;
+
+        $dicoms = $rumahSakit->dicom()
+        ->when($request->search, function ($query, $search) {
+            $query->whereHas('modalitas', function ($q) use ($search){
+                $q->where('alamatIP', 'like', "%{$search}%");
+            })
+            ->orWhere('netMask', 'like', "%{$search}%")
+            ->orWhere('layananDicom', 'like', "%{$search}%")
+            ->orWhere('peran', 'like', "%{$search}%");
+        })
+        ->get();
+        
+        return view('petugas.keloladicom', compact('dicoms'));
+    }
 }

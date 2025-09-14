@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\JenisPemeriksaan;
 use App\Models\Modalitas;
+use App\Models\RumahSakit;
 use Illuminate\Http\Request;
 
 class JenisPemeriksaanController extends Controller
@@ -62,5 +63,24 @@ class JenisPemeriksaanController extends Controller
         $jenisPemeriksaan->delete();
     
         return redirect()->back()->with('success', 'Jenis Pemeriksaan berhasil dihapus.');
+    }
+
+    public function tampilkanJenisPemeriksaan(Request $request)
+    {
+        $petugas = auth()->user()->petugas;
+        $rumahSakit = $petugas->rumahSakit;
+        
+        $jenisPemeriksaans = $rumahSakit->jenisPemeriksaan()
+        ->when($request->search, function ($query, $search) {
+            $query->whereHas('modalitas', function ($q) use ($search){
+                $q->where('namaModalitas', 'like', "%{$search}%");
+            })
+            ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
+            ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
+            ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
+        })
+        ->get();
+        
+        return view('petugas.kelolajenispemeriksaan', compact('jenisPemeriksaans'));
     }
 }

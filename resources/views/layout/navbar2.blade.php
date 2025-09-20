@@ -1,15 +1,14 @@
-<nav class="w-100 position-relative border-bottom" style="height: 88px;">
-  <div class="position-absolute top-0 start-0 p-4">
-    <img src="{{ asset('images/Mediplus.png') }}" alt="Logo" height="40">
-  </div>
+<nav class="w-100 border-bottom d-flex justify-content-between align-items-center px-4" style="height: 88px;">
+    <!-- Logo kiri -->
+    <div class="d-flex align-items-center">
+        <img src="{{ asset('images/Mediplus.png') }}" alt="Logo" height="40">
+    </div>
 
-  <div class="container h-100 d-flex justify-content-end align-items-center">
-    <ul class="navbar-nav flex-row gap-4 me-4">
-
-    <li class="nav-item">
-          <span class="nav-link">Hi, {{ Auth::user()->name }}</span>
-    </li>
-    </ul>
-  </div>
+    <!-- User kanan -->
+    <div class="d-flex flex-row">
+        <i class="bi bi-person-circle me-2"></i>
+        <span class="nav-link fw-bold">Hi, {{ Auth::user()->name }}</span>
+    </div>
 </nav>
+
 

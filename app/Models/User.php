@@ -25,7 +25,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
-    
+
+    public function masterPasien()
+    {
+        return $this->hasOne(MasterPasien::class);
+    }
+  
     public function dokter()
     {
         return $this->hasOne(Dokter::class);

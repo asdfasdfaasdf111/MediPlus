@@ -4,9 +4,12 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\JenisPemeriksaanController;
+use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\ModalitasController;
 use App\Http\Controllers\PasienController;
+use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
 use App\Models\JenisPemeriksaan;
@@ -20,7 +23,7 @@ Route::get('/', function () {
     return view('authentication/login');
 });
 
-//Verification
+//VERIFICATION
 //kalo akun yang ga verified coba akses page yang perlu verification, kena redirect kesini
 Route::get('/email/verify', function (){
     return redirect('/login');
@@ -50,10 +53,6 @@ Route::post('/register', [AuthenticationController::class, 'registerPasien'])->n
 Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 
 
-//Homepage per Role
-// Route::get('/superadmin/homepage', function(){
-//     return view('superadmin.homepage');
-// })->middleware('auth', 'verified', 'role:superadmin');
 
 Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')->group(function () {
     // Route::get('/homepage', [RumahSakitController::class, 'countRS'])->name('superadmin.homepage');
@@ -63,20 +62,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')
     Route::get('/{rumahSakit}/edit', [RumahSakitController::class, 'editData'])->name('superadmin.edit');
     Route::put('/{id}/edit', [RumahSakitController::class, 'updateDataRS'])->name('superadmin.submitdata');
     Route::delete('{rumahSakit}/delete', [RumahSakitController::class, 'deleteData'])->name('superadmin.delete');
-
-    // Route::get('/addnew', function () {
-    //     return view('superadmin.addnew');
-    // })->name('superadmin.addnew');
-
-    // Route::get('/edit', function() {
-    //     return view('superadmin.edit');
-    // })->name('superadmin.addnew');
 });
-
-// Route::get('/admin/homepage', function(){
-//     $admin = auth()->user()->admin;
-//     return view('admin.homepage', compact('admin'));
-// })->middleware('auth', 'verified', 'role:admin');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/homepage', function () {
@@ -86,9 +72,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::get('/keloladokterpage', [DokterController::class, 'tampilkanDokter'])->name('admin.keloladokterpage');
     Route::get('/kelolapetugaspage', [PetugasController::class, 'tampilkanPetugas'])->name('admin.kelolapetugaspage');
 
-    Route::get('/kelolajadwalpage', function () {
-        return view('admin.kelolajadwalpage');
-    })->name('admin.kelolajadwalpage');
+    Route::get('/kelolajadwalpage', [RumahSakitController::class, 'index'])
+        ->name('admin.kelolajadwalpage');
+    Route::post('/kelolajadwalpage/update', [RumahSakitController::class, 'updateJadwal'])
+        ->name('admin.updateJadwal');
+
+    
 
     Route::get('/logaktivitaspage', function () {
         return view('admin.logaktivitaspage');
@@ -101,6 +90,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::get('/tambahakunpetugaspage', function () {
         return view('admin.tambahakunpetugaspage');
     })->name('admin.tambahakunpetugaspage');
+
+    
 
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
     Route::post('/updateJumlahPasien', [RumahSakitController::class, 'updateJumlahPasien'])->name('admin.updateJumlahPasien');
@@ -149,21 +140,39 @@ Route::get('/dokter/homepage', function(){
     return view('dokter.homepage');
 })->middleware('auth', 'verified', 'role:dokter');
 
-Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
-    Route::get('/homepage', function () {
-        return view('pasien.homepage');
-    });
-
-    Route::get('/pendaftaran', function () {
-        return view('pasien.pendaftaran');
-    })->name('pasien.pendaftaran');
-});
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
-    Route::get('/pendaftaran', function(){
-        return view('pasien.pendaftaran');
-    })->name('pasien.pendaftaran');
+    // 1 : Pilih jadwal
+    Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pasien.pendaftaran');
+    Route::post('/pendaftaran', [PendaftaranController::class, 'storeStep1'])->name('pasien.pendaftaran.storeStep1');
 
+    //START 2-5 ITU NANTIAN DULU. KERJA PER PAGE
+    // 2 : Tipe Pasien
+    Route::get('/pendaftaran/tipepasien', function(){
+        return view('pasien.pendaftaran.tipepasien');
+    })->name('pasien.pendaftaran.tipepasien');
+
+    // 3 : Form Data Diri
+    Route::get('/pendaftaran/formdatadiri', function(){
+        return view('pasien.pendaftaran.formdatadiri');
+    })->name('pasien.pendaftaran.formdatadiri');
+
+    // 4 : Data Rujukan
+    Route::get('/pendaftaran/datarujukan', function(){
+        return view('pasien.pendaftaran.datarujukan');
+    })->name('pasien.pendaftaran.datarujukan');
+
+    // 5 : Ringkasan
+    Route::get('/pendaftaran/ringkasan', function(){
+        return view('pasien.pendaftaran.ringkasan');
+    })->name('pasien.pendaftaran.ringkasan');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');

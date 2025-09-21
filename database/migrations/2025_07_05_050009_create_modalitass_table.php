@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('modalitass', function (Blueprint $table) {
             $table->id();
             $table->string('namaModalitas');
-            $table->string('jenisModalitas');
-            $table->string('kodeRuang');
+            $table->string('jenisModalitas'); 
+            $table->string('kodeRuang'); 
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });

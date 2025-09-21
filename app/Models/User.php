@@ -26,16 +26,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    public function pasien()
-    {
-        return $this->hasOne(Pasien::class);
-    }
-
     public function masterPasien()
     {
         return $this->hasOne(MasterPasien::class);
     }
-
+  
     public function dokter()
     {
         return $this->hasOne(Dokter::class);

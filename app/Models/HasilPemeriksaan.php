@@ -9,7 +9,7 @@ class HasilPemeriksaan extends Model
     protected $fillable = [
         'data_pemeriksaan_id',
         'dokter_id',
-        'pasien_id',
+        'data_pasien_id',
         'hasilPemeriksaan',
         'fileLampiran',
         'mitraRadiologi'
@@ -20,9 +20,9 @@ class HasilPemeriksaan extends Model
         return $this->belongsTo(DataPemeriksaan::class);
     }
 
-    public function pasien()
+    public function dataPasien()
     {
-        return $this->belongsTo(Pasien::class);
+        return $this->belongsTo(DataPasien::class);
     }
 
     public function dokter()

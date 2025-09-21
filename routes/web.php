@@ -55,7 +55,8 @@ Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logou
 
 
 Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')->group(function () {
-    Route::get('/homepage', [RumahSakitController::class, 'countRS'])->name('superadmin.homepage');
+    // Route::get('/homepage', [RumahSakitController::class, 'countRS'])->name('superadmin.homepage');
+    Route::get('/homepage', [RumahSakitController::class, 'tampilkanRumahSakit'])->name('superadmin.homepage');
     Route::get('/addnew', [RumahSakitController::class, 'addNew'])->name('superadmin.addnew');
     Route::post('/addnew', [RumahSakitController::class, 'store'])->name('superadmin.submit');
     Route::get('/{rumahSakit}/edit', [RumahSakitController::class, 'editData'])->name('superadmin.edit');

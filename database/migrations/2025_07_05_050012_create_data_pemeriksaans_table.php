@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('petugas_id')->constrained('petugass')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('dokter_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('jenis_pemeriksaan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('data_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('data_rujukan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggalPemeriksaan');
@@ -31,6 +31,12 @@ return new class extends Migration
             $table->string('statusDokter');
             $table->string('statusPetugas');
             $table->string('statusPasien');
+            $table->string('riwayatAlamatDomisili');
+            $table->date('riwayatTanggalLahir');
+            $table->string('riwayatJenisKelamin');
+            $table->string('riwayatNoHP');
+            $table->string('riwayatAlergi');
+            $table->string('riwayatGolonganDarah');
             $table->timestamps();
         });
     }

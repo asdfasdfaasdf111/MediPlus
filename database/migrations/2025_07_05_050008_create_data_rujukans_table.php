@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('tanggalPemeriksaanFaskes');
             $table->string('permintaanPemeriksaan');
             $table->string('formulirRujukan');
-            $table->foreignId('pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('data_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

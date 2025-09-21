@@ -64,9 +64,7 @@ class DokterController extends Controller
                     $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
                 })
-                ->orWhereHas('spesialis', function ($q) use ($search){
-                    $q->where('namaSpesialis', 'like', "%{$search}%");
-                });
+                ->orWhere('spesialis', 'like', "%{$search}%");
             })
             ->get();
 

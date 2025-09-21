@@ -42,21 +42,17 @@
             </div>
         </div>
 
-        <div class="container mt-3">
+        <div class="mt-3">
                 @if($totalRS === 0)
                     <p class="">Belum ada rumah sakit yang terdaftar</p>
                 @elseif($rumahSakits->isEmpty())
-                    <div class="alert alert-danger gap-2" style="border-color: #dc3545; border-width: 2px;">
-                        <div class="d-flex flex-row gap-2">
-                            <i class="bi bi-exclamation-circle" style="color: #dc3545"></i>
-                            <strong style="color: #dc3545;">Error</strong>
-                        </div>
-                        <h6 class="mt-2">Data tidak ditemukan untuk pencarian <strong>'{{ request('search') }}'</strong></h6>
+                    <div class="text-center">
+                        <h6>Data tidak ditemukan untuk pencarian <strong>'{{ request('search') }}'</strong></h6>
                     </div>
                 @else
-                    <div class="row">
+                    <div class="row me-3 ms-3">
                         @foreach ($rumahSakits as $rs)
-                            <div class="col-12 col-md-6 mb-4">
+                            <div class="col-12 col-md-6 col-lg-4 mb-4">
                                 <div class="bg-white shadow-sm rounded p-3">
                                     <div class="d-flex align-items-center mb-2 mt-3">
                                         <img src="{{ asset('images/gambar_rumah_sakit.jpg') }}" alt="Foto RS" class="rounded-circle me-3" width="50" height="50">

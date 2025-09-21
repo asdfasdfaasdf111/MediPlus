@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RumahSakit;
 use App\Models\Admin;
+use App\Models\JadwalRumahSakit;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class RumahSakitController extends Controller
@@ -34,8 +37,8 @@ class RumahSakitController extends Controller
             ];
         }
         $admin = auth()->user()->admin;
-        $admin->rumahSakit->updateJadwal($jadwalArray);
-        return redirect(route('admin.kelolajadwalpage'));
+        $admin->rumahSakit->updateJadwal($request->jamBuka, $request->jamTutup);
+        return redirect(route('admin.kelolajadwalpage'))->with('success', 'Jadwal operasional berhasil diperbarui');
     }
 
     public function updateJumlahPasien(Request $request){
@@ -44,8 +47,8 @@ class RumahSakitController extends Controller
         ]);
 
         $admin = auth()->user()->admin;
-        $admin->rumahSakit->updateJu-mlahPasien($request->jumlahPasien);
-        return redirect(route('admin.kelolajadwalpage'));
+        $admin->rumahSakit->updateJumlahPasien($request->jumlahPasien);
+        return redirect(route('admin.kelolajadwalpage'))->with('success', 'Kuota pasien berhasil diperbarui');
     }
 
     public function countRS(){

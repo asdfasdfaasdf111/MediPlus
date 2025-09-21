@@ -46,64 +46,158 @@
             </ul>
         </div>
 
+<div class="col-md-10 p-4 bg-light">
 
-<form action="{{ route('admin.updateJadwal')}}" method ="POST">
-    @csrf
-    @foreach ($admin->rumahSakit->jadwalRumahSakit as $jadwal)
-        <div>
-            {{-- Masih kode GPT, designnya ganti aja ntr --}}
-            {{ $jadwal->namaHari }}:
-            <input type="number" name="jadwal[{{ $jadwal->id }}][jamBukaJam]" 
-                value="{{ \Carbon\Carbon::parse($jadwal->jamBuka)->format('H') }}" 
-                min="0" max="23" class="w-16 border p-1 text-center">
-        
-            <span>:</span>
-
-            <input type="number" name="jadwal[{{ $jadwal->id }}][jamBukaMenit]" 
-                value="{{ \Carbon\Carbon::parse($jadwal->jamBuka)->format('i') }}" 
-                min="0" max="59" class="w-16 border p-1 text-center">
-
-            <input type="number" name="jadwal[{{ $jadwal->id }}][jamTutupJam]" 
-                value="{{ \Carbon\Carbon::parse($jadwal->jamTutup)->format('H') }}" 
-                min="0" max="23" class="w-16 border p-1 text-center">
-        
-            <span>:</span>
-
-            <input type="number" name="jadwal[{{ $jadwal->id }}][jamTutupMenit]" 
-                value="{{ \Carbon\Carbon::parse($jadwal->jamTutup)->format('i') }}" 
-                min="0" max="59" class="w-16 border p-1 text-center">
-            
-            {{-- kalo unchecked, ntr pke nilai yg 0 --}}
-            <input type="hidden" name="jadwal[{{ $jadwal->id }}][buka]" value="0">
-            <input type="checkbox" name="jadwal[{{ $jadwal->id }}][buka]" value="1" {{ $jadwal->buka == 1 ? 'checked' : '' }}>
+    {{-- Notifikasi --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endforeach
-    {{-- <div>
-        <label for='jamBuka'>Jam Buka</label>
-        <input type='time' name='jamBuka' id='jamBuka' value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamBuka)->format('H:i') }}"   required>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <div class="row g-4">
+
+        <div class="container my-4">
+  @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+  @endif
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      <div class="fw-semibold mb-1">Periksa kembali input:</div>
+      <ul class="mb-0">
+        @foreach ($errors->all() as $e)
+          <li>{{ $e }}</li>
+        @endforeach
+      </ul>
     </div>
+  @endif
 
-    <div>
-        <label for='jamTutup'>Jam Tutup</label>
-        <input type='time' name='jamTutup' id='jamTutup' value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamTutup)->format('H:i') }}"   required>
-        @error('jamTutup')
-            <div style="color: red;">{{ "Jam tutup harus diatas jam buka" }}</div>
-        @enderror
-    </div> --}}
-
-    <button type='submit'>Update Jadwal</button>
-</form>
-
-<form action="{{ route('admin.updateJumlahPasien')}}" method ="POST">
-    @csrf
-    <div>
-        <label for='jumlahPasien'>Jumlah Pasien / 1 jam</label>
-        <input type='number' name='jumlahPasien' id='jumlahPasien' value="{{ $admin->rumahSakit->jumlahPasien }}"   required>
-        @error('jumlahPasien')
-            <div style="color: red;">{{ "Jumlah Pasien harus positif" }}</div>
-        @enderror
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <i class="bi bi-calendar3 me-2"></i>Kelola Jadwal Per Hari
     </div>
+    <div class="card-body">
 
-    <button type='submit'>Update Jumlah Pasien</button>
-</form>
+      <form action="{{ route('admin.updateJadwal') }}" method="POST">
+        @csrf
+
+        @php
+          use Carbon\Carbon;
+          // $rows diharapkan dikirim dari controller@index.
+          // Fallback aman kalau lupa compact('rows'):
+          $rows = $rows ?? ($admin->rumahSakit->jadwalRumahSakit()->orderBy('indexJadwal')->get());
+        @endphp
+
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 20%">Hari</th>
+                <th style="width: 15%" class="text-center">Buka</th>
+                <th style="width: 30%">Jam Buka</th>
+                <th style="width: 30%">Jam Tutup</th>
+                <th style="width: 5%"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($rows as $jadwal)
+                @php
+                  // gunakan indexJadwal (1..7) agar cocok dgn model updateJadwal()
+                  $key = $jadwal->indexJadwal;
+                  $rowKey = "jadwal.$key";
+                  $jb = $jadwal->jamBuka ? Carbon::parse($jadwal->jamBuka) : null;
+                  $jt = $jadwal->jamTutup ? Carbon::parse($jadwal->jamTutup) : null;
+                  $isBuka = old("$rowKey.buka", $jadwal->buka) ? 1 : 0;
+                @endphp
+
+                <tr>
+                  <td class="fw-semibold">{{ $jadwal->namaHari }}</td>
+
+                  <td class="text-center">
+                    {{-- hidden supaya saat uncheck tetap kirim 0 --}}
+                    <input type="hidden" name="jadwal[{{ $key }}][buka]" value="0">
+                    <div class="form-check d-inline-block">
+                      <input class="form-check-input"
+                             type="checkbox"
+                             name="jadwal[{{ $key }}][buka]"
+                             value="1"
+                             {{ $isBuka ? 'checked' : '' }}>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="input-group">
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamBukaJam]"
+                             value="{{ old("$rowKey.jamBukaJam", $jb ? $jb->format('H') : '08') }}"
+                             min="0" max="23"
+                             class="form-control text-center @error("$rowKey.jamBukaJam") is-invalid @enderror"
+                             placeholder="HH">
+                      <span class="input-group-text">:</span>
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamBukaMenit]"
+                             value="{{ old("$rowKey.jamBukaMenit", $jb ? $jb->format('i') : '00') }}"
+                             min="0" max="59"
+                             class="form-control text-center @error("$rowKey.jamBukaMenit") is-invalid @enderror"
+                             placeholder="MM">
+                    </div>
+                    @error("$rowKey.jamBukaJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    @error("$rowKey.jamBukaMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                  </td>
+
+                  <td>
+                    <div class="input-group">
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamTutupJam]"
+                             value="{{ old("$rowKey.jamTutupJam", $jt ? $jt->format('H') : '16') }}"
+                             min="0" max="23"
+                             class="form-control text-center @error("$rowKey.jamTutupJam") is-invalid @enderror"
+                             placeholder="HH">
+                      <span class="input-group-text">:</span>
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamTutupMenit]"
+                             value="{{ old("$rowKey.jamTutupMenit", $jt ? $jt->format('i') : '00') }}"
+                             min="0" max="59"
+                             class="form-control text-center @error("$rowKey.jamTutupMenit") is-invalid @enderror"
+                             placeholder="MM">
+                    </div>
+                    @error("$rowKey.jamTutupJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    @error("$rowKey.jamTutupMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                  </td>
+
+                  <td class="text-end">
+                    @if($isBuka)
+                      <span class="badge bg-success">Buka</span>
+                    @else
+                      <span class="badge bg-secondary">Tutup</span>
+                    @endif
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i> Simpan
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+    </div>    
+</div>
+<script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+</body>
 

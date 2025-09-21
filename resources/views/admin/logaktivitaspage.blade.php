@@ -47,7 +47,6 @@
 
         <div class="col-md-10 p-4 bg-light">
             <div class="bg-white shadow-sm rounded p-4">
-                    <h5 class="fw-bold text-primary mb-3">Log Terbaru</h5>
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
@@ -72,12 +71,5 @@
                     </div>
                 </div>
             </div>
-{{-- <div>
-    Log Aktivitas: 
-    <ul>
-        @foreach ($admin->rumahsakit->log as $log)
-            <li>{{$log}}</li>
-        @endforeach
-    </ul>
-</div> --}}
-
+<script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+</body>

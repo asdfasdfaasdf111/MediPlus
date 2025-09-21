@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DataPasien;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -33,8 +34,7 @@ class PasienSeeder extends Seeder
             'user_id' => $user->id
         ]);
 
-        $pasien = Pasien::create([
-            'rumah_sakit_id' => $rumahsakit->id,
+        $dataPasien = DataPasien::create([
             'master_pasien_id' => $masterpasien->id,
             'alamatDomisili' => 'Jalan K. H. Syahdan, No. 456, Jakarta Barat',
             'tanggalLahir' => '2004-04-19',
@@ -44,6 +44,20 @@ class PasienSeeder extends Seeder
             'noHP' => '08123456789',
             'alergi' => 'Udang',
             'golonganDarah' => 'O',
+            'dataPemilikAkun' => true
+        ]);
+
+        $pasien = Pasien::create([
+            'rumah_sakit_id' => $rumahsakit->id,
+            'master_pasien_id' => $masterpasien->id,
+            'alamatDomisili' => $dataPasien->alamatDomisili,
+            'tanggalLahir' => $dataPasien->tanggalLahir,
+            'noIdentitas' => $dataPasien->noIdentitas,
+            'jenisIdentitas' => $dataPasien->jenisIdentitas,
+            'jenisKelamin' => $dataPasien->jenisKelamin,
+            'noHP' => $dataPasien->noHP,
+            'alergi' => $dataPasien->alergi,
+            'golonganDarah' => $dataPasien->golonganDarah,
             'nomorRekamMedis' => 'REC-123'
         ]);
     }

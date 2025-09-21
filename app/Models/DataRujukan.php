@@ -22,7 +22,7 @@ class DataRujukan extends Model
         return $this->belongsTo(Pasien::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasOne(DataPemeriksaan::class);
     }

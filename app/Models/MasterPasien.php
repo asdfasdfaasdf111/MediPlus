@@ -18,4 +18,9 @@ class MasterPasien extends Model
     {
         return $this->hasMany(Pasien::class, 'master_pasien_id');
     }
+
+    public function dataPasien()
+    {
+        return $this->hasMany(DataPasien::class);
+    }
 }

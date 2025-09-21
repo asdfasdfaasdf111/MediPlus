@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Admin;
 use App\Models\Dokter;
+use App\Models\JadwalDokter;
 use App\Models\RumahSakit;
+use App\Models\Spesialis;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,8 +17,8 @@ class DokterSeeder extends Seeder
    
     public function run(): void
     {
-        $admin = Admin::first();
         $rumahsakit = RumahSakit::first();
+        $admin = $rumahsakit->admin;
 
         $user = User::create([
             'name'=>'Dr. Leonardo Dahendra',
@@ -27,13 +29,24 @@ class DokterSeeder extends Seeder
             'email_verified_at' => now(),
        ]);
 
-       Dokter::create([
-        'user_id'=>$user->id,
-        'admin_id'=>$admin->id,
-        'rumah_sakit_id'=>$rumahsakit->id,
-        'spesialis'=>'USG',
-        'noHP'=>'081234567890'
-       ]);
+        $dokter = Dokter::create([
+            'user_id'=>$user->id,
+            'admin_id'=>$admin->id,
+            'rumah_sakit_id'=>$rumahsakit->id,
+            'spesialis'=>'USG',
+            'noHP'=>'081234567890'
+        ]);
+
+
+        for ($i = 1; $i <= 7; $i++){
+            JadwalDokter::create([
+                'dokter_id' => $dokter->id,
+                'indexJadwal' => $i,
+                'jamMulai' => '08:00:00',
+                'jamSelesai' => '17:00:00',
+                'kerja' => ($i <= 5 ? true : false),
+            ]);
+        }
 
        for ($i = 0; $i < 10; $i++){
             $user = User::create([
@@ -45,13 +58,23 @@ class DokterSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
 
-            Dokter::create([
+            $dokter = Dokter::create([
                 'user_id'=>$user->id,
                 'admin_id'=>$admin->id,
                 'rumah_sakit_id'=>$rumahsakit->id,
                 'spesialis'=>'USG',
                 'noHP'=>'081234567890'
             ]);
+
+            for ($j = 1; $j <= 7; $j++){
+                JadwalDokter::create([
+                    'dokter_id' => $dokter->id,
+                    'indexJadwal' => $j,
+                    'jamMulai' => '08:00:00',
+                    'jamSelesai' => '17:00:00',
+                    'kerja' => ($i <= 5 ? true : false),
+                ]);
+            }
        }
     }
 }

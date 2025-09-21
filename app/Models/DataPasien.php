@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pasien extends Model
+class DataPasien extends Model
 {
     protected $fillable = [
-        'rumahsakit_id',
         'master_pasien_id',
         'alamatDomisili',
         'tanggalLahir',
@@ -17,26 +16,11 @@ class Pasien extends Model
         'noHP',
         'alergi',
         'golonganDarah',
-        'nomorRekamMedis'
+        'dataPemilikAkun'
     ];
-
-    public function rumahSakit()
-    {
-        return $this->belongsTo(RumahSakit::class);
-    }
 
     public function masterPasien()
     {
         return $this->belongsTo(MasterPasien::class);
-    }
-
-    public function hasilPemeriksaan()
-    {
-        return $this->hasMany(HasilPemeriksaan::class);
-    }
-
-    public function dataRujukan()
-    {
-        return $this->hasMany(DataRujukan::class);
     }
 }

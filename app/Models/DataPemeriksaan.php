@@ -37,7 +37,7 @@ class DataPemeriksaan extends Model
         return $this->belongsTo(Dokter::class);
     }
 
-    public function jenispemeriksaan()
+    public function jenisPemeriksaan()
     {
         return $this->belongsTo(JenisPemeriksaan::class);
     }
@@ -47,17 +47,17 @@ class DataPemeriksaan extends Model
         return $this->belongsTo(Pasien::class);
     }
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
     }
 
-    public function datarujukan()
+    public function dataRujukan()
     {
         return $this->belongsTo(DataRujukan::class);
     }
 
-    public function hasilpemeriksaan()
+    public function hasilPemeriksaan()
     {
         return $this->hasOne(HasilPemeriksaan::class);
     }

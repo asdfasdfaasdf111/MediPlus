@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('nama');
             $table->string('alamat');
             $table->string('noTelepon');
-            $table->time('jamBuka');
-            $table->time('jamTutup');
             $table->integer('jumlahPasien');
             $table->foreignId('super_admin_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

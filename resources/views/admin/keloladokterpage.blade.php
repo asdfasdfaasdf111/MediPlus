@@ -77,7 +77,7 @@
                         <img src="{{ asset('images/user-icon.png') }}" alt="Foto Dokter" class="rounded-circle me-3" width="50" height="50">
                         <div>
                             <h6 class="mb-0 fw-bold">{{ $dok->user->name }}</h6>
-                            <small class="text-muted">{{ $dok->spesialis }}</small><br>
+                            <small class="text-muted">{{ $dok->namaSpesialis }}</small><br>
                             <small class="text-muted">{{ $dok->user->email }}</small>
                         </div>
                     </div>

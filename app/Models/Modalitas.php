@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modalitas extends Model
 {
+    protected $table = 'modalitass';
     protected $fillable = [
         'rumah_sakit_id',
         'namaModalitas',
@@ -17,12 +18,12 @@ class Modalitas extends Model
         'alamatIP'
     ];
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
     }
 
-    public function jenispemeriksaan()
+    public function jenisPemeriksaan()
     {
         return $this->hasMany(JenisPemeriksaan::class);
     }

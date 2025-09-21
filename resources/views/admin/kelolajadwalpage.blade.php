@@ -63,148 +63,141 @@
     @endif
 
     <div class="row g-4">
-        {{-- Card: Jam Operasional --}}
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="fw-semibold">Jam Operasional</span>
-                    <span class="badge bg-secondary">
-                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamBuka)->format('H:i') }}
-                        –
-                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamTutup)->format('H:i') }}
-                    </span>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.updateJadwal') }}" method="POST" class="row g-3">
-                        @csrf
-                        <div class="col-12">
-                            <label for="jamBuka" class="form-label">Jam Buka</label>
-                            <input
-                                type="time"
-                                name="jamBuka"
-                                id="jamBuka"
-                                value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamBuka)->format('H:i') }}"
-                                class="form-control @error('jamBuka') is-invalid @enderror"
-                                required
-                            >
-                            @error('jamBuka')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="col-12">
-                            <label for="jamTutup" class="form-label">Jam Tutup</label>
-                            <input
-                                type="time"
-                                name="jamTutup"
-                                id="jamTutup"
-                                value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamTutup)->format('H:i') }}"
-                                class="form-control @error('jamTutup') is-invalid @enderror"
-                                required
-                            >
-                            @error('jamTutup')
-                                <div class="invalid-feedback">Jam tutup harus di atas jam buka</div>
-                            @enderror
-                        </div>
+        <div class="container my-4">
+  @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+  @endif
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      <div class="fw-semibold mb-1">Periksa kembali input:</div>
+      <ul class="mb-0">
+        @foreach ($errors->all() as $e)
+          <li>{{ $e }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
 
-                        <div class="col-12 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                Update Jadwal
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <i class="bi bi-calendar3 me-2"></i>Kelola Jadwal Per Hari
+    </div>
+    <div class="card-body">
 
-        {{-- Card: Kuota Pasien / Jam --}}
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="fw-semibold">Kuota Pasien</span>
-                    <span class="badge bg-secondary">{{ $admin->rumahSakit->jumlahPasien }} pasien</span>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.updateJumlahPasien') }}" method="POST" class="row g-3">
-                        @csrf
-                        <div class="col-12">
-                            <label for="jumlahPasien" class="form-label">Jumlah Pasien / 1 Jam</label>
-                            <input
-                                type="number"
-                                name="jumlahPasien"
-                                id="jumlahPasien"
-                                min="1"
-                                step="1"
-                                value="{{ $admin->rumahSakit->jumlahPasien }}"
-                                class="form-control @error('jumlahPasien') is-invalid @enderror"
-                                required
-                            >
-                            <div class="form-text">Masukkan angka positif (contoh: 6).</div>
-                            @error('jumlahPasien')
-                                <div class="invalid-feedback">Jumlah Pasien harus positif</div>
-                            @enderror
-                        </div>
+      <form action="{{ route('admin.updateJadwal') }}" method="POST">
+        @csrf
 
-                        <div class="col-12 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                Update Kuota
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        @php
+          use Carbon\Carbon;
+          // $rows diharapkan dikirim dari controller@index.
+          // Fallback aman kalau lupa compact('rows'):
+          $rows = $rows ?? ($admin->rumahSakit->jadwalRumahSakit()->orderBy('indexJadwal')->get());
+        @endphp
 
-        {{-- Ringkasan (Opsional) --}}
-        <div class="col-12">
-            <div class="card border-0">
-                <div class="card-body p-0">
-                    <div class="alert alert-info mb-0" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <div>
-                                Jadwal dan kuota ini akan digunakan dalam pembuatan slot konsultasi dokter sesuai kebijakan rumah sakit.
-                            </div>
-                        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 20%">Hari</th>
+                <th style="width: 15%" class="text-center">Buka</th>
+                <th style="width: 30%">Jam Buka</th>
+                <th style="width: 30%">Jam Tutup</th>
+                <th style="width: 5%"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($rows as $jadwal)
+                @php
+                  // gunakan indexJadwal (1..7) agar cocok dgn model updateJadwal()
+                  $key = $jadwal->indexJadwal;
+                  $rowKey = "jadwal.$key";
+                  $jb = $jadwal->jamBuka ? Carbon::parse($jadwal->jamBuka) : null;
+                  $jt = $jadwal->jamTutup ? Carbon::parse($jadwal->jamTutup) : null;
+                  $isBuka = old("$rowKey.buka", $jadwal->buka) ? 1 : 0;
+                @endphp
+
+                <tr>
+                  <td class="fw-semibold">{{ $jadwal->namaHari }}</td>
+
+                  <td class="text-center">
+                    {{-- hidden supaya saat uncheck tetap kirim 0 --}}
+                    <input type="hidden" name="jadwal[{{ $key }}][buka]" value="0">
+                    <div class="form-check d-inline-block">
+                      <input class="form-check-input"
+                             type="checkbox"
+                             name="jadwal[{{ $key }}][buka]"
+                             value="1"
+                             {{ $isBuka ? 'checked' : '' }}>
                     </div>
-                </div>
-            </div>
+                  </td>
+
+                  <td>
+                    <div class="input-group">
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamBukaJam]"
+                             value="{{ old("$rowKey.jamBukaJam", $jb ? $jb->format('H') : '08') }}"
+                             min="0" max="23"
+                             class="form-control text-center @error("$rowKey.jamBukaJam") is-invalid @enderror"
+                             placeholder="HH">
+                      <span class="input-group-text">:</span>
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamBukaMenit]"
+                             value="{{ old("$rowKey.jamBukaMenit", $jb ? $jb->format('i') : '00') }}"
+                             min="0" max="59"
+                             class="form-control text-center @error("$rowKey.jamBukaMenit") is-invalid @enderror"
+                             placeholder="MM">
+                    </div>
+                    @error("$rowKey.jamBukaJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    @error("$rowKey.jamBukaMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                  </td>
+
+                  <td>
+                    <div class="input-group">
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamTutupJam]"
+                             value="{{ old("$rowKey.jamTutupJam", $jt ? $jt->format('H') : '16') }}"
+                             min="0" max="23"
+                             class="form-control text-center @error("$rowKey.jamTutupJam") is-invalid @enderror"
+                             placeholder="HH">
+                      <span class="input-group-text">:</span>
+                      <input type="number"
+                             name="jadwal[{{ $key }}][jamTutupMenit]"
+                             value="{{ old("$rowKey.jamTutupMenit", $jt ? $jt->format('i') : '00') }}"
+                             min="0" max="59"
+                             class="form-control text-center @error("$rowKey.jamTutupMenit") is-invalid @enderror"
+                             placeholder="MM">
+                    </div>
+                    @error("$rowKey.jamTutupJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    @error("$rowKey.jamTutupMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                  </td>
+
+                  <td class="text-end">
+                    @if($isBuka)
+                      <span class="badge bg-success">Buka</span>
+                    @else
+                      <span class="badge bg-secondary">Tutup</span>
+                    @endif
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
+
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i> Simpan
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
     </div>    
 </div>
 <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 
-
-            {{-- <form action="{{ route('admin.updateJadwal')}}" method ="POST">
-                @csrf
-                <div>
-                    <label for='jamBuka'>Jam Buka</label>
-                    <input type='time' name='jamBuka' id='jamBuka' value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamBuka)->format('H:i') }}"   required>
-                </div>
-
-                <div>
-                    <label for='jamTutup'>Jam Tutup</label>
-                    <input type='time' name='jamTutup' id='jamTutup' value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamTutup)->format('H:i') }}"   required>
-                    @error('jamTutup')
-                        <div style="color: red;">{{ "Jam tutup harus diatas jam buka" }}</div>
-                    @enderror
-                </div>
-
-                <button type='submit'>Update Jadwal</button>
-            </form>
-
-            <form action="{{ route('admin.updateJumlahPasien')}}" method ="POST">
-                @csrf
-                <div>
-                    <label for='jumlahPasien'>Jumlah Pasien / 1 jam</label>
-                    <input type='number' name='jumlahPasien' id='jumlahPasien' value="{{ $admin->rumahSakit->jumlahPasien }}"   required>
-                    @error('jumlahPasien')
-                        <div style="color: red;">{{ "Jumlah Pasien harus positif" }}</div>
-                    @enderror
-                </div>
-
-                <button type='submit'>Update Jumlah Pasien</button>
-            </form>
-         --}}
-        </div>

@@ -37,7 +37,7 @@
             </div>
             <div class="col-md-2 p-4">
                 <form action="{{ route('superadmin.addnew') }}" method="GET">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">+ Tambah RS Baru</button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold px-3">+ Tambah RS Baru</button>
                 </form>
             </div>
         </div>

@@ -118,7 +118,6 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
 
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
-    Route::get('/keloladicom', [DicomController::class, 'tampilkanDicom'])->name('petugas.keloladicom');
 
     Route::get('/tambahjenispemeriksaanpage', function () {
         return view('petugas.tambahjenispemeriksaanpage');
@@ -128,10 +127,6 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
         return view('petugas.tambahmodalitaspage');
     })->name('petugas.tambahmodalitaspage');
 
-    Route::get('/tambahdicompage', function () {
-        return view('petugas.tambahdicompage');
-    })->name('petugas.tambahdicompage');
-
     Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
     Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');
     Route::delete('/hapusJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'hapusJenisPemeriksaan'])->name('petugas.hapusJenisPemeriksaan');
@@ -139,10 +134,6 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::post('/tambahModalitas', [ModalitasController::class, 'tambahModalitas'])->name('petugas.tambahModalitas');
     Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
     Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
-
-    Route::post('/tambahDicom', [DicomController::class, 'tambahDicom'])->name('petugas.tambahDicom');
-    Route::put('/editDicom/{id}', [DicomController::class, 'editDicom'])->name('petugas.editDicom');
-    Route::delete('/hapusDicom/{id}', [DicomController::class, 'hapusDicom'])->name('petugas.hapusDicom');
 });
 
 Route::get('/dokter/homepage', function(){

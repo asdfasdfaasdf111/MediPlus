@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class DataRujukan extends Model
 {
     protected $fillable = [
-        'pasien_id',
+        'data_pasien_id',
         'namaFaskes',
         'namaDokterPerujuk',
         'diagnosaKerja',
@@ -17,12 +17,12 @@ class DataRujukan extends Model
         'formulirRujukan'
     ];
 
-    public function pasien()
+    public function dataPasien()
     {
-        return $this->belongsTo(Pasien::class);
+        return $this->belongsTo(DataPasien::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasOne(DataPemeriksaan::class);
     }

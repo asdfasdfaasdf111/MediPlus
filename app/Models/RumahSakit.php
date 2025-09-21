@@ -11,12 +11,10 @@ class RumahSakit extends Model
         'nama',
         'alamat',
         'noTelepon',
-        'jamBuka',
-        'jamTutup',
         'jumlahPasien'
     ];
 
-    public function superadmin()
+    public function superAdmin()
     {
         return $this->belongsTo(SuperAdmin::class);
     }
@@ -33,17 +31,12 @@ class RumahSakit extends Model
                     ->orderBy('jam', 'desc');
     }
 
-    public function pasien()
-    {
-        return $this->hasMany(Pasien::class);
-    }
-
     public function modalitas()
     {
         return $this->hasMany(Modalitas::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class);
     }
@@ -56,6 +49,18 @@ class RumahSakit extends Model
     public function admin()
     {
         return $this->hasOne(Admin::class);
+    }
+
+    public function jenisPemeriksaan()
+    {
+        return $this->hasMany(JenisPemeriksaan::class)
+                    ->orderBy('namaJenisPemeriksaan', 'asc');
+    }
+
+    public function jadwalRumahSakit()
+    {
+        return $this->hasMany(JadwalRumahSakit::class)
+                    ->orderBy('indexJadwal', 'asc');
     }
 
     public function jumlahDokter(){
@@ -71,14 +76,19 @@ class RumahSakit extends Model
                 ->limit(10);
     }
 
-    public function updateJadwal($jamBuka, $jamTutup){
-        $this->jamBuka = $jamBuka;
-        $this->jamTutup = $jamTutup;
-        $this->save();
+    public function updateJadwal($jadwalArray){
+        $jadwalRS = $this->jadwalRumahSakit;
+        for ($i = 0; $i < 7; $i++){
+            $jadwalRS[$i]->jamBuka = $jadwalArray[$i + 1]['jamBuka'];
+            $jadwalRS[$i]->jamTutup = $jadwalArray[$i + 1]['jamTutup'];
+            $jadwalRS[$i]->buka = $jadwalArray[$i + 1]['buka'];
+            $jadwalRS[$i]->save();
+        }
     }
 
     public function updateJumlahPasien($jumlahPasien){
         $this->jumlahPasien = $jumlahPasien;
         $this->save();
     }
+
 }

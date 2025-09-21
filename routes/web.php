@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\JenisPemeriksaanController;
+use App\Http\Controllers\ModalitasController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
+use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -107,9 +111,39 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 
 });
 
-Route::get('/petugas/homepage', function(){
-    return view('petugas.homepage');
-})->middleware('auth', 'verified', 'role:petugas');
+Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
+    Route::get('/homepage', function(){
+        return view('petugas.homepage');
+    })->name('petugas.homepage');
+
+    Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
+    Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
+    Route::get('/keloladicom', [DicomController::class, 'tampilkanDicom'])->name('petugas.keloladicom');
+
+    Route::get('/tambahjenispemeriksaanpage', function () {
+        return view('petugas.tambahjenispemeriksaanpage');
+    })->name('petugas.tambahjenispemeriksaanpage');
+
+    Route::get('/tambahmodalitaspage', function () {
+        return view('petugas.tambahmodalitaspage');
+    })->name('petugas.tambahmodalitaspage');
+
+    Route::get('/tambahdicompage', function () {
+        return view('petugas.tambahdicompage');
+    })->name('petugas.tambahdicompage');
+
+    Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
+    Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');
+    Route::delete('/hapusJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'hapusJenisPemeriksaan'])->name('petugas.hapusJenisPemeriksaan');
+
+    Route::post('/tambahModalitas', [ModalitasController::class, 'tambahModalitas'])->name('petugas.tambahModalitas');
+    Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
+    Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
+
+    Route::post('/tambahDicom', [DicomController::class, 'tambahDicom'])->name('petugas.tambahDicom');
+    Route::put('/editDicom/{id}', [DicomController::class, 'editDicom'])->name('petugas.editDicom');
+    Route::delete('/hapusDicom/{id}', [DicomController::class, 'hapusDicom'])->name('petugas.hapusDicom');
+});
 
 Route::get('/dokter/homepage', function(){
     return view('dokter.homepage');

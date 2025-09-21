@@ -10,7 +10,7 @@ class DataPemeriksaan extends Model
         'petugas_id',
         'dokter_id',
         'jenis_pemeriksaan_id',
-        'pasien_id',
+        'data_pasien_id',
         'rumah_sakit_id',
         'data_rujukan_id',
         'tanggalPemeriksaan',
@@ -37,27 +37,27 @@ class DataPemeriksaan extends Model
         return $this->belongsTo(Dokter::class);
     }
 
-    public function jenispemeriksaan()
+    public function jenisPemeriksaan()
     {
         return $this->belongsTo(JenisPemeriksaan::class);
     }
 
-    public function pasien()
+    public function dataPpasien()
     {
-        return $this->belongsTo(Pasien::class);
+        return $this->belongsTo(DataPasien::class);
     }
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
     }
 
-    public function datarujukan()
+    public function dataRujukan()
     {
         return $this->belongsTo(DataRujukan::class);
     }
 
-    public function hasilpemeriksaan()
+    public function hasilPemeriksaan()
     {
         return $this->hasOne(HasilPemeriksaan::class);
     }

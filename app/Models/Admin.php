@@ -22,7 +22,7 @@ class Admin extends Model
         return $this->belongsTo(RumahSakit::class);
     }
 
-    public function superadmin()
+    public function superAdmin()
     {
         return $this->belongsTo(superadmin::class);
     }

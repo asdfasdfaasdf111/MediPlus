@@ -24,7 +24,7 @@ class Petugas extends Model
         return $this->belongsTo(Admin::class);
     }
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
     }
@@ -34,7 +34,7 @@ class Petugas extends Model
         return $this->hasMany(Log::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class);
     }

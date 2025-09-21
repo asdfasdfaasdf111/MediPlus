@@ -16,7 +16,7 @@ class SuperAdmin extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->hasMany(RumahSakit::class);
     }

@@ -49,7 +49,36 @@
 
 <form action="{{ route('admin.updateJadwal')}}" method ="POST">
     @csrf
-    <div>
+    @foreach ($admin->rumahSakit->jadwalRumahSakit as $jadwal)
+        <div>
+            {{-- Masih kode GPT, designnya ganti aja ntr --}}
+            {{ $jadwal->namaHari }}:
+            <input type="number" name="jadwal[{{ $jadwal->id }}][jamBukaJam]" 
+                value="{{ \Carbon\Carbon::parse($jadwal->jamBuka)->format('H') }}" 
+                min="0" max="23" class="w-16 border p-1 text-center">
+        
+            <span>:</span>
+
+            <input type="number" name="jadwal[{{ $jadwal->id }}][jamBukaMenit]" 
+                value="{{ \Carbon\Carbon::parse($jadwal->jamBuka)->format('i') }}" 
+                min="0" max="59" class="w-16 border p-1 text-center">
+
+            <input type="number" name="jadwal[{{ $jadwal->id }}][jamTutupJam]" 
+                value="{{ \Carbon\Carbon::parse($jadwal->jamTutup)->format('H') }}" 
+                min="0" max="23" class="w-16 border p-1 text-center">
+        
+            <span>:</span>
+
+            <input type="number" name="jadwal[{{ $jadwal->id }}][jamTutupMenit]" 
+                value="{{ \Carbon\Carbon::parse($jadwal->jamTutup)->format('i') }}" 
+                min="0" max="59" class="w-16 border p-1 text-center">
+            
+            {{-- kalo unchecked, ntr pke nilai yg 0 --}}
+            <input type="hidden" name="jadwal[{{ $jadwal->id }}][buka]" value="0">
+            <input type="checkbox" name="jadwal[{{ $jadwal->id }}][buka]" value="1" {{ $jadwal->buka == 1 ? 'checked' : '' }}>
+        </div>
+    @endforeach
+    {{-- <div>
         <label for='jamBuka'>Jam Buka</label>
         <input type='time' name='jamBuka' id='jamBuka' value="{{ \Carbon\Carbon::createFromFormat('H:i:s', $admin->rumahSakit->jamBuka)->format('H:i') }}"   required>
     </div>
@@ -60,7 +89,7 @@
         @error('jamTutup')
             <div style="color: red;">{{ "Jam tutup harus diatas jam buka" }}</div>
         @enderror
-    </div>
+    </div> --}}
 
     <button type='submit'>Update Jadwal</button>
 </form>

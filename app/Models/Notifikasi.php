@@ -11,7 +11,7 @@ class Notifikasi extends Model
         'deskripsi'
     ];
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->belongsTo(DataPemeriksaan::class);
     }

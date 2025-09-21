@@ -8,11 +8,13 @@ class JenisPemeriksaan extends Model
 {
     protected $fillable = [
         'modalitas_id',
+        'rumah_sakit_id',
         'namaJenisPemeriksaan',
         'namaPemeriksaanSpesifik',
         'kelompokJenisPemeriksaan',
         'pemakaianKontras',
-        'lamaPemeriksaan'
+        'lamaPemeriksaan',
+        'diDampingiDokter'
     ];
 
     public function modalitas()
@@ -20,8 +22,13 @@ class JenisPemeriksaan extends Model
         return $this->belongsTo(Modalitas::class);
     }
 
-    public function datapemeriksaan()
+    public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class);
+    }
+
+    public function rumahSakit()
+    {
+        return $this->belongsTo(RumahSakit::class);
     }
 }

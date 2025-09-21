@@ -19,7 +19,7 @@ class Log extends Model
         return $this->belongsTo(Petugas::class);
     }
 
-    public function rumahsakit()
+    public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
     }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('data_pemeriksaan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('dokter_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('data_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('hasilPemeriksaan');
             $table->string('fileLampiran');
             $table->string('mitraRadiologi');

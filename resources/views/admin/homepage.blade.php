@@ -52,21 +52,23 @@
                 <div class="col-md-4">
                     <div class="bg-white shadow-sm rounded p-3 text-center d-flex flex-column justify-content-center" style="height: 150px;">
                         <h6 class="fw-bold">Akun Dokter</h6>
-                        <h3 class="text-primary">{{ $admin->rumahsakit->jumlahDokter() }}</h3>
+                        <h3 class="text-primary">{{ $admin->rumahSakit->jumlahDokter() }}</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="bg-white shadow-sm rounded p-3 text-center  d-flex flex-column justify-content-center" style="height: 150px;">
                         <h6 class="fw-bold">Akun Petugas</h6>
-                        <h3 class="text-primary">{{ $admin->rumahsakit->jumlahPetugas() }}</h3>
+                        <h3 class="text-primary">{{ $admin->rumahSakit->jumlahPetugas() }}</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="bg-white shadow-sm rounded p-3  d-flex flex-column justify-content-center" style="height: 150px;">
                         <h6 class="fw-bold">Jadwal Rumah Sakit</h6>
-                        <div>Senin – Jumat</div>
-                        <div>Jam Buka: {{ $admin->rumahsakit->jamBuka }}</div>
-                        <div>Jam Tutup: {{ $admin->rumahsakit->jamTutup }}</div>
+                        @foreach ($admin->rumahSakit->jadwalRumahSakit as $jadwal)
+                            @if ($jadwal->buka)
+                                <div>{{ $jadwal->namaHari }} {{ $jadwal->jamBuka }} : {{$jadwal->jamTutup}}</div>
+                            @endif
+                        @endforeach
                     </div>
                 </div>
             </div>

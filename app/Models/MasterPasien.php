@@ -15,8 +15,8 @@ class MasterPasien extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function pasien()
+    public function dataPasien()
     {
-        return $this->hasMany(Pasien::class);
+        return $this->hasMany(DataPasien::class);
     }
 }

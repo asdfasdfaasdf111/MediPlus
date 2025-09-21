@@ -2,24 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\DataPasien;
+use App\Models\MasterPasien;
+use App\Models\RumahSakit;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use App\Models\User;
-use App\Models\MasterPasien;
-use App\Models\Pasien;
-use App\Models\RumahSakit;
 
-class PasienSeeder extends Seeder
+class DataPasienSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $rumahsakit = RumahSakit::first();
-
         $user = User::create([
             'name' => 'Tiara Intan Kusuma',
             'email' => 'titi@gmail.com',
@@ -33,8 +30,7 @@ class PasienSeeder extends Seeder
             'user_id' => $user->id
         ]);
 
-        $pasien = Pasien::create([
-            'rumah_sakit_id' => $rumahsakit->id,
+        DataPasien::create([
             'master_pasien_id' => $masterpasien->id,
             'alamatDomisili' => 'Jalan K. H. Syahdan, No. 456, Jakarta Barat',
             'tanggalLahir' => '2004-04-19',
@@ -44,7 +40,6 @@ class PasienSeeder extends Seeder
             'noHP' => '08123456789',
             'alergi' => 'Udang',
             'golonganDarah' => 'O',
-            'nomorRekamMedis' => 'REC-123'
         ]);
     }
 }

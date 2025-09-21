@@ -15,11 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('namaModalitas');
             $table->string('jenisModalitas');
-            $table->string('merekModalitas');
-            $table->string('tipeModalitas');
-            $table->string('nomorSeriModalitas');
             $table->string('kodeRuang');
-            $table->string('alamatIP');
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });

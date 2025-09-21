@@ -26,11 +26,10 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             DokterSeeder::class,
             PetugasSeeder::class,
-            PasienSeeder::class,
+            DataPasienSeeder::class,
             LogSeeder::class,
             ModalitasSeeder::class,
             JenisPemeriksaanSeeder::class,
-            DicomSeeder::class,
         ]);
     }
 }

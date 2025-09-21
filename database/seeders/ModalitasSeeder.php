@@ -21,11 +21,7 @@ class ModalitasSeeder extends Seeder
                 'rumah_sakit_id' => $rumahSakit->id,
                 'namaModalitas' => 'AX'.$i,
                 'jenisModalitas' => 'Siemens',
-                'merekModalitas' => 'Angiografi',
-                'tipeModalitas' => 'Artis zee floor',
-                'nomorSeriModalitas' => '136957',
                 'kodeRuang' => 'R001',
-                'alamatIP' => '192.0.0.'.$i,
             ]);
         }
     }

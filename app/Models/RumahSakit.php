@@ -31,19 +31,9 @@ class RumahSakit extends Model
                     ->orderBy('jam', 'desc');
     }
 
-    public function pasien()
-    {
-        return $this->hasMany(Pasien::class);
-    }
-
     public function modalitas()
     {
         return $this->hasMany(Modalitas::class);
-    }
-
-    public function dicom()
-    {
-        return $this->hasMany(Dicom::class);
     }
 
     public function dataPemeriksaan()

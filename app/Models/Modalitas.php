@@ -11,11 +11,7 @@ class Modalitas extends Model
         'rumah_sakit_id',
         'namaModalitas',
         'jenisModalitas',
-        'merekModalitas',
-        'tipeModalitas',
-        'nomorSeriModalitas',
         'kodeRuang',
-        'alamatIP'
     ];
 
     public function rumahSakit()
@@ -26,10 +22,5 @@ class Modalitas extends Model
     public function jenisPemeriksaan()
     {
         return $this->hasMany(JenisPemeriksaan::class);
-    }
-
-    public function dicom()
-    {
-        return $this->hasMany(Dicom::class);
     }
 }

@@ -16,11 +16,20 @@ class DataPasien extends Model
         'noHP',
         'alergi',
         'golonganDarah',
-        'dataPemilikAkun'
     ];
 
     public function masterPasien()
     {
         return $this->belongsTo(MasterPasien::class);
+    }
+
+    public function hasilPemeriksaan()
+    {
+        return $this->hasMany(HasilPemeriksaan::class);
+    }
+
+    public function dataRujukan()
+    {
+        return $this->hasMany(DataRujukan::class);
     }
 }

@@ -27,7 +27,7 @@ class RumahSakitController extends Controller
         ]);
 
         $admin = auth()->user()->admin;
-        $admin->rumahSakit->updateJumlahPasien($request->jumlahPasien);
+        $admin->rumahSakit->updateJu-mlahPasien($request->jumlahPasien);
         return redirect(route('admin.kelolajadwalpage'));
     }
 
@@ -85,6 +85,8 @@ class RumahSakitController extends Controller
         return redirect(route('superadmin.homepage'));
     }
 
+
+
     public function editData(RumahSakit $rumahSakit){
         return view('superadmin.edit', compact('rumahSakit'));
     }
@@ -102,6 +104,9 @@ class RumahSakitController extends Controller
             'nama_admin' => 'nullable|string|max:100',
             'email' => 'nullable|email|unique:users,email,'.$userAdmin->id,
             'password' => 'nullable|confirmed|min:8'
+        ],
+        [
+            'password.confirmed' => 'The password does not match, try again.'
         ]);
 
         $rumahSakit->update([
@@ -123,5 +128,23 @@ class RumahSakitController extends Controller
         $rumahSakit->admin->user->delete();
         $rumahSakit->delete();
         return redirect()->route('superadmin.homepage')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function tampilkanRumahSakit(Request $request)
+    {
+        $userAdmin = auth()->user()->superadmin;
+
+        $rumahSakits = $userAdmin->rumahSakit()
+            ->when($request->search, function ($query, $search) {
+                $query->where('nama', 'like', "%{$search}%")
+                ->orWhere('alamat', 'like', "%{$search}%")
+                ->orWhere('noTelepon', 'like', "%{$search}%");
+            })
+            ->get();
+
+        $totalRS = $userAdmin->rumahSakit()->count();
+
+        return view('superadmin.homepage', compact('rumahSakits', 'totalRS'));
+
     }
 }

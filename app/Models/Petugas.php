@@ -36,7 +36,8 @@ class Petugas extends Model
 
     public function dataPemeriksaan()
     {
-        return $this->hasMany(DataPemeriksaan::class);
+        return $this->hasMany(DataPemeriksaan::class, 'rumah_sakit_id', 'rumah_sakit_id')
+        ->ordered('statusPetugas');
     }
 
 }

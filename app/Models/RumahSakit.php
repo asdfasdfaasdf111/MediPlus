@@ -11,7 +11,6 @@ class RumahSakit extends Model
         'nama',
         'alamat',
         'noTelepon',
-        'jumlahPasien'
     ];
 
     public function superAdmin()
@@ -38,7 +37,7 @@ class RumahSakit extends Model
 
     public function dataPemeriksaan()
     {
-        return $this->hasMany(DataPemeriksaan::class);
+        return $this->hasMany(DataPemeriksaan::class)->ordered();
     }
 
     public function petugas()

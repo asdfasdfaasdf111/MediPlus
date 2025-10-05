@@ -37,7 +37,7 @@ class RumahSakitController extends Controller
             ];
         }
         $admin = auth()->user()->admin;
-        $admin->rumahSakit->updateJadwal($request->jamBuka, $request->jamTutup);
+        $admin->rumahSakit->updateJadwal($jadwalArray);
         return redirect(route('admin.kelolajadwalpage'))->with('success', 'Jadwal operasional berhasil diperbarui');
     }
 

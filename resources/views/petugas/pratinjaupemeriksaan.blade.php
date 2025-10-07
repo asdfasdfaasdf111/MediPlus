@@ -12,7 +12,6 @@
     use Carbon\Carbon;
     $rumahSakit = $dataPemeriksaan->rumahSakit;
     $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
-    $dokter = $dataPemeriksaan->dokter;
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
 @endphp
@@ -22,11 +21,9 @@
     <div>Pilih Jadwal</div>
     <div>Rumah Sakit: {{ $rumahSakit->nama }}</div>
     <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
-    @if ($dataPemeriksaan->statusUtama != 'Dibatalkan')
-        <div>Dokter Radiologi: {{ $dokter->user->name }}</div>
-    @endif
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</div>
+    <a href = "{{ route('petugas.kelolajenispemeriksaan') }}"> Ubah Jadwal </a>
 </div>
 ==========================================================
 <div>
@@ -111,4 +108,32 @@
     <div>Formulir Rujukan: {{ $dataRujukan->formulirRujukan }}</div>
 </div>
 
-<a href="{{ route('petugas.homepage') }}"> Kembali </a>
+<form method="POST" action="{{ route('petugas.updatePendaftaran', $dataPemeriksaan) }}">
+    @csrf
+    @method('PUT')
+    Jadwalkan Dokter
+    <div>Dokter Radiologi </div>
+    <select name="dokterId" class="form-control edit-field">
+        @foreach($rumahSakit->dokter as $dokter)
+            <option 
+                value="{{ $dokter->id }}" 
+                @if($jenisPemeriksaan->diDampingiDokter && !$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan)) disabled @endif
+            >
+                {{ $dokter->user->name }}
+                @if($jenisPemeriksaan->diDampingiDokter && !$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan)) (Not available) @endif
+            </option>
+        @endforeach
+    </select>
+    <div class="d-flex justify-content-center gap-3 pt-3">
+        <a href="{{ route('petugas.homepage') }}" 
+           class="btn btn-outline-primary px-5 rounded-pill">
+            Kembali
+        </a>
+        <button type="submit" name="status" value="rejected" class="btn btn-sm btn-danger">
+            Tolak
+        </button>
+        <button type="submit" name="status" value="accepted" class="btn btn-primary px-5 rounded-pill">
+            Terima
+        </button>
+    </div>
+</form>

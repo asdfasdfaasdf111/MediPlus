@@ -71,17 +71,17 @@ class DataPemeriksaan extends Model
     //kalo status utama sama, urutin dari status pasien/petugas/dokter
     public function scopeOrdered($query, $subtype = 'statusPasien')
     {
-        $statusUtama = "'PENDING','BERLANGSUNG','SELESAI'";
+        $statusUtama = "'Pending','Berlangsung','Selesai', 'Dibatalkan'";
 
         switch ($subtype) {
             case 'statusPasien':
-                $statusUser = "'PENDAFTARAN TERKIRIM','MENUNGGU REGISTRASI ULANG','DALAM ANTRIAN', 'HASIL TERSEDIA'";
+                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia'";
                 break;
             case 'statusPetugas':
-                $statusUser = "'PENDAFTARAN BARU','MENUNGGU REGISTRASI ULANG','DALAM ANTRIAN','PEMERIKSAAN BERLANGSUNG'";
+                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung'";
                 break;
             case 'statusDokter':
-                $statusUser = "'DALAM ANTRIAN','PEMERIKSAAN BERLANGSUNG','MENUNGGU LAPORAN'";
+                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan'";
                 break;
             default:
                 $statusUser = "'default'";

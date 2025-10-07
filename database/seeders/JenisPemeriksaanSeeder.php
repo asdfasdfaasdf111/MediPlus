@@ -26,7 +26,7 @@ class JenisPemeriksaanSeeder extends Seeder
                 'namaPemeriksaanSpesifik' => 'Oesofagografi',
                 'kelompokJenisPemeriksaan' => 'XP-F',
                 'pemakaianKontras' => false,
-                'lamaPemeriksaan' => 60,
+                'lamaPemeriksaan' => ($i + 1) * 10,
                 'diDampingiDokter' => true,
             ]);
         }

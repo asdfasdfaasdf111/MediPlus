@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DataPemeriksaanController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\JenisPemeriksaanController;
@@ -122,6 +123,12 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
         return view('petugas.detailpemeriksaan', compact('dataPemeriksaan'));
     })->name('petugas.detailpemeriksaan');
+
+    Route::get('/pratinjaupemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('petugas.pratinjaupemeriksaan', compact('dataPemeriksaan'));
+    })->name('petugas.pratinjaupemeriksaan');
+
+    Route::put('/updatePendaftaran/{dataPemeriksaan}/status', [DataPemeriksaanController::class, 'updatePendaftaran'])->name('petugas.updatePendaftaran');
 
     Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
     Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');

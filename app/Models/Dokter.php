@@ -48,4 +48,19 @@ class Dokter extends Model
     {
         return $this->hasMany(JadwalDokter::class);
     }
+
+    public function available($tanggalPemeriksaan, $time, $duration)
+    {
+        $dataPemeriksaans = $this->dataPemeriksaan()
+                                ->where('rentangWaktuKedatangan', $time)
+                                ->where('tanggalPemeriksaan', $tanggalPemeriksaan)->get();
+        $totalTime = 0;
+        foreach($dataPemeriksaans as $data){
+            $jenisPemeriksaan = $data->jenisPemeriksaan;
+            if (!$jenisPemeriksaan->diDampingiDokter) continue;
+            $totalTime += $jenisPemeriksaan->lamaPemeriksaan;
+        }
+        if ($totalTime + $duration <= 60) return true;
+        return false;
+    }
 }

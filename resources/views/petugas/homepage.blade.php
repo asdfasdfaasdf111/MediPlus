@@ -27,20 +27,20 @@
                 {{ $dataPemeriksaan->statusUtama }}
                 <div>
                     <h6 class="mb-0 fw-bold">Nama Lengkap Pasien: {{ $dataPasien->nama }}</h6>
-                    @if ($dataPemeriksaan->statusUtama == 'PENDING')
+                    @if ($dataPemeriksaan->statusUtama == 'Pending')
                         <small class="text-muted">Dokter Perujuk: {{ $dataRujukan->namaDokterPerujuk }}</small><br>
-                    @else
+                    @elseif ($dataPemeriksaan->statusUtama != 'Dibatalkan')
                         <small class="text-muted">Dokter Radiologi: {{ $dataPemeriksaan->dokter->user->name }}</small><br>
                     @endif
                     
-                    <small class="text-muted">Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</small><br>
+                    <small class="text-muted">Jenis Pemeriksaan:  {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</small><br>
                     <small class="text-muted">Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</small><br>
                     <small class="text-muted">Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</small><br>
                 </div>
             </div>
-            @if ($dataPemeriksaan->statusUtama == 'PENDING')
+            @if ($dataPemeriksaan->statusUtama == 'Pending')
                 <div class="col-md-2">
-                    <a href="{{ route('petugas.tambahjenispemeriksaanpage') }}" class="btn btn-primary w-100">
+                    <a href="{{ route('petugas.pratinjaupemeriksaan', $dataPemeriksaan) }}" class="btn btn-primary w-100">
                         Pratinjau
                     </a>
                 </div>

@@ -8,7 +8,7 @@ class DataPasien extends Model
 {
     protected $fillable = [
         'master_pasien_id',
-        'nama',
+        'namaLengkap',
         'alamatDomisili',
         'tanggalLahir',
         'noIdentitas',

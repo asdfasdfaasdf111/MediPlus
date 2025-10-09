@@ -26,7 +26,7 @@
             <div class="d-flex align-items-center mb-2">
                 {{ $dataPemeriksaan->statusUtama }}
                 <div>
-                    <h6 class="mb-0 fw-bold">Nama Lengkap Pasien: {{ $dataPasien->nama }}</h6>
+                    <h6 class="mb-0 fw-bold">Nama Lengkap Pasien: {{ $dataPasien->namaLengkap }}</h6>
                     @if ($dataPemeriksaan->statusUtama == 'Pending')
                         <small class="text-muted">Dokter Perujuk: {{ $dataRujukan->namaDokterPerujuk }}</small><br>
                     @elseif ($dataPemeriksaan->statusUtama != 'Dibatalkan')

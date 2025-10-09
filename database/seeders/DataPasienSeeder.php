@@ -32,7 +32,7 @@ class DataPasienSeeder extends Seeder
 
         DataPasien::create([
             'master_pasien_id' => $masterpasien->id,
-            'nama' => 'Titi Kusuma',
+            'namaLengkap' => 'Titi Kusuma',
             'alamatDomisili' => 'Jalan K. H. Syahdan, No. 456, Jakarta Barat',
             'tanggalLahir' => '2004-04-19',
             'noIdentitas' => '01234567891011',

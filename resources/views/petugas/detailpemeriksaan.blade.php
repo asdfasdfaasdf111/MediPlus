@@ -64,7 +64,7 @@
 ==========================================================
 <div>
     <div>Formulir Data Diri</div>
-    <div>Nama Lengkap: {{ $dataPasien->nama }}</div>
+    <div>Nama Lengkap: {{ $dataPasien->namaLengkap }}</div>
     <div>Jenis Kelamin: {{ $dataPemeriksaan->riwayatJenisKelamin }}</div>
     <div>Tanggal Lahir: {{ $dataPemeriksaan->riwayatTanggalLahir }}</div>
     <div>Golongan Darah: {{ $dataPemeriksaan->riwayatGolonganDarah }}</div>

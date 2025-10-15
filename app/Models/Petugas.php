@@ -40,4 +40,9 @@ class Petugas extends Model
         ->ordered('statusPetugas');
     }
 
+    public function jenisPemeriksaan()
+    {
+        return $this->hasMany(JenisPemeriksaan::class, 'rumah_sakit_id', 'rumah_sakit_id');
+    }
+
 }

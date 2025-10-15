@@ -23,7 +23,7 @@
     <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</div>
-    <a href = "{{ route('petugas.kelolajenispemeriksaan') }}"> Ubah Jadwal </a>
+    <a href="{{ route('petugas.editpendaftaran', $dataPemeriksaan) }}"> Ubah Detail </a>
 </div>
 ==========================================================
 <div>
@@ -117,10 +117,10 @@
         @foreach($rumahSakit->dokter as $dokter)
             <option 
                 value="{{ $dokter->id }}" 
-                @if($jenisPemeriksaan->diDampingiDokter && !$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan)) disabled @endif
+                @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) disabled @endif
             >
                 {{ $dokter->user->name }}
-                @if($jenisPemeriksaan->diDampingiDokter && !$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan)) (Not available) @endif
+                @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) (Not available) @endif
             </option>
         @endforeach
     </select>

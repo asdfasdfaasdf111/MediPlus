@@ -128,7 +128,12 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
         return view('petugas.pratinjaupemeriksaan', compact('dataPemeriksaan'));
     })->name('petugas.pratinjaupemeriksaan');
 
-    Route::put('/updatePendaftaran/{dataPemeriksaan}/status', [DataPemeriksaanController::class, 'updatePendaftaran'])->name('petugas.updatePendaftaran');
+    Route::get('/editpendaftaran/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('petugas.editpendaftaran', compact('dataPemeriksaan'));
+    })->name('petugas.editpendaftaran');
+
+    Route::put('/updatePendaftaran/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updatePendaftaran'])->name('petugas.updatePendaftaran');
+    Route::put('/updateJadwal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateJadwal'])->name('petugas.updateJadwal');
 
     Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
     Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');
@@ -137,6 +142,23 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::post('/tambahModalitas', [ModalitasController::class, 'tambahModalitas'])->name('petugas.tambahModalitas');
     Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
     Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
+
+    Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}', 
+                function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId); 
+                return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });
+    
+    Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}', 
+                function ($rumahSakitId, $jenisId) { 
+                    $rumahSakit = RumahSakit::find($rumahSakitId); 
+                    $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                    return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
+    
+    Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan}', 
+                function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId) { 
+                    $rumahSakit = RumahSakit::find($rumahSakitId); 
+                    $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                    $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
+                    return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
 });
 
 Route::get('/dokter/homepage', function(){

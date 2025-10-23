@@ -13,7 +13,7 @@ class PendaftaranController extends Controller
     public function index(Request $request)
     {
         $rumahsakits = RumahSakit::orderBy('nama')->get(['id', 'nama', 'jamBuka', 'jamTutup', 'jumlahPasien']);
-        
+
         $rsId = $request->query('rumah_sakit');
         $jenisId = $request->query('jenis_pemeriksaan');
         $spesifikId = $request->query('spesifik');
@@ -32,14 +32,12 @@ class PendaftaranController extends Controller
             ->whereNotNull('namaPemeriksaanSpesifik')
             ->pluck('namaPemeriksaanSpesifik', 'id');
 
-        $slots = [];
-        if ($rsId && $jenisId && $spesifikId && $tanggal)
+        // $slots = [];
+        // if ($rsId && $jenisId && $spesifikId && $tanggal)
+        }
+    }
 
-
-        
-        
-
-
+    
 
 
 }

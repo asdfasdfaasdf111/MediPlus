@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\DraftLaporanController;
 use App\Http\Controllers\JenisPemeriksaanController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\ModalitasController;
@@ -77,7 +78,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::post('/kelolajadwalpage/update', [RumahSakitController::class, 'updateJadwal'])
         ->name('admin.updateJadwal');
 
-    
+
 
     Route::get('/logaktivitaspage', function () {
         return view('admin.logaktivitaspage');
@@ -91,7 +92,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.tambahakunpetugaspage');
     })->name('admin.tambahakunpetugaspage');
 
-    
+
 
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
     Route::post('/updateJumlahPasien', [RumahSakitController::class, 'updateJumlahPasien'])->name('admin.updateJumlahPasien');
@@ -136,10 +137,19 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::delete('/hapusDicom/{id}', [DicomController::class, 'hapusDicom'])->name('petugas.hapusDicom');
 });
 
-Route::get('/dokter/homepage', function(){
-    return view('dokter.homepage');
-})->middleware('auth', 'verified', 'role:dokter');
+// Route::get('/dokter/homepage', function(){
+//     return view('dokter.homepage');
+// })->middleware('auth', 'verified', 'role:dokter');
 
+Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(function () {
+    Route::get('/homepage', [DraftLaporanController::class, 'tampilkanRumahSakit'])->name('dokter.homepage');
+    Route::get('/listdraft', [DraftLaporanController::class, 'index'])->name('dokter.listdaftar');
+    Route::get('/addnew', [DraftLaporanController::class, 'addNew'])->name('dokter.addnew');
+    Route::post('/addnew', [DraftLaporanController::class, 'store'])->name('dokter.submit');
+    Route::get('/{draft}/edit', [DraftLaporanController::class, 'editData'])->name('dokter.edit');
+    Route::put('/{id}/edit', [DraftLaporanController::class, 'updateDraft'])->name('dokter.submitdata');
+    Route::delete('{draft}/delete', [DraftLaporanController::class, 'deleteData'])->name('dokter.delete');
+});
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');

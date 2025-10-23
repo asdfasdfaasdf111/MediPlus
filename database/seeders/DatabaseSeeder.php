@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             LogSeeder::class,
             ModalitasSeeder::class,
             JenisPemeriksaanSeeder::class,
+            DraftLaporanSeeder::class
         ]);
     }
 }

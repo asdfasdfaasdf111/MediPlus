@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class RumahSakit extends Model
 {
@@ -165,5 +166,11 @@ class RumahSakit extends Model
         $this->jumlahPasien = $jumlahPasien;
         $this->save();
     }
+
+    public function scopeAktif($q)
+    {
+        return Schema::hasColumn('rumah_sakits', 'aktif') ? $q->where('aktif', 1) : $q;
+    }
+
 
 }

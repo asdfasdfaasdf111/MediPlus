@@ -1,4 +1,5 @@
 @extends('layout.app')
+
 @section('title', 'FAQ Pemeriksaan Radiologi')
 
 @section('content')

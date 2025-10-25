@@ -42,13 +42,13 @@ class RumahSakitSeeder extends Seeder
                 'noTelepon' => $dataNoTelepon[$i],
                 'super_admin_id' => $superadmin->id
             ]);
-            for ($i = 1; $i <= 7; $i++){
+            for ($j = 1; $j <= 7; $j++){
                 JadwalRumahSakit::create([
                     'rumah_sakit_id' => $rumahSakit->id,
-                    'indexJadwal' => $i,
+                    'indexJadwal' => $j,
                     'jamBuka' => '08:00:00',
                     'jamTutup' => '17:00:00',
-                    'buka' => ($i <= 5 ? true : false),
+                    'buka' => ($j <= 5 ? true : false),
                 ]);
             }
         }

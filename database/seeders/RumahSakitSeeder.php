@@ -13,62 +13,44 @@ class RumahSakitSeeder extends Seeder
     public function run(): void
     {
         $superadmin = SuperAdmin::first();
-
-        RumahSakit::insert([
-            [
-            'nama' => 'Mitra Medika',
-            'alamat' => 'Jl. Tanjung Duren No. 123, Jakarta Barat',
-            'noTelepon' => '021-123456',
-            'jamBuka' => '08:00:00',
-            'jamTutup' => '23:00:00',
-            'jumlahPasien' => 5,
-            'super_admin_id' => $superadmin->id
-            ],
-            [   
-            'nama' => 'UKRIDA',
-            'alamat' => 'Jl. Arjuna Utara No.6, RT.6/RW.2, Duri Kepa, Kec. Kb. Jeruk, Kota Jakarta Barat',
-            'noTelepon' => '021-39723777',
-            'jamBuka' => '00:00:00',
-            'jamTutup' => '23:59:00',
-            'jumlahPasien' => 5,
-            'super_admin_id' => $superadmin->id
-            ],
-            [
-            'nama' => 'Jakarta',
-            'alamat' => 'Jl. Jend. Sudirman No.Kav. 49, RT.5/RW.4, Karet Semanggi',
-            'noTelepon' => '021-5732241',
-            'jamBuka' => '00:00:00',
-            'jamTutup' => '23:59:00',
-            'jumlahPasien' => 5,
-            'super_admin_id' => $superadmin->id
-            ],
-            [   
-            'nama' => 'Siloam',
-            'alamat' => 'Jl. Perjuangan No.Kav.8, Kb. Jeruk, Kec. Kb. Jeruk',
-            'noTelepon' => '1 500 911',
-            'jamBuka' => '00:00:00',
-            'jamTutup' => '23:59:00',
-            'jumlahPasien' => 5,
-            'super_admin_id' => $superadmin->id
-            ],
-            [
-            'nama' => 'Anggrek Mas',
-            'alamat' => 'Jl. Anggrek No.2B, RT.9/RW.2, Klp. Dua, Kec. Kb. Jeruk',
-            'noTelepon' => '021-5305720',
-            'jamBuka' => '00:00:00',
-            'jamTutup' => '22:00:00',
-            'jumlahPasien' => 5,
-            'super_admin_id' => $superadmin->id
-            ],
-            [   
-            'nama' => 'Metro Hospitals Kebon Jeruk',
-            'alamat' => 'Jl. Duri Raya No.22, RT.2/RW.7, Duri Kepa',
-            'noTelepon' => '0811-1800-207',
-            'jamBuka' => '00:00:00',
-            'jamTutup' => '00:00:00',
-            'jumlahPasien' => 5,
-            'super_admin_id' => $superadmin->id
-            ]
-    ]);
+        $dataNama = [
+            'Mitra Medika', 
+            'UKRIDA', 
+            'Jakarta', 
+            'Siloam', 
+            'Anggrek Mas',
+            'Metro Hospitals Kebon Jeruk'];
+        $dataAlamat = [
+            'Jl. Tanjung Duren No. 123, Jakarta Barat',
+            'Jl. Arjuna Utara No.6, RT.6/RW.2, Duri Kepa, Kec. Kb. Jeruk, Kota Jakarta Barat',
+            'Jl. Jend. Sudirman No.Kav. 49, RT.5/RW.4, Karet Semanggi',
+            'Jl. Perjuangan No.Kav.8, Kb. Jeruk, Kec. Kb. Jeruk',
+            'Jl. Anggrek No.2B, RT.9/RW.2, Klp. Dua, Kec. Kb. Jeruk',
+            'Jl. Duri Raya No.22, RT.2/RW.7, Duri Kepa'];
+        $dataNoTelepon = [
+            '021-123456',
+            '021-39723777',
+            '021-5732241',
+            '1 500 911',
+            '021-5305720',
+            '0811-1800-207'
+        ];
+        for ($i = 0; $i < count($dataNama); $i++){
+            $rumahSakit = RumahSakit::create([
+                'nama' => $dataNama[$i],
+                'alamat' => $dataAlamat[$i],
+                'noTelepon' => $dataNoTelepon[$i],
+                'super_admin_id' => $superadmin->id
+            ]);
+            for ($j = 1; $j <= 7; $j++){
+                JadwalRumahSakit::create([
+                    'rumah_sakit_id' => $rumahSakit->id,
+                    'indexJadwal' => $j,
+                    'jamBuka' => '08:00:00',
+                    'jamTutup' => '17:00:00',
+                    'buka' => ($j <= 5 ? true : false),
+                ]);
+            }
+        }
     }
 }

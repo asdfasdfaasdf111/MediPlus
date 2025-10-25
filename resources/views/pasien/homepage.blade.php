@@ -101,12 +101,6 @@
                       <h5 class="card-title fw-bold text-primary mb-2">RS {{ $rs->nama }}</h5>
                       <p class="card-text text-muted small mb-3">{{ $rs->alamat }}</p>
                       <div class="d-flex justify-content-center flex-wrap gap-2">
-                        <span class="badge bg-light text-primary border">
-                          <i class="bi bi-clock me-1"></i>
-                          {{ \Carbon\Carbon::createFromFormat('H:i:s', (string)$rs->jamBuka)->format('H:i') }}
-                          –
-                          {{ \Carbon\Carbon::createFromFormat('H:i:s', (string)$rs->jamTutup)->format('H:i') }}
-                        </span>
                         <span class="badge bg-light text-secondary border">
                           <i class="bi bi-telephone me-1"></i>{{ $rs->noTelepon }}
                         </span>

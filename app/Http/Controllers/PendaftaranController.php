@@ -2,44 +2,153 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataPasien;
+use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
+use App\Models\MasterPasien;
 use App\Models\RumahSakit;
+use App\Models\JadwalRumahSakit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class PendaftaranController extends Controller
 {
-    // STEP 1: Pilih Jadwal
+    private const HUBUNGAN_OPTS        = ['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'];
+    private const GOLONGAN_DARAH_OPTS  = ['A', 'B', 'AB', 'O', 'Tidak Tahu'];
+    private const JENIS_IDENTITAS_OPTS = ['KTP', 'SIM', 'PASPOR'];
+    private const JENIS_KELAMIN_OPTS   = ['Laki-laki', 'Perempuan'];
+
+
     public function index(Request $request)
     {
-        $rumahsakits = RumahSakit::orderBy('nama')->get(['id', 'nama', 'jamBuka', 'jamTutup', 'jumlahPasien']);
-        
-        $rsId = $request->query('rumah_sakit');
-        $jenisId = $request->query('jenis_pemeriksaan');
-        $spesifikId = $request->query('spesifik');
-        $tanggal = $request->query('tanggal', now('Asia/Jakarta')->toDateString());
+        $user   = $request->user();
+        $master = $user->masterPasien ?: MasterPasien::create(['user_id' => $user->id]);
 
-        $jenisList = collect();
-        if ($rsId) {
-            $jenisList = JenisPemeriksaan::where('rumah_sakit_id', $rsId)
-            ->orderBy('namaJenisPemeriksaan')
-            ->get(['id', 'namaJenisPemeriksaan']);
-        }
+        $dataPasiens = $master->dataPasien()->latest()->get();
 
-        $spesifikList = collect();
-        if ($jenisId) {
-            $spesifikList = JenisPemeriksaan::where('id', $jenisId)
-            ->whereNotNull('namaPemeriksaanSpesifik')
-            ->pluck('namaPemeriksaanSpesifik', 'id');
+        // Pemeriksaan yang masih aktif (bukan selesai/batal)
+        $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
+            ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
+            ->whereNotIn('statusUtama', ['selesai','batal'])   // pakai ini jika belum ada scope berlangsung()
+            ->latest('tanggalPemeriksaan')
+            ->paginate(5);
 
-        $slots = [];
-        if ($rsId && $jenisId && $spesifikId && $tanggal)
+        return view('pasien.pendaftaran.index', compact('dataPasiens','pemeriksaanBerlangsung'));
+    }
+
+    public function createDataPasien()
+    {
+        return view('pasien.pendaftaran.create', [
+            'hubunganOpts'       => self::HUBUNGAN_OPTS,
+            'golonganDarahOpts'  => self::GOLONGAN_DARAH_OPTS,
+            'jenisIdentitasOpts' => self::JENIS_IDENTITAS_OPTS,
+            'jenisKelaminOpts'   => self::JENIS_KELAMIN_OPTS,
+        ]);
+    }
+
+    public function storeDataPasien(Request $request)
+    {
+        $validated = $request->validate(
+            [
+                'namaLengkap'       => 'required|string|max:150',
+                'hubunganKeluarga'  => 'required|in:' . implode(',', self::HUBUNGAN_OPTS),
+                'alamatDomisili'    => 'required|string|max:255',
+                'tanggalLahir'      => 'required|date',
+                'noIdentitas'       => 'required|string|max:50',
+                'jenisIdentitas'    => 'required|in:' . implode(',', self::JENIS_IDENTITAS_OPTS),
+                'jenisKelamin'      => 'required|in:' . implode(',', self::JENIS_KELAMIN_OPTS),
+                'noHP'              => 'required|string|max:30',
+                'alergi'            => 'nullable|string|max:255',
+                'golonganDarah'     => 'required|in:' . implode(',', self::GOLONGAN_DARAH_OPTS),
+            ],
+            [],
+            [
+                'namaLengkap'      => 'nama lengkap',
+                'hubunganKeluarga' => 'hubungan dengan pasien',
+                'noHP'             => 'nomor HP',
+                'noIdentitas'      => 'nomor identitas',
+            ]
+        );
 
 
-        
-        
+        $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
+
+        $user   = $request->user();
+        $master = $user->masterPasien ?: MasterPasien::create(['user_id' => $user->id]);
+        $validated['master_pasien_id'] = $master->id;
+
+        $validated['alergi'] = $validated['alergi'] ?? '';
+
+        DataPasien::create($validated);
+
+        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien berhasil ditambahkan!');
+    }
+
+    private function ensureOwned(DataPasien $pasien, Request $request): void
+    {
+        $master = $request->user()->masterPasien;
+        abort_if(!$master || $pasien->master_pasien_id !== $master->id, 403);
+    }
+
+    public function editDataPasien(Request $request, DataPasien $pasien)
+    {
+        $this->ensureOwned($pasien, $request);
+
+        return view('pasien.pendaftaran.edit', [
+            'pasien'              => $pasien,
+            'hubunganOpts'        => self::HUBUNGAN_OPTS,
+            'jenisIdentitasOpts'  => self::JENIS_IDENTITAS_OPTS,
+            'jenisKelaminOpts'    => self::JENIS_KELAMIN_OPTS,
+            'golonganDarahOpts'   => self::GOLONGAN_DARAH_OPTS,
+        ]);
+    }
+
+    public function updateDataPasien(Request $request, DataPasien $pasien)
+    {
+        $this->ensureOwned($pasien, $request);
+
+        $validated = $request->validate(
+            [
+                'namaLengkap'       => 'required|string|max:150',
+                'hubunganKeluarga'  => 'required|in:' . implode(',', self::HUBUNGAN_OPTS),
+                'alamatDomisili'    => 'required|string|max:255',
+                'tanggalLahir'      => 'required|date',
+                'noIdentitas'       => 'required|string|max:50',
+                'jenisIdentitas'    => 'required|in:' . implode(',', self::JENIS_IDENTITAS_OPTS),
+                'jenisKelamin'      => 'required|in:' . implode(',', self::JENIS_KELAMIN_OPTS),
+                'noHP'              => 'required|string|max:30',
+                'alergi'            => 'nullable|string|max:255',
+                'golonganDarah'     => 'required|in:' . implode(',', self::GOLONGAN_DARAH_OPTS),
+            ],
+            [],
+            [
+                'namaLengkap'      => 'nama lengkap',
+                'hubunganKeluarga' => 'hubungan dengan pasien',
+                'noHP'             => 'nomor HP',
+                'noIdentitas'      => 'nomor identitas',
+            ]
+        );
+
+        $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
+        $validated['alergi'] = $validated['alergi'] ?? '';
+
+        $pasien->update($validated);
+
+        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien diperbarui.');
+    }
+
+    public function destroyDataPasien(Request $request, DataPasien $pasien)
+    {
+        $this->ensureOwned($pasien, $request);
+        $pasien->delete();
+
+        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien dihapus.');
+    }
+
+    private function isoDay(string $date): int
+    {
+        return Carbon::parse($date)->isoWeekday(); // 1..7
+    }
 
 
-
-
-}
+ }

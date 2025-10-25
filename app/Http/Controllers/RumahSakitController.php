@@ -37,9 +37,29 @@ class RumahSakitController extends Controller
             ];
         }
         $admin = auth()->user()->admin;
-        $admin->rumahSakit->updateJadwal($request->jamBuka, $request->jamTutup);
+        $admin->rumahSakit->updateJadwal($jadwalArray);
         return redirect(route('admin.kelolajadwalpage'))->with('success', 'Jadwal operasional berhasil diperbarui');
     }
+
+    public function index()
+{
+    $admin = auth()->user()->admin;
+    $rs    = $admin->rumahSakit;
+
+    // pastikan ada 7 baris (Senin–Minggu)
+    DB::transaction(function () use ($rs) {
+        for ($i = 1; $i <= 7; $i++) {
+            JadwalRumahSakit::firstOrCreate(
+                ['rumah_sakit_id' => $rs->id, 'indexJadwal' => $i],
+                ['buka' => 0, 'jamBuka' => '08:00:00', 'jamTutup' => '16:00:00']
+            );
+        }
+    });
+
+    $rows = $rs->jadwalRumahSakit()->orderBy('indexJadwal')->get();
+
+    return view('admin.kelolajadwalpage', compact('admin','rows'));
+}
 
     public function updateJumlahPasien(Request $request){
         $request->validate([

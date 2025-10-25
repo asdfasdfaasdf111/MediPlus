@@ -46,9 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if ('namaModalitas' in responseData){
                     data['modalitasId'] = responseData.namaModalitas;
                 }
-                else if ('alamatIP' in responseData){
-                    data['modalitasId'] = responseData.alamatIP;
-                }
                 
                 viewData.forEach(view => {
                     if (view.dataset.type !== "checkbox") view.textContent = data[view.dataset.name];

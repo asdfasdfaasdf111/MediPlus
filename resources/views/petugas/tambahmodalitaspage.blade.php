@@ -18,35 +18,10 @@
             </div>
 
             <div class="mb-3">
-                <label for="merekModalitas" class="form-label">Merek Modalitas</label>
-                <input type="text" class="form-control" 
-                    name="merekModalitas" id="merekModalitas" placeholder="Merek Modalitas" value="{{ old('merekModalitas') }}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="tipeModalitas" class="form-label">Tipe Modalitas</label>
-                <input type="text" class="form-control" 
-                    name="tipeModalitas" id="tipeModalitas" placeholder="Tipe Modalitas" value="{{ old('tipeModalitas') }}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="nomorSeriModalitas" class="form-label">Nomor Seri Modalitas</label>
-                <input type="text" class="form-control" 
-                    name="nomorSeriModalitas" id="nomorSeriModalitas" placeholder="Nomor Seri Modalitas" value="{{ old('nomorSeriModalitas') }}" required>
-            </div>
-
-            <div class="mb-3">
                 <label for="kodeRuang" class="form-label">Kode Ruang</label>
                 <input type="text" class="form-control" 
                     name="kodeRuang" id="kodeRuang" placeholder="Kode Ruang" value="{{ old('kodeRuang') }}" required>
             </div>
-
-            <div class="mb-3">
-                <label for="alamatIP" class="form-label">Alamat IP</label>
-                <input type="text" class="form-control" 
-                    name="alamatIP" id="alamatIP" placeholder="Alamat IP" value="{{ old('alamatIP') }}" required>
-            </div>
-            
 
             <div class="d-flex justify-content-center gap-3 pt-3">
                 <a href="{{ route('petugas.kelolamodalitas') }}" 

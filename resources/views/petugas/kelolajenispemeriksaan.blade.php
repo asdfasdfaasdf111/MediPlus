@@ -14,7 +14,6 @@
 <a href="{{ route('petugas.homepage') }}"> Homepage </a>
 <a href="{{ route('petugas.kelolajenispemeriksaan') }}"> Jenis Pemeriksaan </a>
 <a href="{{ route('petugas.kelolamodalitas') }}"> Modalitas </a>
-<a href="{{ route('petugas.keloladicom') }}"> DICOM </a>
 
 <div class="col-md-10 p-4 bg-light">
     <div class="d-flex justify-content-between align-items-center mb-4">

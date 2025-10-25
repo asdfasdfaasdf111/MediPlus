@@ -12,22 +12,14 @@ class ModalitasController extends Controller
         $request->validate([
             'namaModalitas' => 'required|string|max:100',
             'jenisModalitas' => 'required|string|max:100',
-            'merekModalitas' => 'required|string|max:100',
-            'tipeModalitas' => 'required|string|max:100',
-            'nomorSeriModalitas' => 'required|string|max:100',
             'kodeRuang' => 'required|string|max:100',
-            'alamatIP' => 'required|string|max:100',
         ]);
 
         Modalitas::create([
             'rumah_sakit_id' => auth()->user()->petugas->rumahSakit->id,
             'namaModalitas' => $request->namaModalitas,
             'jenisModalitas' => $request->jenisModalitas,
-            'merekModalitas' => $request->merekModalitas,
-            'tipeModalitas' => $request->tipeModalitas,
-            'nomorSeriModalitas' => $request->nomorSeriModalitas,
             'kodeRuang' => $request->kodeRuang,
-            'alamatIP' => $request->alamatIP,
         ]);
 
         return redirect()->route('petugas.kelolamodalitas')->with('success', 'Modalitas berhasil dibuat!');
@@ -39,20 +31,12 @@ class ModalitasController extends Controller
         $request->validate([
             'namaModalitas' => 'required|string|max:100',
             'jenisModalitas' => 'required|string|max:100',
-            'merekModalitas' => 'required|string|max:100',
-            'tipeModalitas' => 'required|string|max:100',
-            'nomorSeriModalitas' => 'required|string|max:100',
             'kodeRuang' => 'required|string|max:100',
-            'alamatIP' => 'required|string|max:100',
         ]);
 
         $modalitas->namaModalitas = $request->input('namaModalitas');
         $modalitas->jenisModalitas = $request->input('jenisModalitas');
-        $modalitas->merekModalitas = $request->input('merekModalitas');
-        $modalitas->tipeModalitas = $request->input('tipeModalitas');
-        $modalitas->nomorSeriModalitas = $request->input('nomorSeriModalitas');
         $modalitas->kodeRuang = $request->input('kodeRuang');
-        $modalitas->alamatIP = $request->input('alamatIP');
 
         $modalitas->save();
 
@@ -76,9 +60,7 @@ class ModalitasController extends Controller
         $modalitass = $rumahSakit->modalitas()
         ->when($request->search, function ($query, $search) {
             $query->where('namaModalitas', 'like', "%{$search}%")
-            ->orWhere('jenisModalitas', 'like', "%{$search}%")
-            ->orWhere('merekModalitas', 'like', "%{$search}%")
-            ->orWhere('tipeModalitas', 'like', "%{$search}%");
+            ->orWhere('jenisModalitas', 'like', "%{$search}%");
         })
         ->get();
         

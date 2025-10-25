@@ -11,7 +11,7 @@
 
   @include('layout.navbar')
 
-@if(session('success'))
+{{-- @if(session('success'))
   <div class="container-fluid px-0">
     <div class="alert alert-success alert-dismissible fade show mb-0 rounded-0 border-0" role="alert">
       {{ session('success') }}
@@ -31,7 +31,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   </div>
-@endif
+@endif --}}
 
   <main>
     @yield('content')

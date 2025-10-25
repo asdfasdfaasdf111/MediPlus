@@ -18,15 +18,15 @@ class JenisPemeriksaanSeeder extends Seeder
         $modalitas = Modalitas::first();
         $rumahSakit = $modalitas->rumahSakit;
 
-        for ($i = 0; $i < 5; $i++){
+        for ($i = 0; $i < 10; $i++){
             JenisPemeriksaan::create([
                 'modalitas_id' => $modalitas->id,
                 'rumah_sakit_id' => $rumahSakit->id,
-                'namaJenisPemeriksaan' => 'SISTEM PENCERNAAN'.$i,
-                'namaPemeriksaanSpesifik' => 'Oesofagografi',
+                'namaJenisPemeriksaan' => 'SISTEM PENCERNAAN'.floor($i / 5),
+                'namaPemeriksaanSpesifik' => 'Oesofagografi'.$i,
                 'kelompokJenisPemeriksaan' => 'XP-F',
                 'pemakaianKontras' => false,
-                'lamaPemeriksaan' => 60,
+                'lamaPemeriksaan' => (($i % 5) + 1) * 10,
                 'diDampingiDokter' => true,
             ]);
         }

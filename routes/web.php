@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DataPemeriksaanController;
+use App\Http\Controllers\DataPasienController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\DraftLaporanController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
+use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -110,7 +113,6 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
 
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
-    Route::get('/keloladicom', [DicomController::class, 'tampilkanDicom'])->name('petugas.keloladicom');
 
     Route::get('/tambahjenispemeriksaanpage', function () {
         return view('petugas.tambahjenispemeriksaanpage');
@@ -120,9 +122,20 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
         return view('petugas.tambahmodalitaspage');
     })->name('petugas.tambahmodalitaspage');
 
-    Route::get('/tambahdicompage', function () {
-        return view('petugas.tambahdicompage');
-    })->name('petugas.tambahdicompage');
+    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('petugas.detailpemeriksaan', compact('dataPemeriksaan'));
+    })->name('petugas.detailpemeriksaan');
+
+    Route::get('/pratinjaupemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('petugas.pratinjaupemeriksaan', compact('dataPemeriksaan'));
+    })->name('petugas.pratinjaupemeriksaan');
+
+    Route::get('/editpendaftaran/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('petugas.editpendaftaran', compact('dataPemeriksaan'));
+    })->name('petugas.editpendaftaran');
+
+    Route::put('/updatePendaftaran/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updatePendaftaran'])->name('petugas.updatePendaftaran');
+    Route::put('/updateJadwal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateJadwal'])->name('petugas.updateJadwal');
 
     Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
     Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');
@@ -132,9 +145,22 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
     Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
 
-    Route::post('/tambahDicom', [DicomController::class, 'tambahDicom'])->name('petugas.tambahDicom');
-    Route::put('/editDicom/{id}', [DicomController::class, 'editDicom'])->name('petugas.editDicom');
-    Route::delete('/hapusDicom/{id}', [DicomController::class, 'hapusDicom'])->name('petugas.hapusDicom');
+    Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}', 
+                function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId); 
+                return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });
+    
+    Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}', 
+                function ($rumahSakitId, $jenisId) { 
+                    $rumahSakit = RumahSakit::find($rumahSakitId); 
+                    $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                    return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
+    
+    Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan}', 
+                function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId) { 
+                    $rumahSakit = RumahSakit::find($rumahSakitId); 
+                    $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                    $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
+                    return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
 });
 
 // Route::get('/dokter/homepage', function(){
@@ -154,35 +180,41 @@ Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
-    // 1 : Pilih jadwal
+    // Pilih jadwal
     Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pasien.pendaftaran');
-    Route::post('/pendaftaran', [PendaftaranController::class, 'storeStep1'])->name('pasien.pendaftaran.storeStep1');
+    
+    // Halaman pilih tipe pasien
+    Route::get('/pendaftaran/tipepasien', [PendaftaranController::class, 'tipePasien'])
+        ->name('pasien.pendaftaran.tipepasien');
 
-    //START 2-5 ITU NANTIAN DULU. KERJA PER PAGE
-    // 2 : Tipe Pasien
-    Route::get('/pendaftaran/tipepasien', function(){
-        return view('pasien.pendaftaran.tipepasien');
-    })->name('pasien.pendaftaran.tipepasien');
+    // Form tambah & simpan Data Pasien
+    Route::get('/pendaftaran/datapasien/create', [PendaftaranController::class, 'createDataPasien'])
+        ->name('pasien.datapasien.create');
+    Route::post('/pendaftaran/datapasien', [PendaftaranController::class, 'storeDataPasien'])
+        ->name('pasien.datapasien.store');
 
-    // 3 : Form Data Diri
-    Route::get('/pendaftaran/formdatadiri', function(){
-        return view('pasien.pendaftaran.formdatadiri');
-    })->name('pasien.pendaftaran.formdatadiri');
+    // Edit & Update
+    Route::get('/pendaftaran/datapasien/{pasien}/edit', [PendaftaranController::class, 'editDataPasien'])
+        ->name('pasien.datapasien.edit');
+    Route::put('/pendaftaran/datapasien/{pasien}', [PendaftaranController::class, 'updateDataPasien'])
+        ->name('pasien.datapasien.update');
 
-    // 4 : Data Rujukan
-    Route::get('/pendaftaran/datarujukan', function(){
-        return view('pasien.pendaftaran.datarujukan');
-    })->name('pasien.pendaftaran.datarujukan');
+    // Hapus
+    Route::delete('/pendaftaran/datapasien/{pasien}', [PendaftaranController::class, 'destroyDataPasien'])
+        ->name('pasien.datapasien.destroy');
 
-    // 5 : Ringkasan
-    Route::get('/pendaftaran/ringkasan', function(){
-        return view('pasien.pendaftaran.ringkasan');
-    })->name('pasien.pendaftaran.ringkasan');
+    //FaQ page
+    Route::view('/faq', 'pasien.faq')->name('pasien.faq');
+    Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
+
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:web'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');

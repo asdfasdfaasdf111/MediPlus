@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('alamatDomisili');
             $table->date('tanggalLahir');
             $table->string('noIdentitas');
-            $table->string('jenisIdentitas');
-            $table->string('jenisKelamin');
+            $table->enum('jenisIdentitas', ['KTP', 'SIM', 'PASPOR']);
+            $table->enum('jenisKelamin', ['Laki-laki', 'Perempuan']);
             $table->string('noHP');
-            $table->string('alergi');
-            $table->string('golonganDarah');
+            $table->string('alergi')->nullable();
+            $table->enum('golonganDarah', ['A', 'B', 'AB', 'O', 'Tidak Tahu']);
+            $table->enum('hubunganKeluarga', ['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya']);
             $table->timestamps();
         });
     }

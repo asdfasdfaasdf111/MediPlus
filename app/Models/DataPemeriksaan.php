@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class DataPemeriksaan extends Model
@@ -89,5 +90,25 @@ class DataPemeriksaan extends Model
 
         return $query->orderByRaw("FIELD(statusUtama, $statusUtama)")
                     ->orderByRaw("FIELD($subtype, $statusUser)");
+    }
+
+        public function tanggalHuman(): ?string
+    {
+        return $this->tanggalPemeriksaan
+            ? Carbon::parse($this->tanggalPemeriksaan)->translatedFormat('d F Y')
+            : null;
+    }
+
+    public function waktuKedatanganHuman(): ?string
+    {
+        // kolom kamu bertipe TIME tunggal; tampilkan H : i
+        return $this->rentangWaktuKedatangan
+            ? Carbon::parse($this->rentangWaktuKedatangan)->format('H : i')
+            : null;
+    }
+
+    public function scopeBerlangsung($q)
+    {
+        return $q->whereNotIn('statusUtama', ['selesai','batal']);
     }
 }

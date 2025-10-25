@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DataPemeriksaanController;
+use App\Http\Controllers\DataPasienController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\JenisPemeriksaanController;
@@ -169,35 +170,41 @@ Route::get('/dokter/homepage', function(){
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
-    // 1 : Pilih jadwal
+    // Pilih jadwal
     Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pasien.pendaftaran');
-    Route::post('/pendaftaran', [PendaftaranController::class, 'storeStep1'])->name('pasien.pendaftaran.storeStep1');
+    
+    // Halaman pilih tipe pasien
+    Route::get('/pendaftaran/tipepasien', [PendaftaranController::class, 'tipePasien'])
+        ->name('pasien.pendaftaran.tipepasien');
 
-    //START 2-5 ITU NANTIAN DULU. KERJA PER PAGE
-    // 2 : Tipe Pasien
-    Route::get('/pendaftaran/tipepasien', function(){
-        return view('pasien.pendaftaran.tipepasien');
-    })->name('pasien.pendaftaran.tipepasien');
+    // Form tambah & simpan Data Pasien
+    Route::get('/pendaftaran/datapasien/create', [PendaftaranController::class, 'createDataPasien'])
+        ->name('pasien.datapasien.create');
+    Route::post('/pendaftaran/datapasien', [PendaftaranController::class, 'storeDataPasien'])
+        ->name('pasien.datapasien.store');
 
-    // 3 : Form Data Diri
-    Route::get('/pendaftaran/formdatadiri', function(){
-        return view('pasien.pendaftaran.formdatadiri');
-    })->name('pasien.pendaftaran.formdatadiri');
+    // Edit & Update
+    Route::get('/pendaftaran/datapasien/{pasien}/edit', [PendaftaranController::class, 'editDataPasien'])
+        ->name('pasien.datapasien.edit');
+    Route::put('/pendaftaran/datapasien/{pasien}', [PendaftaranController::class, 'updateDataPasien'])
+        ->name('pasien.datapasien.update');
 
-    // 4 : Data Rujukan
-    Route::get('/pendaftaran/datarujukan', function(){
-        return view('pasien.pendaftaran.datarujukan');
-    })->name('pasien.pendaftaran.datarujukan');
+    // Hapus
+    Route::delete('/pendaftaran/datapasien/{pasien}', [PendaftaranController::class, 'destroyDataPasien'])
+        ->name('pasien.datapasien.destroy');
 
-    // 5 : Ringkasan
-    Route::get('/pendaftaran/ringkasan', function(){
-        return view('pasien.pendaftaran.ringkasan');
-    })->name('pasien.pendaftaran.ringkasan');
+    //FaQ page
+    Route::view('/faq', 'pasien.faq')->name('pasien.faq');
+    Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
+
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:web'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');

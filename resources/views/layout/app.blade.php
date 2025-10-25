@@ -6,12 +6,14 @@
   <title>@yield('title', 'Mediplus')</title>
   <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  @vite(['resources/js/inline-edit.js'])
+
 </head>
 <body class="bg-white text-dark">
 
   @include('layout.navbar')
 
-@if(session('success'))
+{{-- @if(session('success'))
   <div class="container-fluid px-0">
     <div class="alert alert-success alert-dismissible fade show mb-0 rounded-0 border-0" role="alert">
       {{ session('success') }}
@@ -31,7 +33,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   </div>
-@endif
+@endif --}}
 
   <main>
     @yield('content')

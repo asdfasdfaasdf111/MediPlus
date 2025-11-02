@@ -25,7 +25,7 @@
     };
 </script>
 
-<form method="POST" action="{{ route('petugas.updateJadwal', $dataPemeriksaan) }}">
+<form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => false]) }}">
     @csrf
     @method('PUT')
     <div>Pilih Jadwal Pemeriksaan</div>
@@ -33,7 +33,7 @@
 
     <div>Jenis Pemeriksaan</div>
     <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-control" required>
-        @foreach($rumahSakit->jenisPemeriksaan->pluck('namaJenisPemeriksaan')->unique() as $namaJenisPemeriksaan)
+        @foreach($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
             <option value="{{ $namaJenisPemeriksaan }}" {{ $namaJenisPemeriksaan == $jenisPemeriksaan->namaJenisPemeriksaan ? 'selected' : '' }}>
                 {{ $namaJenisPemeriksaan }}
             </option>

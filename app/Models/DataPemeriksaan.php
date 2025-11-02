@@ -13,6 +13,7 @@ class DataPemeriksaan extends Model
         'data_pasien_id',
         'rumah_sakit_id',
         'data_rujukan_id',
+        'master_pasien_id',
         'tanggalPemeriksaan',
         'rentangWaktuKedatangan',
         'namaPendamping',
@@ -48,6 +49,11 @@ class DataPemeriksaan extends Model
         return $this->belongsTo(DataPasien::class);
     }
 
+    public function masterPasien()
+    {
+        return $this->belongsTo(MasterPasien::class);
+    }
+
     public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
@@ -72,7 +78,8 @@ class DataPemeriksaan extends Model
     //kalo status utama sama, urutin dari status pasien/petugas/dokter
     public function scopeOrdered($query, $subtype = 'statusPasien')
     {
-        $statusUtama = "'Pending','Berlangsung','Selesai', 'Dibatalkan'";
+        //yang draft ga bakal keliatan, cuma biar sistem bisa nyimpan datanya aja
+        $statusUtama = "'Draft','Pending','Berlangsung','Selesai', 'Dibatalkan'";
 
         switch ($subtype) {
             case 'statusPasien':

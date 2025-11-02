@@ -95,12 +95,17 @@
 
   <div class="d-flex align-items-center justify-content-between mb-3">
     <h4 class="fw-bold mb-0" style="color:#173B7A;">Pemeriksaan Berlangsung</h4>
-    @if($hasExam)
+    <a href="{{ route('pasien.daftarpilihjadwal') }}"
+        class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
+      <i class="bi bi-plus-lg"></i>
+      <span>Daftar Pemeriksaan Baru</span>
+    </a>
+    {{-- @if($hasExam)
       <a href="{{ route('pasien.pemeriksaan.create') }}"
          class="btn btn-outline-primary d-inline-flex align-items-center gap-2">
         <i class="bi bi-plus-lg"></i> Daftar Pemeriksaan Baru
       </a>
-    @endif
+    @endif --}}
   </div>
 
   @if(!$hasExam)
@@ -186,13 +191,13 @@
             <a href="{{ route('pasien.homepage', $ex) }}" class="btn btn-sm btn-primary">
               <i class="bi bi-pencil-square me-1"></i> EDIT
             </a>
-            <form action="{{ route('pasien.pemeriksaan.destroy', $ex) }}" method="POST"
+            {{-- <form action="{{ route('pasien.pemeriksaan.destroy', $ex) }}" method="POST"
                   onsubmit="return confirm('Hapus pendaftaran ini?');">
               @csrf @method('DELETE')
               <button type="submit" class="btn btn-sm btn-danger">
                 <i class="bi bi-trash me-1"></i> HAPUS
               </button>
-            </form>
+            </form> --}}
           </div>
         </div>
       </div>

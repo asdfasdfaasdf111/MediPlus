@@ -1,15 +1,60 @@
 document.addEventListener("DOMContentLoaded", () => {
-
+    
+    const rumahSakit = document.getElementById('rumahSakit');
     const jenisPemeriksaan = document.getElementById('jenisPemeriksaan');
     const jenisPemeriksaanSpesifik = document.getElementById('jenisPemeriksaanSpesifik');
     const tanggalPemeriksaan = document.getElementById('tanggalPemeriksaan');
     const tanggalPemeriksaanInput = document.getElementById('tanggalPemeriksaanInput');
     const rentangWaktuKedatangan = document.getElementById('rentangWaktuKedatangan');
     const submitBtn = document.getElementById('submitBtn');
+    
+    let rumahSakitValue = rumahSakit ? rumahSakit.value : window.rumahSakit.id;
+    if (rumahSakit !== null){
+        //kalo isiny kosong, brarti ga ad draft data, jadi tanggalnya di disable
+        if (jenisPemeriksaanSpesifik.value == ""){
+            tanggalPemeriksaan.calendar.set("disable", [
+                function(date){
+                    return true;
+                }
+            ]);
+        }
+
+        rumahSakit.addEventListener("change", (e) => {
+            rumahSakitValue = rumahSakit.value;
+            fetch(`/api/namaJenisPemeriksaan/${rumahSakitValue}`)
+                .then(res => res.json())
+                .then(data => {
+                    jenisPemeriksaan.innerHTML = '<option value="-" disabled selected>-</option>';
+    
+                    data.forEach(item => {
+                        const option = document.createElement("option");
+                        option.value = item;
+                        option.textContent = item;
+                        jenisPemeriksaan.appendChild(option);
+                    });
+                });
+
+            while (jenisPemeriksaanSpesifik.firstChild) {
+                jenisPemeriksaanSpesifik.removeChild(jenisPemeriksaanSpesifik.firstChild);
+            }
+            
+            tanggalPemeriksaan.calendar.set("disable", [
+                function(date){
+                    return true;
+                }
+            ]);
+    
+            while (rentangWaktuKedatangan.firstChild) {
+                rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
+            }
+    
+            submitBtn.disabled = true;
+        });
+    }
 
     jenisPemeriksaan.addEventListener("change", (e) => {
     
-        fetch(`/petugas/api/jenisPemeriksaanSpesifik/${window.rumahSakit.id}/${jenisPemeriksaan.value}`)
+        fetch(`/api/jenisPemeriksaanSpesifik/${rumahSakitValue}/${jenisPemeriksaan.value}`)
             .then(res => res.json())
             .then(data => {
                 jenisPemeriksaanSpesifik.innerHTML = '<option value="-" disabled selected>-</option>';
@@ -39,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
         tanggalPemeriksaan.calendar.clear(false);
         
-        fetch(`/petugas/api/jadwalPenuh/${window.rumahSakit.id}/${jenisPemeriksaanSpesifik.value}`)
+        fetch(`/api/jadwalPenuh/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
             .then(res => res.json())
             .then(data => {
                 tanggalPemeriksaan.calendar.set("disable", data);
@@ -57,7 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
             rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
         }
         tanggalPemeriksaanInput.value = dateStr;
-        fetch(`/petugas/api/jamTersedia/${window.rumahSakit.id}/${jenisPemeriksaanSpesifik.value}/${dateStr}/${window.dataPemeriksaan.id}`)
+
+        const idPart = window.dataPemeriksaan?.id ? `/${window.dataPemeriksaan.id}` : "";
+        const url = `/api/jamTersedia/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}/${dateStr}${idPart}`;
+
+        fetch(url)
             .then(res => res.json())
             .then(data => {
                 data.forEach((slot, index) => {

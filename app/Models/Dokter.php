@@ -37,7 +37,9 @@ class Dokter extends Model
 
     public function dataPemeriksaan()
     {
-        return $this->hasMany(DataPemeriksaan::class);
+        return $this->hasMany(DataPemeriksaan::class)
+        ->where('statusUtama', '!=', 'Draft')
+        ->ordered('statusDokter');
     }
 
     public function hasilPemeriksaan()

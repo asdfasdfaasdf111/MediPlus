@@ -171,6 +171,10 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
         return view('pasien.daftartipepasien');
     })->name('pasien.daftartipepasien');
 
+    Route::get('/daftardatarujukan', function () {
+        return view('pasien.daftardatarujukan');
+    })->name('pasien.daftardatarujukan');
+
     // Form tambah & simpan Data Pasien
     Route::get('/pendaftaran/datapasien/create', [PendaftaranController::class, 'createDataPasien'])
         ->name('pasien.datapasien.create');
@@ -192,6 +196,8 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
 
     Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
+
+    Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
 });
 
 Route::middleware(['auth:web'])->group(function () {

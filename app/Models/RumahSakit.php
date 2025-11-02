@@ -99,7 +99,7 @@ class RumahSakit extends Model
                                     $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
                                 })->get();
         while($jamBuka < $jamTutup){
-            if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka == $dataPemeriksaan->rentangWaktuKedatangan && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
+            if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
                 $listJam[] = $jamBuka->format('H:i');
                 $jamBuka->addHour();
                 continue;

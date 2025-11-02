@@ -18,6 +18,7 @@ class DataPemeriksaan extends Model
         'rentangWaktuKedatangan',
         'namaPendamping',
         'nomorPendamping',
+        'hubunganPendamping',
         'historyJenisPemeriksaan',
         'historyTanggalPemeriksaan',
         'historyJamPemeriksaan',

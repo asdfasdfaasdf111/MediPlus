@@ -23,6 +23,7 @@ return new class extends Migration
             $table->time('rentangWaktuKedatangan');
             $table->string('namaPendamping')->nullable();
             $table->string('nomorPendamping')->nullable();
+            $table->enum('hubunganPendamping', ['-', 'Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'])->nullable();
             $table->string('historyJenisPemeriksaan')->nullable();
             $table->date('historyTanggalPemeriksaan')->nullable();
             $table->time('historyJamPemeriksaan')->nullable();

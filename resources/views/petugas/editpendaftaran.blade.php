@@ -25,7 +25,7 @@
     };
 </script>
 
-<form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => false]) }}">
+<form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => "false"]) }}">
     @csrf
     @method('PUT')
     <div>Pilih Jadwal Pemeriksaan</div>
@@ -65,7 +65,7 @@
     <div id="rentangWaktuKedatangan" class="d-flex flex-wrap gap-2">
         @php
             $timeSlots = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
-        @endphp
+            @endphp
 
         @foreach ($timeSlots as $slot)
             <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>

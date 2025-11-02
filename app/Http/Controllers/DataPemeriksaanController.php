@@ -47,8 +47,9 @@ class DataPemeriksaanController extends Controller
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
-
-        if ($draft == "1") $draft = true;
+        
+        
+        if ($draft == "1" || $draft == "true") $draft = true;
         else $draft = false;
 
         $user = auth()->user();
@@ -165,5 +166,27 @@ class DataPemeriksaanController extends Controller
         ]);
         
         return redirect()->route('pasien.daftartipepasien');
+    }
+
+    public function updateTipePasien(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $masterPasien = auth()->user()->masterPasien;
+
+        $dataPasien = $masterPasien->dataPasien()
+                                    ->where('id', $request->pilihPasien)
+                                    ->first();
+        
+        if (!$dataPasien){
+            return back()->withErrors([
+                'dataPasien' => 'Data Pasien ini tidak ada',
+            ]);
+        }
+
+        $dataPemeriksaan->data_pasien_id = $request->pilihPasien;
+        $dataPemeriksaan->namaPendamping = $request->namaPendamping;
+        $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
+        $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('pasien.daftardatarujukan');
     }
 }

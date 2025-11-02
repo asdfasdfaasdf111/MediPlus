@@ -17,13 +17,13 @@
     $draftPasien = $draftData->dataPasien;
 @endphp
 
-<form method="POST" action="{{ route('belumdibikin') }}">
+<form method="POST" action="{{ route('pasien.updateTipePasien', $draftData) }}">
     @csrf
     @method('PUT')
     <div>Tipe Pasien</div>
     <div>Pilih Pasien</div>
     <select id="pilihPasien" name="pilihPasien" class="form-control" required>
-        <option value="-" disabled  {{ $draftRumahSakit ? '' : 'selected' }}>
+        <option value="-" disabled  {{ $draftPasien ? '' : 'selected' }}>
             -
         </option>
         @foreach($masterPasien->dataPasien as $pasien)
@@ -34,67 +34,35 @@
     </select>
 
     <div>Data Pendamping (Isi jika ada)</div>
-    <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-control" required>
-        @if ($draftData)
-            @foreach($draftRumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-                <option value="{{ $namaJenisPemeriksaan }}" {{ $namaJenisPemeriksaan == $draftJenisPemeriksaan->namaJenisPemeriksaan ? 'selected' : '' }}>
-                    {{ $namaJenisPemeriksaan }}
-                </option>
-            @endforeach
-        @endif
-    </select>
+    <div>Nama Pendamping </div>
+    <input type="text"  class="form-control"
+                        name="namaPendamping" id="namaPendamping"
+                        placeholder="Nama Pendamping"
+                        @if(!empty($draftData->namaPendamping))
+                            value="{{ $draftData->namaPendamping }}"
+                        @endif>
 
-    <div>Pemeriksaan Spesifik</div>
-    <select id="jenisPemeriksaanSpesifik" name="jenisPemeriksaanSpesifik" class="form-control" required>
-        @if ($draftData)
-            <option value="-" disabled>
-                -
+    <div>Kontak Pendamping </div>
+    <input type="text"  class="form-control"
+                        name="nomorPendamping" id="nomorPendamping"
+                        placeholder="Nomor Handphone"
+                        @if(!empty($draftData->nomorPendamping))
+                            value="{{ $draftData->nomorPendamping }}"
+                        @endif>
+
+    <div>Hubungan dengan Pasien</div>
+    <select id="hubunganPendamping" name="hubunganPendamping" class="form-control">
+        <option value="">Pilih Hubungan</option>
+        @foreach (['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'] as $option)
+            <option value="{{ $option }}"
+                {{ $draftData->hubunganPendamping === $option ? 'selected' : '' }}>
+                {{ $option }}
             </option>
-            @foreach($draftRumahSakit->jenisPemeriksaanSpesifik($draftJenisPemeriksaan->namaJenisPemeriksaan)->get() as $pemeriksaanSpesifik)
-                <option value="{{ $pemeriksaanSpesifik->id }}" {{ $pemeriksaanSpesifik->id == $draftJenisPemeriksaan->id ? 'selected' : '' }}>
-                    {{ $pemeriksaanSpesifik->namaPemeriksaanSpesifik }}
-                </option>
-            @endforeach
-        @endif
+        @endforeach
     </select>
-
-    <div>Tanggal Pemeriksaan</div>
-    <input type="hidden" name="tanggalPemeriksaan" id="tanggalPemeriksaanInput">
-    
-
-    @if ($draftData)
-        <x-calendar 
-            :disabled-dates="$draftRumahSakit->jadwalPenuh($draftJenisPemeriksaan)" 
-            :default-date="$draftData->tanggalPemeriksaan" 
-            id="tanggalPemeriksaan" 
-            name="tanggalPemeriksaan"
-            required/>
-    @else
-        <x-calendar 
-            id="tanggalPemeriksaan" 
-            name="tanggalPemeriksaan"
-            required/>
-    @endif
-
-
-    <label class="form-label fw-bold">Rentang Waktu Kedatangan</label>
-    <div id="rentangWaktuKedatangan" class="d-flex flex-wrap gap-2">
-        @if ($draftData)
-            @php
-                $timeSlots = $draftRumahSakit->jamTersedia($draftJenisPemeriksaan, $draftData->tanggalPemeriksaan, $draftData);
-            @endphp
-
-            @foreach ($timeSlots as $slot)
-                <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($draftData->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>
-                <label class="btn btn-outline-secondary" for="slot-{{ $loop->index }}">
-                    {{ Carbon::parse($slot)->format('H:i') }} - {{ Carbon::parse($slot)->addHour()->format('H:i') }}
-                </label>
-            @endforeach
-        @endif
-    </div>
 
     <div class="d-flex justify-content-center gap-3 pt-3">
-        <a href="{{ route('pasien.pendaftaran') }}" 
+        <a href="{{ route('pasien.daftarpilihjadwal') }}" 
            class="btn btn-outline-primary px-5 rounded-pill">
            Kembali
         </a>

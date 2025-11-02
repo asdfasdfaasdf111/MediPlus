@@ -20,7 +20,7 @@
     $draftJenisPemeriksaan = $draftData?->jenisPemeriksaan;
 @endphp
 
-<form method="POST" action="{{ $draftData ? route('updateJadwal', ['dataPemeriksaan' => $draftData, 'draft' => true]) : route('pasien.bikinDraft') }}">
+<form method="POST" action="{{ $draftData ? route('updateJadwal', ['dataPemeriksaan' => $draftData, 'draft' => "true"]) : route('pasien.bikinDraft') }}">
     @csrf
     {{-- kalo ad draft brarti edit draftny, kalo engga brarti bikin data baru --}}
     @if ($draftData)
@@ -66,9 +66,10 @@
     </select>
 
     <div>Tanggal Pemeriksaan</div>
-    <input type="hidden" name="tanggalPemeriksaan" id="tanggalPemeriksaanInput">
-    
-
+    <input type="hidden" name="tanggalPemeriksaan" id="tanggalPemeriksaanInput"
+        @if($draftData)
+            value="{{ $draftData->tanggalPemeriksaan }}"
+        @endif>
     @if ($draftData)
         <x-calendar 
             :disabled-dates="$draftRumahSakit->jadwalPenuh($draftJenisPemeriksaan)" 

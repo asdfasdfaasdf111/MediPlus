@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('permintaanPemeriksaan');
             $table->string('formulirRujukan');
             $table->foreignId('data_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('namaFile');
             $table->timestamps();
         });
     }

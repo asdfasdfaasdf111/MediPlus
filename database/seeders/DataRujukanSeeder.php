@@ -24,7 +24,8 @@ class DataRujukanSeeder extends Seeder
             'alasanRujukan' => 'Perlu scan',
             'tanggalPemeriksaanFaskes' => now()->toDateString(),
             'permintaanPemeriksaan' => 'CT-Scan',
-            'formulirRujukan' => 'file/rujukan/rujukanA' 
+            'formulirRujukan' => 'file/rujukan/rujukanA',
+            'namaFile' => 'rujukanA',
         ]);
     }
 }

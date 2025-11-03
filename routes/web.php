@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DataPemeriksaanController;
 use App\Http\Controllers\DataPasienController;
+use App\Http\Controllers\DataRujukanController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\JenisPemeriksaanController;
@@ -175,6 +176,10 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
         return view('pasien.daftardatarujukan');
     })->name('pasien.daftardatarujukan');
 
+    Route::get('/daftarringkasan', function () {
+        return view('pasien.daftarringkasan');
+    })->name('pasien.daftarringkasan');
+
     // Form tambah & simpan Data Pasien
     Route::get('/pendaftaran/datapasien/create', [PendaftaranController::class, 'createDataPasien'])
         ->name('pasien.datapasien.create');
@@ -196,8 +201,12 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
 
     Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
+    Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
 
     Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
+    Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
+    Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
+
 });
 
 Route::middleware(['auth:web'])->group(function () {

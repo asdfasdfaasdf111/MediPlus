@@ -185,8 +185,24 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->namaPendamping = $request->namaPendamping;
         $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
         $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
+        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
+        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
+        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;
+        $dataPemeriksaan->riwayatNoHP = $dataPasien->riwayatNoHP;
+        $dataPemeriksaan->riwayatAlergi = $dataPasien->riwayatAlergi;
+        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->riwayatGolonganDarah;
         $dataPemeriksaan->save();
         
         return redirect()->route('pasien.daftardatarujukan');
+    }
+
+    public function finalisasiDraft(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $dataPemeriksaan->statusUtama = 'Pending';
+        $dataPemeriksaan->statusDokter = 'Pendaftaran Baru';
+        $dataPemeriksaan->statusPetugas = 'Pendaftaran Baru';
+        $dataPemeriksaan->statusPasien = 'Pendaftaran Terkirim';
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('pasien.pendaftaran');
     }
 }

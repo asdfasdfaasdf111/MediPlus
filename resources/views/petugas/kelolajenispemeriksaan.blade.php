@@ -80,13 +80,13 @@
           <div class="table-responsive">
             <table class="table align-middle mb-0" style="table-layout: fixed;">
               <colgroup>
-                <col style="width:10%;">  {{-- Modalitas --}}
-                <col style="width:20%;">  {{-- Nama Jenis --}}
-                <col style="width:20%;">  {{-- Spesifik --}}
-                <col style="width:10%;">  {{-- Kelompok --}}
-                <col style="width:15%;">  {{-- Kontras --}}
-                <col style="width:12%;">  {{-- Lama --}}
-                <col style="width:10%;">  {{-- Didampingi --}}
+                <col style="width:10%;">  
+                <col style="width:20%;">  
+                <col style="width:20%;">  
+                <col style="width:10%;">  
+                <col style="width:15%;">  
+                <col style="width:12%;">  
+                <col style="width:10%;">  
                 <col style="width:160px;">
               </colgroup>
 

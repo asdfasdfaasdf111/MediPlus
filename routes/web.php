@@ -21,6 +21,14 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 Route::get('/', function () {
     return view('authentication/login');
@@ -32,11 +40,23 @@ Route::get('/email/verify', function (){
     return redirect('/login');
 })->middleware('auth')->name('verification.notice');
 
-//kalo user klik tombol verify di gmail mreka, bakal di redirect kesini
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/login');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $user = User::findOrFail($id);
+
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403, 'Link verifikasi tidak valid.');
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
+    return redirect()
+        ->route('login')
+        ->with('success', 'Email Anda berhasil diverifikasi. Silahkan login.');
+})->middleware('signed')->name('verification.verify');
+
 
 //fungsi buat kirim email verification ulang
 Route::post('/email/verification-notification', function (Request $request) {
@@ -54,6 +74,60 @@ Route::post('/register', [AuthenticationController::class, 'registerPasien'])->n
 
 //Logout
 Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+
+//Forgot Password dari Library Laravel -> buat view isi email
+Route::get('/forgotpassword', function () {
+    return view('authentication.forgotpassword');
+})->middleware('guest')->name('password.request');
+
+
+//Form Submission Forgot Password
+Route::post('/forgotpassword', function (HttpRequest $request) {
+    $request->validate([
+        'email' => ['required', 'email'],
+    ]);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+        ? back()->with('status', 'Link reset password telah dikirim ke email Anda.')
+        : back()->withErrors(['email' => 'Email tidak terdaftar atau gagal mengirim link.']);
+})->middleware('guest')->name('password.email');
+
+//Form Reset Password
+Route::get('/resetpassword/{token}', function (HttpRequest $request, $token) {
+    return view('authentication.resetpassword', [
+        'token' => $token,
+        'email' => $request->query('email'),
+    ]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/resetpassword', function (HttpRequest $request) {
+    $request->validate([
+        'token'    => ['required'],
+        'email'    => ['required', 'email'],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+ 
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('success', 'Password berhasil direset. Silahkan login kembali.')
+        : back()->withErrors(['email' => 'Token tidak valid atau email tidak sesuai.']);
+    })->middleware('guest')->name('password.update');
 
 
 
@@ -107,8 +181,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 
 Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
     Route::get('/homepage', function(){
-        return view('petugas.homepage');
-    })->name('petugas.homepage');
+        return view('petugas.dashboard');
+    })->name('petugas.dashboard');
 
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
@@ -196,6 +270,7 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     //FaQ page
     Route::view('/faq', 'pasien.faq')->name('pasien.faq');
     Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
+
 
 });
 

@@ -26,6 +26,15 @@
     {{-- Content --}}
     <div class="col-md-10 p-4 bg-light">
 
+            {{-- Alert Success --}}
+      @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mx-1 mx-md-0 mt-2" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      @endif
+      
       <div class="card shadow-sm">
         <h4 class="text-center mb-1 pt-5">Change Password</h4>
         <p class="text-center text-muted mb-4">Perbarui kata sandi akun Anda</p>
@@ -36,7 +45,6 @@
 
           <div class="card-body px-5">
 
-            {{-- ================== KEAMANAN ================== --}}
             <div class="mb-4">
               <div class="d-flex align-items-center">
                 <i class="bi bi-shield-lock me-2"></i>

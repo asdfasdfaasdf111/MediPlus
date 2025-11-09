@@ -24,6 +24,29 @@
           <h2 class="fw-bold mb-2 text-primary">Selamat Datang!</h2>
           <p class="mb-4 text-muted">Silahkan masuk ke dalam akun Anda.</p>
 
+          @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              {{ session('success') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+
+          @if ($errors->has('login'))
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+              {{ $errors->first('login') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+
+          @if ($errors->has('email_not_verified'))
+            <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              {{ $errors->first('email_not_verified') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+          
           <form action="{{ route('login') }}" method="POST">
             @csrf
 
@@ -42,11 +65,17 @@
                 <div class="invalid-feedback">Password salah</div>
               @enderror
             </div>
-
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="remember" name="remember">
-              <label class="form-check-label" for="remember">Ingat Saya</label>
+            
+            <div class="mb-3 form-check d-flex justify-content-between align-items-center">
+              <div>
+                <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                <label class="form-check-label" for="remember">Ingat Saya</label>
+              </div>
+              <a href="{{ route('password.request') }}" class="small text-decoration-none">
+                  Lupa password?
+              </a>
             </div>
+
 
             <div class="d-grid mb-3">
               <button type="submit" class="btn btn-primary">Masuk</button>

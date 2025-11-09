@@ -11,8 +11,6 @@
 
 <div class="container-fluid vh-100">
   <div class="row h-100">
-
-    {{-- Kiri: Gambar --}}
     <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center">
       <div class="position-absolute top-0 start-0 p-4">
         <img src="{{ asset('images/Mediplus.png') }}" alt="Logo" height="40">
@@ -29,7 +27,6 @@
           Masukkan email yang terdaftar. Jika sesuai, kami akan mengirimkan link untuk mengatur ulang password Anda.
         </p>
 
-        {{-- Alert sukses/status --}}
         @if (session('status'))
           <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
             <i class="bi bi-check-circle-fill me-2"></i>

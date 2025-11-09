@@ -20,8 +20,8 @@
       <div class="col-md-2 min-vh-100 p-3 border-end">
         <ul class="nav flex-column">
           <li class="nav-item mb-2">
-            <a href="{{ route('petugas.homepage') }}"
-               class="nav-link {{ request()->routeIs('petugas.homepage') ? 'text-primary fw-bold' : 'text-dark' }}">
+            <a href="{{ route('petugas.dashboard') }}"
+               class="nav-link {{ request()->routeIs('petugas.dashboard') ? 'text-primary fw-bold' : 'text-dark' }}">
               <i class="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
           </li>
@@ -43,7 +43,7 @@
       {{-- CONTENT --}}
       <div class="col-md-10 p-4 bg-light">
 
-        {{-- Header (Search + Tambah) --}}
+        {{-- Search --}}
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
           <div class="flex-grow-1 me-3">
             <form action="" method="GET">
@@ -76,20 +76,26 @@
             </small>
           </div>
 
-          <div class="table-responsive">
-            <table class="table align-middle mb-0">
+         <div class="table-responsive">
+            <table class="table align-middle mb-0"  style="table-layout: fixed;">
+              <colgroup>
+                <col style="width:30%;">  
+                <col style="width:36%;">   
+                <col style="width:31%;">  
+                <col style="width:160px;">
+              </colgroup>
+
               <thead class="table-light">
                 <tr class="align-middle">
                   <th>Nama Modalitas</th>
                   <th>Jenis Modalitas</th>
                   <th>Kode Ruang</th>
-                  <th class="text-center" style="width: 140px;"></th>
+                  <th class="text-center"></th>
                 </tr>
               </thead>
               <tbody>
                 @forelse($modalitass as $modalitas)
                   <tr id="row-{{ $modalitas->id }}">
-                    {{-- Nama Modalitas --}}
                     <td>
                       <span data-name="namaModalitas" class="view-field">{{ $modalitas->namaModalitas }}</span>
                       <input type="text" name="namaModalitas"
@@ -97,7 +103,6 @@
                              value="{{ $modalitas->namaModalitas }}">
                     </td>
 
-                    {{-- Jenis Modalitas --}}
                     <td>
                       <span data-name="jenisModalitas" class="view-field">{{ $modalitas->jenisModalitas }}</span>
                       <input type="text" name="jenisModalitas"
@@ -105,7 +110,6 @@
                              value="{{ $modalitas->jenisModalitas }}">
                     </td>
 
-                    {{-- Kode Ruang --}}
                     <td>
                       <span data-name="kodeRuang" class="view-field">{{ $modalitas->kodeRuang }}</span>
                       <input type="text" name="kodeRuang"
@@ -113,7 +117,6 @@
                              value="{{ $modalitas->kodeRuang }}">
                     </td>
 
-                    {{-- Actions --}}
                     <td class="text-center">
                       <div class="d-flex justify-content-center gap-2">
                         <button type="button"
@@ -155,7 +158,6 @@
             </table>
           </div>
 
-          {{-- Pagination (jika paginator) --}}
           @if(method_exists($modalitass,'links'))
             <div class="card-footer">
               {{ $modalitass->appends(request()->query())->links() }}
@@ -163,7 +165,6 @@
           @endif
         </div>
 
-        {{-- FOOTER SEDERHANA --}}
         <div class="text-center text-muted small py-3">
           © {{ date('Y') }} MediPlus — Petugas Panel
         </div>

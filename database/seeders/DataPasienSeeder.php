@@ -41,6 +41,7 @@ class DataPasienSeeder extends Seeder
             'noHP' => '08123456789',
             'alergi' => 'Udang',
             'golonganDarah' => 'O',
+            'hubunganKeluarga' => 'Diri Sendiri',
         ]);
     }
 }

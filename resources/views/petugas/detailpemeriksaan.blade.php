@@ -111,4 +111,4 @@
     <div>Formulir Rujukan: {{ $dataRujukan->formulirRujukan }}</div>
 </div>
 
-<a href="{{ route('petugas.homepage') }}"> Kembali </a>
+<a href="{{ route('petugas.dashboard') }}"> Kembali </a>

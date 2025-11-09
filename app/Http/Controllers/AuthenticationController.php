@@ -17,12 +17,15 @@ class AuthenticationController extends Controller
     }
     
     public function login(Request $request){
+        //1. Validasi input
         $request->validate([
             'email'=> 'required|email', 
             'password'=> 'required'
         ]);
 
+        //2. Cari user by email
         $user = User::where('email', $request->email)->first();
+
 
         if (!$user) {
             return back()->withErrors([
@@ -36,10 +39,21 @@ class AuthenticationController extends Controller
             ])->withInput();
         }
 
-        Auth::login($user);
-        $role = $user->role;
+        //3. Izin tambahin, mau cek verifikasi
+         if (method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
 
-        return match ($role) {
+        $user->sendEmailVerificationNotification();
+
+        return back()
+            ->withErrors([
+                'email_not_verified' => 'Akun Anda belum terverifikasi. Kami telah mengirim ulang link verifikasi ke email Anda.'
+            ])
+            ->withInput();
+        }
+
+        Auth::login($user, $request->boolean('remember')); //izin tambahin kata gpt buat yang remember hehe
+
+        return match ($user->role) {
             'superadmin' => redirect('/superadmin/homepage'),
             'admin' => redirect('/admin/homepage'),
             'petugas' => redirect('/petugas/homepage'),
@@ -79,8 +93,11 @@ class AuthenticationController extends Controller
         ]);
 
         $user->sendEmailVerificationNotification();
-        Auth::login($user);
-        return redirect('/pasien/homepage')->with('success', 'Pendaftaran berhasil!');
+
+        //izin ubah biar ada alert user cek email verifikasi
+        return redirect()
+            ->route('login')
+            ->with('success', 'Registrasi berhasil! Silahkan cek email Anda untuk verifikasi akun.');
     }
 
     public function logout(){

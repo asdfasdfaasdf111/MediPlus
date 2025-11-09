@@ -20,8 +20,8 @@
       <div class="col-md-2 min-vh-100 p-3 border-end">
         <ul class="nav flex-column">
           <li class="nav-item mb-2">
-            <a href="{{ route('petugas.homepage') }}"
-               class="nav-link {{ request()->routeIs('petugas.homepage') ? 'text-primary fw-bold' : 'text-dark' }}">
+            <a href="{{ route('petugas.dashboard') }}"
+               class="nav-link {{ request()->routeIs('petugas.dashboard') ? 'text-primary fw-bold' : 'text-dark' }}">
               <i class="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
           </li>
@@ -68,7 +68,7 @@
         </div>
 
 
-        {{-- TABEL: DOM & ATRIBUT PERSIS KODE TEMANMU (jangan diubah) --}}
+        {{-- TABEL--}}
         <div class="card">
           <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
             <span></span>
@@ -78,19 +78,30 @@
           </div>
 
           <div class="table-responsive">
-            <table class="table align-middle mb-0">
+            <table class="table align-middle mb-0" style="table-layout: fixed;">
+              <colgroup>
+                <col style="width:10%;">  {{-- Modalitas --}}
+                <col style="width:20%;">  {{-- Nama Jenis --}}
+                <col style="width:20%;">  {{-- Spesifik --}}
+                <col style="width:10%;">  {{-- Kelompok --}}
+                <col style="width:15%;">  {{-- Kontras --}}
+                <col style="width:12%;">  {{-- Lama --}}
+                <col style="width:10%;">  {{-- Didampingi --}}
+                <col style="width:160px;">
+              </colgroup>
+
               <thead class="table-light">
                 <tr class="align-middle">
-                    <th>Modalitas</th>
-                    <th>Nama Jenis Pemeriksaan</th>
-                    <th>Nama Pemeriksaan Spesifik</th>
-                    <th>Kelompok Jenis Pemeriksaan</th>
-                    <th>Memakai Kontras</th>
-                    <th>Lama Pemeriksaan</th>
-                    <th>Didampingi Dokter</th>
-                    <th></th>
+                  <th>Modalitas</th>
+                  <th>Nama Jenis</th>
+                  <th>Spesifik</th>
+                  <th>Kelompok</th>
+                  <th class="text-center">Kontras</th>
+                  <th>Durasi</th>
+                  <th class="text-center">Didampingi</th>
+                  <th></th>
                 </tr>
-                </thead>
+              </thead>
 
               <tbody>
                 @forelse($jenisPemeriksaans as $jenisPemeriksaan)
@@ -126,8 +137,8 @@
                            value="{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}">
                   </td>
 
-                  <td>
-                    <span data-type="checkbox" data-name="pemakaianKontras" class="view-field">
+                  <td class="text-center align-middle">
+                    <span data-type="checkbox" data-name="pemakaianKontras" class="view-field ">
                       {{ $jenisPemeriksaan->pemakaianKontras ? 'Ya' : 'Tidak' }}
                     </span>
                     <input type="checkbox" name="pemakaianKontras" class="edit-field d-none" value="1"
@@ -138,11 +149,11 @@
                     <span data-name="lamaPemeriksaan" class="view-field">{{ $jenisPemeriksaan->lamaPemeriksaan }}</span>
                     <input type="number" name="lamaPemeriksaan" min="1"
                            class="form-control form-control-sm text-center edit-field d-none"
-                           value="{{ $jenisPemeriksaan->lamaPemeriksaan }}" style="max-width:100px">
+                           value="{{ $jenisPemeriksaan->lamaPemeriksaan }}" style="max-width:70px">
                     <span> Menit</span>
                   </td>
 
-                  <td>
+                  <td class="text-center align-middle">
                     <span data-type="checkbox" data-name="diDampingiDokter" class="view-field">
                       {{ $jenisPemeriksaan->diDampingiDokter ? 'Ya' : 'Tidak' }}
                     </span>
@@ -198,11 +209,10 @@
           @endif
         </div>
 
-        {{-- FOOTER SEDERHANA (atau gunakan includeIf jika punya footer admin) --}}
+        {{-- FOOTER --}}
         <div class="text-center text-muted small py-3">
           © {{ date('Y') }} MediPlus — Petugas Panel
         </div>
-        {{-- @includeIf('layout.footer2') --}}
       </div>
     </div>
   </div>

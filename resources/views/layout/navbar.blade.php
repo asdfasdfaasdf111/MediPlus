@@ -16,8 +16,8 @@
            href="{{ url('/pasien/tentangkami') }}">Tentang Kami</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('pasien/pemeriksaan') ? 'active fw-bold text-primary' : '' }}" 
-           href="{{ url('/pasien/pemeriksaan') }}">Pemeriksaan</a>
+        <a class="nav-link {{ request()->is('pasien/pendaftaran') ? 'active fw-bold text-primary' : '' }}" 
+           href="{{ url('/pasien/pendaftaran') }}">Pemeriksaan</a>
       </li>
       <li class="nav-item">
         <a class="nav-link {{ request()->is('pasien/faq') ? 'active fw-bold text-primary' : '' }}" 

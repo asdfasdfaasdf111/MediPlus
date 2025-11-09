@@ -19,9 +19,9 @@
     <div class="col-md-2 min-vh-100 p-3 border-end">
         <ul class="nav flex-column">
             <li class="nav-item mb-2">
-            <a href="{{ route('petugas.homepage') }}"
-                class="nav-link {{ request()->routeIs('petugas.homepage') ? 'text-primary fw-bold' : 'text-dark' }}"
-                aria-current="{{ request()->routeIs('petugas.homepage') ? 'page' : '' }}">
+            <a href="{{ route('petugas.dashboard') }}"
+                class="nav-link {{ request()->routeIs('petugas.dashboard') ? 'text-primary fw-bold' : 'text-dark' }}"
+                aria-current="{{ request()->routeIs('petugas.dashboard') ? 'page' : '' }}">
                 <i class="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
             </li>

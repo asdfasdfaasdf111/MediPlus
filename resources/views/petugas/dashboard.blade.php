@@ -18,7 +18,6 @@
 
   <div class="container-fluid">
     <div class="row">
-      {{-- SIDEBAR (kiri) --}}
       <div class="col-md-2 min-vh-100 p-3 border-end">
         <ul class="nav flex-column">
           <li class="nav-item mb-2">
@@ -42,10 +41,7 @@
         </ul>
       </div>
 
-      {{-- KONTEN (kanan) --}}
       <div class="col-md-10 p-4">
-
-        {{-- Header: Search + tombol Dashboard --}}
         <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
           <form action="" method="GET" class="flex-grow-1">
             <div class="input-group">
@@ -57,7 +53,6 @@
         
         </div>
 
-        {{-- Status --}}
         @php $aktif = request('status','semua'); @endphp
         <ul class="nav nav-tabs border-0 mb-2">
           @foreach ([
@@ -74,10 +69,8 @@
           @endforeach
         </ul>
 
-        {{-- List Kartu Pemeriksaan --}}
         @forelse ($petugas->dataPemeriksaan as $dp)
           @php
-            // Filter sesuai tab (opsional; jika sudah difilter di controller, hapus blok if ini)
             $s = strtolower($dp->statusUtama ?? '');
             if ($aktif !== 'semua') {
               $map = [
@@ -98,7 +91,7 @@
             $jamMulai= $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->format('H : i') : '-';
             $jamAkhir= $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->addHour()->format('H : i') : '-';
 
-            // Label kanan kecil
+            // Label yang di kanan atas
             $labelKanan = match (strtolower($dp->statusPetugas ?? '')) {
               'pendaftaran baru'   => 'PENDAFTARAN BARU',
               'menunggu konfirmasi'=> 'MENUNGGU KONFIRMASI',
@@ -106,7 +99,6 @@
               default              => strtoupper($dp->statusPetugas ?? ''),
             };
 
-            // Warna status kiri
             $statusUtama = strtoupper($dp->statusUtama ?? 'PENDING');
             $statusClass = match (strtolower($statusUtama)) {
               'pending'     => 'text-warning',
@@ -123,7 +115,6 @@
           <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
             <div class="card-body p-0">
 
-              {{-- Header --}}
               <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
                 <div class="small">No : <span class="fw-semibold">{{ $noReg }}</span></div>
                 @php $rightLabel = $labelKanan ?: $statusUtama; @endphp
@@ -134,17 +125,14 @@
 
               <hr class="my-0">
 
-              {{-- Body (3 kolom) --}}
-              <div class="row g-3 p-4 align-items-center">
 
-                {{-- Kolom 1: status besar --}}
+              <div class="row g-3 p-4 align-items-center">
                 <div class="col-md-2 d-flex align-items-center justify-content-center">
                   <div class="{{ $statusClass }} fw-bold" style="font-size:1.1rem;">
                     {{ $statusUtama }}
                   </div>
                 </div>
 
-                {{-- Kolom 2: detail --}}
                 <div class="col-md-8">
                   <div class="row gy-1">
                     <div class="col-5 text-muted">Nama Lengkap Pasien</div>
@@ -171,7 +159,6 @@
                   </div>
                 </div>
 
-                {{-- Kolom 3: tombol --}}
                 <div class="col-md-2 d-flex flex-column align-items-center gap-2">
                   @if ($isPending)
                     <a href="{{ route('petugas.pratinjaupemeriksaan', $dp) }}" class="btn btn-success w-100">
@@ -188,7 +175,6 @@
 
               <hr class="my-0">
 
-              {{-- Footer aksi ringan (opsional) --}}
               <div class="px-4 py-2 d-flex justify-content-end">
                 <button class="btn btn-sm btn-light border" disabled>
                   <i class="bi bi-paperclip me-1"></i> Lampiran
@@ -202,14 +188,13 @@
           </div>
         @endforelse
 
-        {{-- Footer kecil --}}
         <div class="text-center text-muted small py-3">
           © {{ date('Y') }} MediPlus — Petugas Panel
         </div>
 
-      </div>{{-- /col-md-10 --}}
-    </div>{{-- /row --}}
-  </div>{{-- /container-fluid --}}
+      </div>
+    </div>
+  </div>
 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>

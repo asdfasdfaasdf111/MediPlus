@@ -1,139 +1,335 @@
+{{-- resources/views/petugas/detail-pemeriksaan.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pemeriksaan Petugas</title>
-    <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Pemeriksaan Petugas</title>
+  <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
 @php
-    use Carbon\Carbon;
-    $rumahSakit = $dataPemeriksaan->rumahSakit;
-    $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
-    $dataPasien = $dataPemeriksaan->dataPasien;
-    $dataRujukan = $dataPemeriksaan->dataRujukan;
+  use Carbon\Carbon;
+  $rumahSakit       = $dataPemeriksaan->rumahSakit;
+  $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+  $dataPasien       = $dataPemeriksaan->dataPasien;
+  $dataRujukan      = $dataPemeriksaan->dataRujukan;
+
+  // Mask nomor identitas (logic tetap sama) kayaknya gapakai
+
+
+  // End time (hanya display)
+  $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString();
 @endphp
 
-<div>Ringkasan Pemeriksaan</div>
-<div>
-    <div>Pilih Jadwal</div>
-    <div>Rumah Sakit: {{ $rumahSakit->nama }}</div>
-    <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
-    <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
-    <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</div>
-    <a href="{{ route('petugas.editpendaftaran', $dataPemeriksaan) }}"> Ubah Detail </a>
-</div>
-==========================================================
-<div>
-    <div>Tipe Pasien</div>
-    {{-- yang di comment itu antara uda ga diperlukan(kayanya, bahas dlu), atau datanya ga disimpan --}}
-    {{-- <div>Tipe Pasien: </div>
-    <div>Nomor Rekam Medis: </div>
-    <div>Pendaftaran dilakukan untuk: </div>
-    <div>Hubungan dengan Pasien: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div> --}}
-    <div>
-        Nama Pendamping: 
-        @if (!empty($dataPemeriksaan->namaPendamping))
-            {{$dataPemeriksaan->namaPendamping}}
-        @else
-            -
-        @endif
-    </div>
-    <div>
-        Nomor Telepon Pendamping: 
-        @if (!empty($dataPemeriksaan->nomorPendamping))
-            {{$dataPemeriksaan->nomorPendamping}}
-        @else
-            -
-        @endif
-    </div>
-    <div>
-        Catatan: 
-        @if (!empty($dataPemeriksaan->catatanPetugas))
-            {{$dataPemeriksaan->catatanPetugas}}
-        @else
-            -
-        @endif
-    </div>
-</div>
-==========================================================
-<div>
-    <div>Formulir Data Diri</div>
-    <div>Nama Lengkap: {{ $dataPasien->namaLengkap }}</div>
-    <div>Jenis Kelamin: {{ $dataPemeriksaan->riwayatJenisKelamin }}</div>
-    <div>Tanggal Lahir: {{ $dataPemeriksaan->riwayatTanggalLahir }}</div>
-    <div>Golongan Darah: {{ $dataPemeriksaan->riwayatGolonganDarah }}</div>
-    <div>Jenis Kartu Identitas: {{ $dataPasien->jenisIdentitas }}</div>
-    <div>
-        Nomor Identitas: 
-        @php
-            $start = substr($dataPasien->noIdentitas, 0, 4);
-            for ($i = 0; $i < strlen($dataPasien->noIdentitas) - 4; $i++){
-                $start .= 'X';
-            }
-        @endphp
-        {{ $start }}
-    </div>
-    <div>Alamat Domisili: {{ $dataPemeriksaan->riwayatAlamatDomisili }}</div>
-    <div>Nomor Telepon Aktif: {{ $dataPemeriksaan->riwayatNoHP }}</div>
-    <div>
-        Apakah Pasien memiliki Alergi: 
-        @if (!empty($dataPemeriksaan->riwayatAlergi))
-            Ya
-        @else
-            Tidak
-        @endif
-    </div>
-    <div>
-        Deskripsi Alergi: 
-        @if (!empty($dataPemeriksaan->riwayatAlergi))
-            {{ $dataPemeriksaan->riwayatAlergi }}
-        @else
-            -
-        @endif
-    </div>
-</div>
-==========================================================
-<div>
-    <div>Data Rujukan</div>
-    <div>Nama Fasilitas Kesehatan: {{ $dataRujukan->namaFaskes }}</div>
-    <div>Nama Dokter Perujuk: {{ $dataRujukan->namaDokterPerujuk }}</div>
-    <div>Tanggal Pemeriksaan di Klinik: {{ $dataRujukan->tanggalPemeriksaanFaskes }}</div>
-    <div>Diagnosa Kerja: {{ $dataRujukan->diagnosaKerja }}</div>
-    <div>Alasan Rujukan: {{ $dataRujukan->alasanRujukan }}</div>
-    <div>Permintaan Pemeriksaan: {{ $dataRujukan->permintaanPemeriksaan }}</div>
-    {{-- bikin jadi bnrn bisa pencet file ntr idk --}}
-    <div>Formulir Rujukan: {{ $dataRujukan->formulirRujukan }}</div>
-</div>
+<body class="bg-white text-dark">
 
-<form method="POST" action="{{ route('petugas.updatePendaftaran', $dataPemeriksaan) }}">
-    @csrf
-    @method('PUT')
-    Jadwalkan Dokter
-    <div>Dokter Radiologi </div>
-    <select name="dokterId" class="form-control edit-field">
-        @foreach($rumahSakit->dokter as $dokter)
-            <option 
-                value="{{ $dokter->id }}" 
-                @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) disabled @endif
-            >
-                {{ $dokter->user->name }}
-                @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) (Not available) @endif
-            </option>
-        @endforeach
-    </select>
-    <div class="d-flex justify-content-center gap-3 pt-3">
-        <a href="{{ route('petugas.homepage') }}" 
-           class="btn btn-outline-primary px-5 rounded-pill">
-            Kembali
-        </a>
-        <button type="submit" name="status" value="rejected" class="btn btn-sm btn-danger">
-            Tolak
-        </button>
-        <button type="submit" name="status" value="accepted" class="btn btn-primary px-5 rounded-pill">
-            Terima
-        </button>
+  {{-- NAVBAR --}}
+  @include('layout.navbar2')
+
+  <div class="container-fluid">
+    <div class="row">
+      {{-- SIDEBAR --}}
+      <div class="col-md-2 min-vh-100 p-3 border-end">
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2">
+            <a href="{{ route('petugas.dashboard') }}"
+               class="nav-link {{ request()->routeIs(['petugas.dashboard','petugas.pratinjaupemeriksaan']) ? 'text-primary fw-bold' : 'text-dark' }}">
+              <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{{ route('petugas.kelolajenispemeriksaan') }}"
+               class="nav-link {{ request()->routeIs('petugas.kelolajenispemeriksaan','petugas.tambahjenispemeriksaanpage') ? 'text-primary fw-bold' : 'text-dark' }}">
+              <i class="bi bi-clipboard2-check me-2"></i> Jenis Pemeriksaan
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{{ route('petugas.kelolamodalitas') }}"
+               class="nav-link {{ request()->routeIs('petugas.kelolamodalitas','petugas.tambahmodalitaspage') ? 'text-primary fw-bold' : 'text-dark' }}">
+              <i class="bi bi-hdd-rack me-2"></i> Modalitas
+            </a>
+          </li>
+        </ul>
+      </div>
+
+
+      {{-- KONTEN --}}
+      <main class="col-md-10 p-4">
+
+        {{-- Header halaman --}}
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+          <div class="mb-2 mb-md-0">
+            <h3 class="mb-1">Detail Pemeriksaan</h3>
+            <div class="text-muted small">
+              {{ $rumahSakit->nama }} • {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
+              @if(!empty($jenisPemeriksaan->namaPemeriksaanSpesifik)) - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }} @endif
+            </div>
+          </div>
+          <a href="{{ route('petugas.editpendaftaran', $dataPemeriksaan) }}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil-square me-1"></i> Ubah Detail
+          </a>
+        </div>
+
+        <div class="row g-3">
+
+          {{-- Ringkasan Pemeriksaan --}}
+          <div class="col-12">
+            <div class="card shadow-sm">
+              <div class="card-header fw-semibold">
+                <i class="bi bi-calendar2-week me-2"></i> Ringkasan Pemeriksaan
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="small text-muted">Rumah Sakit</div>
+                    <div class="fw-semibold">{{ $rumahSakit->nama }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="small text-muted">Jenis Pemeriksaan</div>
+                    <div class="fw-semibold">
+                      {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
+                      @if(!empty($jenisPemeriksaan->namaPemeriksaanSpesifik))
+                        - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
+                      @endif
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="small text-muted">Tanggal Pemeriksaan</div>
+                    <div class="fw-semibold">{{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="small text-muted">Rentang Waktu Kedatangan</div>
+                    <div class="fw-semibold">
+                      {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ $jamAkhir }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{-- Tipe Pasien --}}
+            <div class="col-12">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header fw-semibold">
+                    <i class="bi bi-people me-2"></i> Tipe Pasien
+                    </div>
+                    <div class="card-body">
+                    <div class="vstack gap-3">
+                        <div>
+                        <div class="small text-muted">Hubungan dengan Pasien</div>
+                        <div class="fw-semibold">{{ $dataPasien->hubunganKeluarga }}</div>
+                        </div>
+
+                        <div>
+                        <div class="small text-muted">Nama Pendamping</div>
+                        <div class="fw-semibold">
+                            @if (!empty($dataPemeriksaan->namaPendamping)) {{ $dataPemeriksaan->namaPendamping }} @else - @endif
+                        </div>
+                        </div>
+
+                        <div>
+                        <div class="small text-muted">Nomor Telepon Pendamping</div>
+                        <div class="fw-semibold">
+                            @if (!empty($dataPemeriksaan->nomorPendamping)) {{ $dataPemeriksaan->nomorPendamping }} @else - @endif
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {{-- FORMULIR DATA DIRI --}}
+            <div class="col-12" >
+                <div class="card shadow-sm h-100">
+                    <div class="card-header fw-semibold">
+                    <i class="bi bi-person-vcard me-2"></i> Formulir Data Diri
+                    </div>
+
+                    <div class="card-body">
+                    <div class="row g-4">
+                        {{-- KIRI --}}
+                        <div class="col-12 col-lg-6">
+                        <div class="mb-3">
+                            <div class="small text-muted">Nama Lengkap</div>
+                            <div class="fw-semibold">{{ $dataPasien->namaLengkap }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Tanggal Lahir</div>
+                            <div class="fw-semibold">{{ $dataPemeriksaan->riwayatTanggalLahir }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Jenis Kartu Identitas</div>
+                            <div class="fw-semibold">{{ $dataPasien->jenisIdentitas }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Nomor Identitas</div>
+                            <div class="fw-semibold">{{ $dataPasien->noIdentitas }}</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <div class="small text-muted">Nomor Telepon Aktif</div>
+                            <div class="fw-semibold">{{ $dataPemeriksaan->riwayatNoHP }}</div>
+                        </div>
+                        </div>
+
+                        {{-- KANAN --}}
+                        <div class="col-12 col-lg-6">
+                        <div class="mb-3">
+                            <div class="small text-muted">Alamat Domisili</div>
+                                <div class="fw-semibold text-break">{{ $dataPemeriksaan->riwayatAlamatDomisili }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="small text-muted">Jenis Kelamin</div>
+                                <div class="fw-semibold">{{ $dataPemeriksaan->riwayatJenisKelamin }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="small text-muted">Golongan Darah</div>
+                                <div class="fw-semibold">{{ $dataPemeriksaan->riwayatGolonganDarah }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="small text-muted">Alergi</div>
+                                <div class="fw-semibold">
+                                @if (!empty($dataPemeriksaan->riwayatAlergi)) Ya @else Tidak @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-0">
+                                <div class="small text-muted">Deskripsi Alergi</div>
+                                    <div class="fw-semibold text-break">
+                                    @if (!empty($dataPemeriksaan->riwayatAlergi))
+                                        {{ $dataPemeriksaan->riwayatAlergi }}
+                                    @else
+                                        -
+                                    @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+                    {{-- Data Rujukan --}}
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header fw-semibold">
+                    <i class="bi bi-hospital me-2"></i> Data Rujukan
+                    </div>
+                    <div class="card-body">
+                    <div class="row g-4">
+                        {{-- KIRI --}}
+                        <div class="col-12 col-lg-6">
+                        <div class="mb-3">
+                            <div class="small text-muted">Nama Fasilitas Kesehatan</div>
+                            <div class="fw-semibold">{{ $dataRujukan->namaFaskes }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Tanggal Pemeriksaan di Klinik</div>
+                            <div class="fw-semibold">{{ $dataRujukan->tanggalPemeriksaanFaskes }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Nama Dokter Perujuk</div>
+                            <div class="fw-semibold">{{ $dataRujukan->namaDokterPerujuk }}</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <div class="small text-muted">Diagnosa Kerja</div>
+                            <div class="fw-semibold">{{ $dataRujukan->diagnosaKerja }}</div>
+                        </div>
+                        </div>
+
+                        {{-- KANAN --}}
+                        <div class="col-12 col-lg-6">
+                        <div class="mb-3">
+                            <div class="small text-muted">Alasan Rujukan</div>
+                            <div class="fw-semibold text-break">{{ $dataRujukan->alasanRujukan }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Permintaan Pemeriksaan</div>
+                            <div class="fw-semibold text-break">{{ $dataRujukan->permintaanPemeriksaan }}</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <div class="small text-muted">Formulir Rujukan</div>
+                            <div class="fw-semibold text-break">{{ $dataRujukan->formulirRujukan }}</div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+          {{-- Jadwalkan Dokter --}}
+            <div class="col-12">
+                <div class="card shadow-sm">
+                <div class="card-header fw-semibold">
+                    <i class="bi bi-person-badge me-2"></i> Jadwalkan Dokter
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('petugas.updatePendaftaran', $dataPemeriksaan) }}">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-5 col-lg-4">
+                        <label class="form-label">Dokter Radiologi</label>
+                        <select name="dokterId" class="form-select">
+                            @foreach($rumahSakit->dokter as $dokter)
+                            <option
+                                value="{{ $dokter->id }}"
+                                @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) disabled @endif
+                            >
+                                {{ $dokter->user->name }}
+                                @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan))
+                                (Tidak Tersedia)
+                                @endif
+                            </option>
+                            @endforeach
+                        </select>
+                        </div>
+                    </div>
+                    </form>
+
+                    
+                </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center gap-2 gap-md-3 pt-4">
+                        <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
+                        Kembali
+                        </a>
+                        <button type="submit" name="status" value="accepted" class="btn btn-primary px-4 px-md-5 rounded-pill">
+                        Terima
+                        </button>
+                        <button type="submit" name="status" value="rejected" class="btn btn-danger px-4 px-md-5 rounded-pill">
+                        Tolak
+                        </button>
+                    </div>
+        </div>
+
+        <div class="text-center text-muted small py-3">
+          © {{ date('Y') }} MediPlus — Petugas Panel
+        </div>
+
+      </main>
     </div>
-</form>
+  </div>
+
+  <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

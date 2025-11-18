@@ -3,37 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pemeriksaan Pasien Baru</title>
+    <title>Detail Pemeriksaan Pasien</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    @vite(['resources/js/calendar.js'])
-    @vite(['resources/js/jadwal-dinamis.js'])
 </head>
 
 @php
     use Carbon\Carbon;
-    $dataPemeriksaan = $masterPasien->draftPemeriksaan;
-    $dataRujukan = $dataPemeriksaan->dataRujukan;
     $rumahSakit = $dataPemeriksaan->rumahSakit;
     $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+    $dokter = $dataPemeriksaan->dokter;
     $dataPasien = $dataPemeriksaan->dataPasien;
+    $dataRujukan = $dataPemeriksaan->dataRujukan;
 @endphp
 
-<div>Ringkasan Pendaftaran</div>
-<div>Berikut adalah pratinjau pendaftaran pemeriksaan Anda</div>
+<div>Ringkasan Pemeriksaan</div>
+
+@if (!empty($dataPemeriksaan->historyJenisPemeriksaan))
+    <div>Detail Perubahan</div>
+    @if ($dataPemeriksaan->historyJenisPemeriksaan != $dataPemeriksaan->jenis_pemeriksaan_id)
+        @php
+            $jenisLama = \App\Models\JenisPemeriksaan::find($dataPemeriksaan->historyJenisPemeriksaan);
+        @endphp
+        <div>Jenis Pemeriksaan</div>
+        <div>Data Sebelum:</div>
+        <div> {{ $jenisLama->namaJenisPemeriksaan }} - {{ $jenisLama->namaPemeriksaanSpesifik }} </div>
+        <div>Data Setelah:</div>
+        <div> {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }} </div>
+    @endif
+    @if ($dataPemeriksaan->historyTanggalPemeriksaan != $dataPemeriksaan->tanggalPemeriksaan)
+        <div>Tanggal Pemeriksaan</div>
+        <div>Data Sebelum:</div>
+        <div> {{ $dataPemeriksaan->historyTanggalPemeriksaan }} </div>
+        <div>Data Setelah:</div>
+        <div> {{ $dataPemeriksaan->tanggalPemeriksaan }} </div>
+    @endif
+    @if ($dataPemeriksaan->historyJamPemeriksaan != $dataPemeriksaan->rentangWaktuKedatangan)
+        <div>Jam Pemeriksaan</div>
+        <div>Data Sebelum:</div>
+        <div> {{ $dataPemeriksaan->historyJamPemeriksaan }} </div>
+        <div>Data Setelah:</div>
+        <div> {{ $dataPemeriksaan->rentangWaktuKedatangan }} </div>
+    @endif
+    <div>Catatan Petugas</div>
+    <div> {{$dataPemeriksaan->catatanPetugas}} </div>
+@endif
+
 <div>
     <div>Pilih Jadwal</div>
     <div>Rumah Sakit: {{ $rumahSakit->nama }}</div>
     <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
+    @if ($dokter != null)
+        <div>Dokter Radiologi: {{ $dokter->user->name }}</div>
+    @endif
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</div>
-    <a href="{{ route('pasien.daftarpilihjadwal') }}"> Ubah Jadwal </a>
 </div>
+
 ==========================================================
 <div>
     <div>Tipe Pasien</div>
-    <div>Nama Pasien: {{ $dataPasien->namaLengkap }}</div>
-    <div>Hubungan dengan Pasien: {{ $dataPemeriksaan->hubunganPendamping }}</div>
+    {{-- yang di comment itu antara uda ga diperlukan(kayanya, bahas dlu), atau datanya ga disimpan --}}
+    {{-- <div>Tipe Pasien: </div>
+    <div>Nomor Rekam Medis: </div>
+    <div>Pendaftaran dilakukan untuk: </div>
+    <div>Hubungan dengan Pasien: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div> --}}
     <div>
         Nama Pendamping: 
         @if (!empty($dataPemeriksaan->namaPendamping))
@@ -50,7 +84,6 @@
             -
         @endif
     </div>
-    <a href="{{ route('pasien.daftartipepasien') }}"> Ubah Tipe Pasien </a>
 </div>
 ==========================================================
 <div>
@@ -60,7 +93,16 @@
     <div>Tanggal Lahir: {{ $dataPemeriksaan->riwayatTanggalLahir }}</div>
     <div>Golongan Darah: {{ $dataPemeriksaan->riwayatGolonganDarah }}</div>
     <div>Jenis Kartu Identitas: {{ $dataPasien->jenisIdentitas }}</div>
-    <div>Nomor Identitas: {{ $dataPasien->noIdentitas }}</div>
+    <div>
+        Nomor Identitas: 
+        @php
+            $start = substr($dataPasien->noIdentitas, 0, 4);
+            for ($i = 0; $i < strlen($dataPasien->noIdentitas) - 4; $i++){
+                $start .= 'X';
+            }
+        @endphp
+        {{ $start }}
+    </div>
     <div>Alamat Domisili: {{ $dataPemeriksaan->riwayatAlamatDomisili }}</div>
     <div>Nomor Telepon Aktif: {{ $dataPemeriksaan->riwayatNoHP }}</div>
     <div>
@@ -89,24 +131,12 @@
     <div>Diagnosa Kerja: {{ $dataRujukan->diagnosaKerja }}</div>
     <div>Alasan Rujukan: {{ $dataRujukan->alasanRujukan }}</div>
     <div>Permintaan Pemeriksaan: {{ $dataRujukan->permintaanPemeriksaan }}</div>
-    <a href="{{ asset('storage/' . $dataRujukan->formulirRujukan) }}" target="_blank">
-        {{ $dataRujukan->namaFile }}
-    </a>
-    <div></div>
-    <a href="{{ route('pasien.daftardatarujukan') }}"> Ubah Data Rujukan </a>
+    <div>Formulir Rujukan: 
+        <a href="{{ asset('storage/' . $dataRujukan->formulirRujukan) }}" target="_blank">
+            {{ $dataRujukan->namaFile }}
+        </a>
+    </div>
+    
 </div>
 
-<form method="POST" action="{{ route('pasien.finalisasiDraft', $dataPemeriksaan) }}">
-    @csrf
-    @method('PUT')
-
-    <div class="d-flex justify-content-center gap-3 pt-3">
-        <a href="{{ route('pasien.daftardatarujukan') }}" 
-           class="btn btn-outline-primary px-5 rounded-pill">
-           Kembali
-        </a>
-        <button id="submitBtn" type="submit" class="btn btn-primary px-5 rounded-pill">
-            Berikutnya
-        </button>
-    </div>
-</form>
+<a href="{{ route('pasien.pendaftaran') }}"> Kembali </a>

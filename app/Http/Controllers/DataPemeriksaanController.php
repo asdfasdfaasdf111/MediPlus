@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataPemeriksaan;
 use App\Models\Dokter;
 use App\Models\RumahSakit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DataPemeriksaanController extends Controller
@@ -117,6 +118,45 @@ class DataPemeriksaanController extends Controller
         }
     }
 
+    public function updateTanggal(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $request->validate([
+            'tanggalPemeriksaan' => 'required|date|after:today',
+            'rentangWaktuKedatangan' => 'required|date_format:H:i',
+        ]);
+        
+        $user = auth()->user();
+
+        //kalo data yg mau diedit bukan punyanya, error
+        if ($dataPemeriksaan->masterPasien->user->id !== $user->id) {
+            return back()->withErrors([
+                'salahData' => 'Anda tidak bisa mengubah data pemeriksaan ini',
+            ]);
+        }
+
+        $rumahSakit = $dataPemeriksaan->rumahSakit;
+        $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+
+        $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $timeAvailable = false;
+        foreach ($listJam as $jam){
+            if ($jam == $request->rentangWaktuKedatangan){
+                $timeAvailable = true;
+                break;
+            }
+        }
+        if (!$timeAvailable){
+            return back()->withErrors([
+                'waktu' => 'Jadwal ini tidak tersedia!',
+            ]);
+        }
+
+        $dataPemeriksaan->tanggalPemeriksaan = $request->tanggalPemeriksaan;
+        $dataPemeriksaan->rentangWaktuKedatangan = $request->rentangWaktuKedatangan;
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('pasien.pendaftaran');
+    }
+
     public function bikinDraft(Request $request){
         $request->validate([
             'rumahSakit' => 'required|string',
@@ -203,6 +243,17 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPasien = 'Pendaftaran Terkirim';
         $dataPemeriksaan->save();
         
+        return redirect()->route('pasien.pendaftaran');
+    }
+
+    public function hapusPendaftaran(Request $request, DataPemeriksaan $dataPemeriksaan){
+        
+        $dataPemeriksaan->statusUtama = "Dibatalkan";
+        $dataPemeriksaan->statusPasien = "Pendaftaran Dibatalkan";
+        $dataPemeriksaan->statusPetugas = "Pendaftaran Dibatalkan";
+        $dataPemeriksaan->statusDokter = "Pendaftaran Dibatalkan";
+
+        $dataPemeriksaan->save();
         return redirect()->route('pasien.pendaftaran');
     }
 }

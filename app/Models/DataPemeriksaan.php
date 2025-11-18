@@ -84,20 +84,22 @@ class DataPemeriksaan extends Model
 
         switch ($subtype) {
             case 'statusPasien':
-                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia'";
+                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusPetugas':
-                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung'";
+                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan'";
+                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Pendaftaran Dibatalkan'";
                 break;
             default:
                 $statusUser = "'default'";
         }
 
         return $query->orderByRaw("FIELD(statusUtama, $statusUtama)")
-                    ->orderByRaw("FIELD($subtype, $statusUser)");
+                    ->orderByRaw("FIELD($subtype, $statusUser)")
+                    ->orderBy('tanggalPemeriksaan')
+                    ->orderBy('rentangWaktuKedatangan');
     }
 
         public function tanggalHuman(): ?string
@@ -118,5 +120,18 @@ class DataPemeriksaan extends Model
     public function scopeBerlangsung($q)
     {
         return $q->whereNotIn('statusUtama', ['selesai','batal']);
+    }
+
+    public function bisaDiedit(){
+        if ($this->statusUtama != "Pending") return false;
+        $datetime = $this->tanggalPemeriksaan . ' ' . $this->rentangWaktuKedatangan;
+
+        $givenTime = Carbon::parse($datetime);
+
+        $now = Carbon::now();
+
+        $hoursDiff = $now->diffInHours($givenTime, false);
+        
+        return $hoursDiff >= 12;
     }
 }

@@ -30,7 +30,7 @@ class PendaftaranController extends Controller
         $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
             ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
             ->whereNotIn('statusUtama', ['selesai','batal'])   // pakai ini jika belum ada scope berlangsung()
-            ->latest('tanggalPemeriksaan')
+            ->ordered('statusPasien')
             ->paginate(5);
 
         return view('pasien.pendaftaran.index', compact('dataPasiens','pemeriksaanBerlangsung'));

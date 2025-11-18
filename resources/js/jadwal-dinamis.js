@@ -52,50 +52,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    jenisPemeriksaan.addEventListener("change", (e) => {
+    if (jenisPemeriksaan !== null){
+        jenisPemeriksaan.addEventListener("change", (e) => {
     
-        fetch(`/api/jenisPemeriksaanSpesifik/${rumahSakitValue}/${jenisPemeriksaan.value}`)
-            .then(res => res.json())
-            .then(data => {
-                jenisPemeriksaanSpesifik.innerHTML = '<option value="-" disabled selected>-</option>';
-
-                data.forEach(item => {
-                    const option = document.createElement("option");
-                    option.value = item.id;
-                    option.textContent = item.namaPemeriksaanSpesifik;
-                    jenisPemeriksaanSpesifik.appendChild(option);
+            fetch(`/api/jenisPemeriksaanSpesifik/${rumahSakitValue}/${jenisPemeriksaan.value}`)
+                .then(res => res.json())
+                .then(data => {
+                    jenisPemeriksaanSpesifik.innerHTML = '<option value="-" disabled selected>-</option>';
+    
+                    data.forEach(item => {
+                        const option = document.createElement("option");
+                        option.value = item.id;
+                        option.textContent = item.namaPemeriksaanSpesifik;
+                        jenisPemeriksaanSpesifik.appendChild(option);
+                    });
                 });
-            });
-        
-        tanggalPemeriksaan.calendar.set("disable", [
-            function(date){
-                return true;
+            
+            tanggalPemeriksaan.calendar.set("disable", [
+                function(date){
+                    return true;
+                }
+            ]);
+    
+            while (rentangWaktuKedatangan.firstChild) {
+                rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
             }
-        ]);
+    
+            submitBtn.disabled = true;
+        });
+    }
+    
 
-        while (rentangWaktuKedatangan.firstChild) {
-            rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
-        }
+    if (jenisPemeriksaanSpesifik !== null){
+        //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
+        jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
+            tanggalPemeriksaan.calendar.clear(false);
+            
+            fetch(`/api/jadwalPenuh/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
+                .then(res => res.json())
+                .then(data => {
+                    tanggalPemeriksaan.calendar.set("disable", data);
+                });
 
-        submitBtn.disabled = true;
-    });
+            while (rentangWaktuKedatangan.firstChild) {
+                rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
+            }
 
-    //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
-    jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
-        tanggalPemeriksaan.calendar.clear(false);
-        
-        fetch(`/api/jadwalPenuh/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
-            .then(res => res.json())
-            .then(data => {
-                tanggalPemeriksaan.calendar.set("disable", data);
-            });
-
-        while (rentangWaktuKedatangan.firstChild) {
-            rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
-        }
-
-        submitBtn.disabled = true;
-    });
+            submitBtn.disabled = true;
+        });
+    }
+    
 
     tanggalPemeriksaan.calendar.config.onChange.push(function(selectedDates, dateStr) {
         while (rentangWaktuKedatangan.firstChild) {
@@ -104,7 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
         tanggalPemeriksaanInput.value = dateStr;
 
         const idPart = window.dataPemeriksaan?.id ? `/${window.dataPemeriksaan.id}` : "";
-        const url = `/api/jamTersedia/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}/${dateStr}${idPart}`;
+        const jenisValue = jenisPemeriksaanSpesifik ? jenisPemeriksaanSpesifik.value : window.jenisPemeriksaan.id;
+        const url = `/api/jamTersedia/${rumahSakitValue}/${jenisValue}/${dateStr}${idPart}`;
 
         fetch(url)
             .then(res => res.json())

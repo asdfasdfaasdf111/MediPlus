@@ -137,10 +137,10 @@ class RumahSakit extends Model
                 continue;
             }
             $listJam = $this->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan);
-            // if (empty($listJam)){
-            //     $unavailable[] = $dataPemeriksaan->tanggalPemeriksaan;
-            // }
-            // $prev = $dataPemeriksaan;
+            if (empty($listJam)){
+                $unavailable[] = $dataPemeriksaan->tanggalPemeriksaan;
+            }
+            $prev = $dataPemeriksaan;
         }
         return $unavailable;
     }

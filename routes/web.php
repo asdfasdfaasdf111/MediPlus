@@ -180,6 +180,10 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
         return view('pasien.daftarringkasan');
     })->name('pasien.daftarringkasan');
 
+    Route::get('/editpendaftaran/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.editpendaftaran', compact('dataPemeriksaan'));
+    })->name('pasien.editpendaftaran');
+
     // Form tambah & simpan Data Pasien
     Route::get('/pendaftaran/datapasien/create', [PendaftaranController::class, 'createDataPasien'])
         ->name('pasien.datapasien.create');
@@ -195,6 +199,8 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     // Hapus
     Route::delete('/pendaftaran/datapasien/{pasien}', [PendaftaranController::class, 'destroyDataPasien'])
         ->name('pasien.datapasien.destroy');
+    Route::put('/hapusPendaftaran/{dataPemeriksaan}', [DataPemeriksaanController::class, 'hapusPendaftaran'])
+        ->name('pasien.hapusPendaftaran');
 
     //FaQ page
     Route::view('/faq', 'pasien.faq')->name('pasien.faq');
@@ -204,9 +210,13 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
 
     Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
+    Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');
     Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
     Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
 
+    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
+    })->name('pasien.detailpemeriksaan');
 });
 
 Route::middleware(['auth:web'])->group(function () {

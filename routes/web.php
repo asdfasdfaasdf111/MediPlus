@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\DataPemeriksaanController;
-use App\Http\Controllers\DataPasienController;
-use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\DraftLaporanController;
 use App\Http\Controllers\JenisPemeriksaanController;
@@ -14,12 +12,11 @@ use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RumahSakitController;
-use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\FileController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -145,19 +142,19 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
     Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
 
-    Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}', 
-                function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId); 
+    Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}',
+                function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId);
                 return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });
-    
-    Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}', 
-                function ($rumahSakitId, $jenisId) { 
-                    $rumahSakit = RumahSakit::find($rumahSakitId); 
+
+    Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}',
+                function ($rumahSakitId, $jenisId) {
+                    $rumahSakit = RumahSakit::find($rumahSakitId);
                     $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                     return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
-    
-    Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan}', 
-                function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId) { 
-                    $rumahSakit = RumahSakit::find($rumahSakitId); 
+
+    Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan}',
+                function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId) {
+                    $rumahSakit = RumahSakit::find($rumahSakitId);
                     $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                     $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                     return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
@@ -168,13 +165,23 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
 // })->middleware('auth', 'verified', 'role:dokter');
 
 Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(function () {
-    Route::get('/homepage', [DraftLaporanController::class, 'tampilkanRumahSakit'])->name('dokter.homepage');
+    Route::get('/homepage', function(){
+        return view('dokter.homepage');
+    })->name('dokter.homepage');
+
+    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('dokter.detailpemeriksaan', compact('dataPemeriksaan'));
+    })->name('dokter.detailpemeriksaan');
+
     Route::get('/listdraft', [DraftLaporanController::class, 'index'])->name('dokter.listdaftar');
     Route::get('/addnew', [DraftLaporanController::class, 'addNew'])->name('dokter.addnew');
     Route::post('/addnew', [DraftLaporanController::class, 'store'])->name('dokter.submit');
     Route::get('/{draft}/edit', [DraftLaporanController::class, 'editData'])->name('dokter.edit');
     Route::put('/{id}/edit', [DraftLaporanController::class, 'updateDraft'])->name('dokter.submitdata');
     Route::delete('{draft}/delete', [DraftLaporanController::class, 'deleteData'])->name('dokter.delete');
+
+    Route::get('/file-upload/{dataPemeriksaan}', [FileController::class, 'index'])->name('dokter.index');
+    Route::post('file-upload/{dataPemeriksaan}', [FileController::class, 'store'])->name('dokter.hasilpemeriksaan');
 });
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
@@ -182,7 +189,7 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
 
     // Pilih jadwal
     Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pasien.pendaftaran');
-    
+
     // Halaman pilih tipe pasien
     Route::get('/pendaftaran/tipepasien', [PendaftaranController::class, 'tipePasien'])
         ->name('pasien.pendaftaran.tipepasien');

@@ -118,17 +118,17 @@
       @php
         $statusKey   = strtolower($ex->statusUtama ?? '');
         $statusLabel = match($statusKey) {
-          'pending' => 'PENDING',
-          'terkirim', 'terjadwal' => 'PENDAFTARAN TERKIRIM',
+          'pending', 'menunggu antrian' => 'PENDING',
+          'berlangsung', 'dalam antrian' => ' BERLANGSUNG',
           'selesai' => 'SELESAI',
-          'batal'   => 'DIBATALKAN',
+          'dibatalkan'   => 'DIBATALKAN',
           default   => strtoupper($ex->statusUtama ?? '—'),
         };
         $statusClass = match($statusKey) {
-          'pending' => 'text-warning',
-          'terkirim', 'terjadwal' => 'text-warning',
+          'pending', 'menunggu antrian' => 'text-warning',
+          'berlangsung', 'dalam antrian' => 'text-primary',
           'selesai' => 'text-success',
-          'batal'   => 'text-danger',
+          'dibatalkan'   => 'text-danger',
           default   => 'text-muted',
         };
         $tgl   = $ex->tanggalPemeriksaan ? \Carbon\Carbon::parse($ex->tanggalPemeriksaan)->translatedFormat('d F Y') : '—';
@@ -169,11 +169,12 @@
               </div>
             </div>
 
-            <div class="col-md-2 d-flex flex-column align-items-end gap-2">
-              <button class="btn btn-light border w-100" disabled>
+            <div class="col-md-2 d-flex align-items-center justify-content-center h-20">
+              <button class="btn btn-sm btn-light border" disabled>
                 <i class="bi bi-paperclip me-1"></i> Lampiran
               </button>
             </div>
+
           </div>
 
           <hr class="my-0">

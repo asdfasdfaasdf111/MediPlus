@@ -1,10 +1,9 @@
-{{-- resources/views/petugas/detail-pemeriksaan.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Pemeriksaan Petugas</title>
+  <title>Petugas | Pratinjau Pemeriksaan</title>
   <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
@@ -16,56 +15,22 @@
   $dataPasien       = $dataPemeriksaan->dataPasien;
   $dataRujukan      = $dataPemeriksaan->dataRujukan;
 
-  // Mask nomor identitas (logic tetap sama) kayaknya gapakai
-
-
-  // End time (hanya display)
   $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString();
 @endphp
 
 <body class="bg-white text-dark">
-
-  {{-- NAVBAR --}}
   @include('layout.navbar2')
 
   <div class="container-fluid">
     <div class="row">
-      {{-- SIDEBAR --}}
-      <div class="col-md-2 min-vh-100 p-3 border-end">
-        <ul class="nav flex-column">
-          <li class="nav-item mb-2">
-            <a href="{{ route('petugas.dashboard') }}"
-               class="nav-link {{ request()->routeIs(['petugas.dashboard','petugas.pratinjaupemeriksaan']) ? 'text-primary fw-bold' : 'text-dark' }}">
-              <i class="bi bi-speedometer2 me-2"></i> Dashboard
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{{ route('petugas.kelolajenispemeriksaan') }}"
-               class="nav-link {{ request()->routeIs('petugas.kelolajenispemeriksaan','petugas.tambahjenispemeriksaanpage') ? 'text-primary fw-bold' : 'text-dark' }}">
-              <i class="bi bi-clipboard2-check me-2"></i> Jenis Pemeriksaan
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{{ route('petugas.kelolamodalitas') }}"
-               class="nav-link {{ request()->routeIs('petugas.kelolamodalitas','petugas.tambahmodalitaspage') ? 'text-primary fw-bold' : 'text-dark' }}">
-              <i class="bi bi-hdd-rack me-2"></i> Modalitas
-            </a>
-          </li>
-        </ul>
-      </div>
-
+      @include('layout.sidebarpetugas')
 
       {{-- KONTEN --}}
       <main class="col-md-10 p-4">
 
-        {{-- Header halaman --}}
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
           <div class="mb-2 mb-md-0">
-            <h3 class="mb-1">Detail Pemeriksaan</h3>
-            <div class="text-muted small">
-              {{ $rumahSakit->nama }} • {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
-              @if(!empty($jenisPemeriksaan->namaPemeriksaanSpesifik)) - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }} @endif
-            </div>
+            <h3 class="mb-1" style="color:#173B7A;">Detail Pemeriksaan</h3>
           </div>
           <a href="{{ route('petugas.editpendaftaran', $dataPemeriksaan) }}" class="btn btn-outline-primary">
             <i class="bi bi-pencil-square me-1"></i> Ubah Detail
@@ -126,14 +91,22 @@
                         <div>
                         <div class="small text-muted">Nama Pendamping</div>
                         <div class="fw-semibold">
-                            @if (!empty($dataPemeriksaan->namaPendamping)) {{ $dataPemeriksaan->namaPendamping }} @else - @endif
+                            @if (!empty($dataPemeriksaan->namaPendamping)) 
+                              {{ $dataPemeriksaan->namaPendamping }} 
+                            @else 
+                              - 
+                            @endif
                         </div>
                         </div>
 
                         <div>
                         <div class="small text-muted">Nomor Telepon Pendamping</div>
                         <div class="fw-semibold">
-                            @if (!empty($dataPemeriksaan->nomorPendamping)) {{ $dataPemeriksaan->nomorPendamping }} @else - @endif
+                            @if (!empty($dataPemeriksaan->nomorPendamping)) 
+                              {{ $dataPemeriksaan->nomorPendamping }} 
+                            @else 
+                              - 
+                            @endif
                         </div>
                         </div>
                     </div>
@@ -199,7 +172,11 @@
                             <div class="mb-3">
                                 <div class="small text-muted">Alergi</div>
                                 <div class="fw-semibold">
-                                @if (!empty($dataPemeriksaan->riwayatAlergi)) Ya @else Tidak @endif
+                                @if (!empty($dataPemeriksaan->riwayatAlergi)) 
+                                  Ya 
+                                @else 
+                                  Tidak 
+                                @endif
                                 </div>
                             </div>
 
@@ -219,9 +196,7 @@
                 </div>
             </div>
 
-
-
-                    {{-- Data Rujukan --}}
+           {{-- Data Rujukan --}}
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header fw-semibold">
@@ -280,46 +255,46 @@
                 <div class="card-header fw-semibold">
                     <i class="bi bi-person-badge me-2"></i> Jadwalkan Dokter
                 </div>
-                <div class="card-body">
+                  <div class="card-body">
                     <form method="POST" action="{{ route('petugas.updatePendaftaran', $dataPemeriksaan) }}">
-                    @csrf
-                    @method('PUT')
+                      @csrf
+                      @method('PUT')
 
-                    <div class="row g-3 align-items-end">
+                      <div class="row g-3 align-items-end">
                         <div class="col-md-5 col-lg-4">
-                        <label class="form-label">Dokter Radiologi</label>
-                        <select name="dokterId" class="form-select">
+                          <label class="form-label">Dokter Radiologi</label>
+                          <select name="dokterId" class="form-select">
                             @foreach($rumahSakit->dokter as $dokter)
-                            <option
+                              <option
                                 value="{{ $dokter->id }}"
                                 @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) disabled @endif
-                            >
+                              >
                                 {{ $dokter->user->name }}
                                 @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan))
-                                (Tidak Tersedia)
+                                  (Tidak Tersedia)
                                 @endif
-                            </option>
+                              </option>
                             @endforeach
-                        </select>
+                          </select>
                         </div>
-                    </div>
-                    </form>
+                      </div>
 
-                    
-                </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center gap-2 gap-md-3 pt-4">
+                      <div class="d-flex justify-content-center gap-2 gap-md-3 pt-4">
                         <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
-                        Kembali
+                          Kembali
                         </a>
                         <button type="submit" name="status" value="accepted" class="btn btn-primary px-4 px-md-5 rounded-pill">
-                        Terima
+                          Terima
                         </button>
                         <button type="submit" name="status" value="rejected" class="btn btn-danger px-4 px-md-5 rounded-pill">
-                        Tolak
+                          Tolak
                         </button>
-                    </div>
+                      </div>
+                    </form>
+                  </div>
+
+                </div>
+            </div>
         </div>
 
         <div class="text-center text-muted small py-3">

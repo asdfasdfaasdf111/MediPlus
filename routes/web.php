@@ -14,6 +14,8 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\DashboardPetugasController;
+
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
@@ -180,9 +182,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 });
 
 Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
-    Route::get('/homepage', function(){
-        return view('petugas.dashboard');
-    })->name('petugas.dashboard');
+    Route::get('/homepage', [DashboardPetugasController::class, 'tampilkanDashboard'])->name('petugas.dashboard');
+    
 
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');

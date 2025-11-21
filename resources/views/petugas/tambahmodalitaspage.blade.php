@@ -14,50 +14,21 @@
 
   <div class="container-fluid">
     <div class="row">
+      @include('layout.sidebarpetugas')
 
-      {{-- SIDEBAR --}}
-    <div class="col-md-2 min-vh-100 p-3 border-end">
-        <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-            <a href="{{ route('petugas.dashboard') }}"
-                class="nav-link {{ request()->routeIs('petugas.dashboard') ? 'text-primary fw-bold' : 'text-dark' }}"
-                aria-current="{{ request()->routeIs('petugas.dashboard') ? 'page' : '' }}">
-                <i class="bi bi-speedometer2 me-2"></i> Dashboard
-            </a>
-            </li>
-
-            <li class="nav-item mb-2">
-            <a href="{{ route('petugas.kelolajenispemeriksaan') }}"
-                class="nav-link {{ request()->routeIs('petugas.kelolajenispemeriksaan','petugas.tambahjenispemeriksaanpage') ? 'text-primary fw-bold' : 'text-dark' }}"
-                aria-current="{{ request()->routeIs('petugas.kelolajenispemeriksaan','petugas.tambahjenispemeriksaanpage') ? 'page' : '' }}">
-                <i class="bi bi-clipboard2-check me-2"></i> Jenis Pemeriksaan
-            </a>
-            </li>
-
-            <li class="nav-item mb-2">
-            <a href="{{ route('petugas.kelolamodalitas') }}"
-                class="nav-link {{ request()->routeIs('petugas.kelolamodalitas') ? 'text-primary fw-bold' : 'text-dark' }}"
-                aria-current="{{ request()->routeIs('petugas.kelolamodalitas') ? 'page' : '' }}">
-                <i class="bi bi-hdd-rack me-2"></i> Modalitas
-            </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="col-md-10 p-4 bg-light">
-    <div class="card shadow-sm">
-        <h4 class="text-center mb-4 pt-5">Tambah Modalitas</h4>
-
-        <div class="card-body px-5">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            </div>
-        @endif
+        <div class="col-md-10 p-4 bg-light">
+            <div class="card shadow-sm">
+                <h4 class="text-center mb-4 pt-5" style="color:#173B7A;">Tambah Modalitas</h4>
+                <div class="card-body px-5">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                            </ul>
+                         </div>
+                    @endif
 
         <form method="POST" action="{{ route('petugas.tambahModalitas') }}">
             @csrf

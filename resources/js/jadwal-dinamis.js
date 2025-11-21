@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = true;
     });
 
-    //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
+
     jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
         tanggalPemeriksaan.calendar.clear(false);
         
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     input.required = true;
 
                     const label = document.createElement("label");
-                    label.className = "btn btn-outline-secondary";
+                    label.className = "btn btn-outline-primary rounded-pill p-2";
                     label.setAttribute("for", `slot-${index}`);
 
                     const [hour, minute] = slot.split(":").map(Number);

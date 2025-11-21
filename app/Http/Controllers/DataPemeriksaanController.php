@@ -82,4 +82,27 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->save();
         return redirect()->route('petugas.pratinjaupemeriksaan', $dataPemeriksaan);
     }
+
+    public function homepageDokter() {
+        $dokter = auth()->user()->dokter;
+        $status = request('status', 'semua');
+
+        $query = $dokter->dataPemeriksaan()
+                ->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
+
+        if($status !== 'semua') {
+            $map = [
+                'berlangsung' => 'Berlangsung',
+                'selesai' => 'Selesai'
+            ];
+
+            if(isset($map[$status])) {
+                $query->where('statusUtama', $map[$status]);
+            }
+        }
+
+        $list = $query->get();
+
+        return view('dokter.homepage', compact('dokter', 'list'));
+    }
 }

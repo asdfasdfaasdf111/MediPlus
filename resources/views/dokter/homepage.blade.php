@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Homepage Dokter</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -31,7 +32,7 @@
             </div>
         </div>
     </div>
-8
+
     @php $aktif = request('status','semua'); @endphp
         <ul class="nav nav-tabs border-0 mb-2">
           @foreach ([
@@ -41,21 +42,27 @@
           ] as $key => $label)
             <li class="nav-item">
               <a class="nav-link {{ $aktif===$key ? 'active' : '' }}"
-                 href="{{ request()->fullUrlWithQuery(['status'=>$key]) }}">{{ $label }}</a>
+                 href="{{ url()->current() . '?status=' . $key }} }}">{{ $label }}</a>
             </li>
           @endforeach
         </ul>
 
-    @forelse ($dokter->dataPemeriksaan()->where('statusDokter', '!=', 'Menunggu Registrasi Ulang')->get() as $dataPemeriksaan)
-        @php
-            if($aktif !== 'semua') {
-                $map = [
-                    'berlangsung' => 'berlangsung',
-                    'selesai' => 'selesai'
-            ];
-            if (isset($map[$aktif]) && $dataPemeriksaan->statusUtama !== $map[$aktif]) continue;
-            }
+    @php
+        $query = $dokter->dataPemeriksaan()->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
 
+        if($aktif === 'berlangsung') {
+            $query->where('statusUtama', 'Berlangsung');
+        }
+
+        if($aktif === 'selesai'){
+            $query->where('statusUtama', 'Selesai');
+        }
+
+        $list = $query->get();
+    @endphp
+
+    @forelse ($list as $dataPemeriksaan)
+        @php
             $dataPasien = $dataPemeriksaan->dataPasien;
             $dataRujukan = $dataPemeriksaan->dataRujukan;
             $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
@@ -79,18 +86,14 @@
             }
         @endphp
 
+    <div style="background:#F5F8FF;">
         <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
             <div class="card-body p-0">
                 <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
                     <div class="small">
                         No : <span class="fw-semibold">{{ $noReg }}</span>
                     </div>
-                    @php
-                        $rightLabel = $labelKanan ?: $statusUtama;
-                    @endphp
-                    <div class="small fw-semibold {{ $labelKanan ? 'text-muted' : $statusClass }}">
-                        {{ $rightLabel }}
-                    </div>
+                    <div class="small fw-semibold {{ $statusClass }}"> {{ $labelKanan }}</div>
                 </div>
             </div>
         </div>
@@ -140,6 +143,7 @@
                     </div>
             @endif
         </div>
+    </div>
         @empty
             <div class="text-center text-muted py-5">
                 <i class="bi bi-inboxes me-1"></i> Belum ada data.

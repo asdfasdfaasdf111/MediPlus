@@ -17,11 +17,11 @@
 <body class="bg-white text-dark">
   @include('layout.navbar2')
 
-  <div class="container-fluid">
+  <div class="container-fluid ">
     <div class="row">
       @include('layout.sidebarpetugas')
 
-      <div class="col-md-10 p-4">
+      <div class="col-md-10 p-4  bg-light">
         <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
           {{-- Search yeah --}}
           <form action="" method="GET" class="flex-grow-1">
@@ -39,8 +39,6 @@
             </div>
           </form>
         </div>
-
-        
 
         <ul class="nav nav-tabs border-0 mb-2">
           @foreach ([
@@ -63,6 +61,7 @@
           @php
             $statusUtamaRaw   = $dp->statusUtama ?? 'Pending';
             $statusUtamaLower = strtolower($statusUtamaRaw);
+
 
             $pasien  = $dp->dataPasien;
             $rujukan = $dp->dataRujukan;
@@ -98,7 +97,7 @@
           @endphp
 
           {{-- CARD --}}
-          <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
+          <div class="card border-0 shadow-sm mb-3">
             <div class="card-body p-0">
 
               {{-- HEADER CARD --}}
@@ -114,7 +113,7 @@
               <hr class="my-0">
 
               {{--CARD --}}
-              <div class="row g-3 p-4 align-items-center">
+              <div class="row g-3 p-4 align-items-center ">
                 <div class="col-md-2 d-flex align-items-center justify-content-center">
                   <div class="{{ $statusClass }} fw-bold" style="font-size:1.1rem;">
                     {{ strtoupper($statusUtamaRaw) }}

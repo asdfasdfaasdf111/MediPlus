@@ -8,7 +8,7 @@
   {{-- Header --}}
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
     <div>
-      <h2 class="fw-bold mb-1 text-primary">FAQ Pemeriksaan Radiologi</h2>
+      <h2 class="fw-bold mb-1" style="color:#0A3A7A;" >FAQ Pemeriksaan Radiologi</h2>
       <p class="text-muted mb-0">Pertanyaan umum sebelum, saat, dan setelah pemeriksaan.</p>
     </div>
     <a href="{{ route('pasien.homepage') }}" class="btn btn-outline-secondary btn-sm">

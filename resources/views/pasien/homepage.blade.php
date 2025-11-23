@@ -12,7 +12,7 @@
       <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center">
         <div class="container px-5">
           <div class="col-md-6">
-            <h2 class="display-4 fw-bold text-dark">Mudah, Cepat, dan Tanpa Antri.</h2>
+            <h2 class="display-6 fw-bold text-dark">Mudah, Cepat, dan Tanpa Antri.</h2>
             <p class="lead text-dark mb-3">
               Pilih jadwal pemeriksaan, daftar online, dan langsung datang sesuai waktu yang Anda tentukan.
             </p>
@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <!-- === Section: Cara Kerja (3 Langkah) === -->
+  {{-- YANG HOMEPAGE AKU BIKIN RESPONSIVE BUAT MOBILE NTARAN YA. MAYAN SUSAH --}}
   <section class="py-5 bg-white">
     <div class="container text-center">
       <h2 class="fw-bold mb-5" style="color:#0A3A7A;">Tanpa Antri, Hanya 3 Langkah!</h2>

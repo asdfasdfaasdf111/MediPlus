@@ -4,23 +4,8 @@
 @section('content')
 <div class="container-fluid">
   <div class="row">
-    {{-- Sidebar --}}
-    <div class="col-md-2 min-vh-100 p-2 mt-3">
-      <ul class="nav flex-column">
-        <li class="nav-item mb-2">
-          <a href="{{ route('profile.edit') }}"
-             class="nav-link {{ request()->routeIs('profile.edit') ? 'text-primary fw-bold' : 'text-dark' }}">
-            <i class="bi bi-person-circle me-2"></i> Edit Profile
-          </a>
-        </li>
-        <li class="nav-item mb-2">
-          <a href="{{ route('profile.password.edit') }}"
-             class="nav-link {{ request()->routeIs('profile.password.*') ? 'text-primary fw-bold' : 'text-dark' }}">
-            <i class="bi bi-shield-lock me-2"></i> Change Password
-          </a>
-        </li>
-      </ul>
-    </div>
+    
+    @include('layout.sidebar')
 
     {{-- Content --}}
     <div class="col-md-10 p-4 bg-light">
@@ -36,7 +21,7 @@
 
 
       <div class="card shadow-sm">
-        <h4 class="text-center mb-1 pt-5">Edit Profile</h4>
+        <h4 class="text-center mb-1 pt-5">Perbarui Profil</h4>
         <p class="text-center text-muted mb-4">Perbarui data akun dan informasi pasien</p>
 
         <div class="card-body px-5">

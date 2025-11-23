@@ -80,10 +80,7 @@
   @endif
 
   <div class="card shadow-sm">
-    <div class="card-header">
-      <i class="bi bi-calendar3 me-2"></i>Kelola Jadwal Per Hari
-    </div>
-    <div class="card-body">
+    <div class="card-body mt-2">
 
       <form action="{{ route('admin.updateJadwal') }}" method="POST">
         @csrf

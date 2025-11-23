@@ -84,14 +84,31 @@ class RumahSakitController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'nama_rs' => 'required',
+            'nama_rs' => 'required|string|max:100|unique:rumah_sakits,nama',
             'alamat' => 'required',
             'noTelepon' => 'required',
 
             'nama_admin' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:8'
+        ],
+        [
+            //Rumah Sakit
+            'nama_rs.required' => 'Nama Rumah Sakit wajib diisi.',
+            'nama_rs.unique' => 'Nama Rumah Sakit sudah terdaftar.',
+            'alamat.required' => 'Alamat Rumah Sakit wajib diisi.',
+            'noTelepon.required' => 'Nomor Telepon Rumah Sakit wajib diisi.',
+
+            //Admin
+            'nama_admin.required' => 'Nama Admin wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Password dan konfirmasi password tidak sesuai.',
+            'password.min' => 'Password minimal 8 karakter.'
         ]);
+
 
         $rumahSakit = RumahSakit::create([
             'nama' => $request->nama_rs,

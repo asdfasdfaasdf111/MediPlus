@@ -94,7 +94,7 @@
 
                 {{-- Log Terbaru --}}
                 <div class="bg-white shadow-sm rounded p-4">
-                    <h5 class="fw-bold text-primary mb-3">Log Terbaru</h5>
+                    <h5 class="fw-bold mb-3" style="color:#0A3A7A;">Log Terbaru</h5>
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">

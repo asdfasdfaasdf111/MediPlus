@@ -3,7 +3,7 @@
   $isEdit = isset($pasien);
 
   // opsi fallback jika tidak dikirim controller
-  $hubunganOpts       = $hubunganOpts       ?? ['Orang Tua','Saudara','Pasangan','Anak','Lainnya'];
+  $hubunganOpts       = $hubunganOpts       ?? ['Diri Sendiri','Orang Tua','Saudara','Pasangan','Anak','Lainnya'];
   $jenisIdentitasOpts = $jenisIdentitasOpts ?? ['KTP','SIM','PASPOR'];
   $jenisKelaminOpts   = $jenisKelaminOpts   ?? ['Laki-laki','Perempuan'];
   $golonganDarahOpts  = $golonganDarahOpts  ?? ['A','B','AB','O','Tidak Tahu'];
@@ -30,7 +30,7 @@
       @error('namaLengkap') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
     <div class="col-12 col-md-6">
-      <label class="form-label">Hubungan Dengan Pasien <span class="text-danger">*</span></label>
+      <label class="form-label"> Pasien Merupakan : <span class="text-danger">*</span></label>
       <select name="hubunganKeluarga" class="form-select @error('hubunganKeluarga') is-invalid @enderror" required>
         <option value="" disabled {{ old('hubunganKeluarga', $pasien->hubunganKeluarga ?? '')==='' ? 'selected' : '' }}>Pilih...</option>
         @foreach($hubunganOpts as $opt)

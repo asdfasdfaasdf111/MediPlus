@@ -15,7 +15,7 @@
         </a>
       </div>
 
-      @include('pasien.pendaftaran._form', ['pasien' => $pasien])
+      @include('pasien.pendaftaran.form', ['pasien' => $pasien])
     </div>
   </div>
 </div>

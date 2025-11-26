@@ -34,7 +34,7 @@
      <div class="content-wrapper p-4 bg-light">
         <div class="bg-white p-5 pt-4 pb-4 rounded m-5 mt-2 mb-1">
 
-            <form action="{{ route('superadmin.submit') }}" method="POST">
+            <form action="{{ route('superadmin.submit') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <h3 class="mb-0 fw-bold" style="color: #012970; font-family: 'Open Sans', sans-serif;">Data Rumah Sakit</h3>
@@ -59,6 +59,15 @@
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="form-group d-flex flex-column mt-3">
+                    <label>Foto Profil Rumah Sakit (opsional)</label>
+                    <input type="file"
+                        class="form-control form-control-lg @error('foto') is-invalid @enderror" name="foto" accept="image/*">
+                    @error('foto')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
 
                 <h3 class="mb-0 fw-bold mt-4" style="color: #012970; font-family: 'Open Sans', sans-serif;">Data Admin Rumah Sakit</h3>
                 <div class="form-group d-flex flex-column mt-3">

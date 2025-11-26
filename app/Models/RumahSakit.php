@@ -13,6 +13,7 @@ class RumahSakit extends Model
         'nama',
         'alamat',
         'noTelepon',
+        'foto',
     ];
 
     public function superAdmin()

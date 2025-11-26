@@ -78,7 +78,7 @@
     </div>
   </section>
 
-  {{-- Section: Rumah Sakit Mitra --}}
+  {{-- Rumah Sakit Mitra --}}
   <section class="py-5 bg-white" id="mitra">
     <h2 class="fw-bold mb-5 text-center" style="color:#0A3A7A;">Rumah Sakit Mitra</h2>
     <div id="rsCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -90,10 +90,16 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                   <div class="card h-100 shadow-sm">
                     <div class="ratio ratio-16x9">
-                      @if($rs->gambar)
-                        <img src="{{ asset('storage/' . $rs->gambar) }}" class="img-fluid object-fit-cover" alt="">
+                      @if($rs->foto)
+                        {{-- foto dari storage --}}
+                        <img src="{{ asset('storage/' . $rs->foto) }}"
+                             class="img-fluid object-fit-cover"
+                             alt="Foto {{ $rs->nama }}">
                       @else
-                        <img src="{{ asset('images/nophoto.png') }}" class="img-fluid object-fit-cover" alt="">
+                        {{-- fallback kalau belum ada foto --}}
+                        <img src="{{ asset('images/nophoto.png') }}"
+                             class="img-fluid object-fit-cover"
+                             alt="Belum ada foto {{ $rs->nama }}">
                       @endif
                     </div>
 

@@ -13,10 +13,12 @@ class DataPemeriksaan extends Model
         'data_pasien_id',
         'rumah_sakit_id',
         'data_rujukan_id',
+        'master_pasien_id',
         'tanggalPemeriksaan',
         'rentangWaktuKedatangan',
         'namaPendamping',
         'nomorPendamping',
+        'hubunganPendamping',
         'historyJenisPemeriksaan',
         'historyTanggalPemeriksaan',
         'historyJamPemeriksaan',
@@ -48,6 +50,11 @@ class DataPemeriksaan extends Model
         return $this->belongsTo(DataPasien::class);
     }
 
+    public function masterPasien()
+    {
+        return $this->belongsTo(MasterPasien::class);
+    }
+
     public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
@@ -72,28 +79,59 @@ class DataPemeriksaan extends Model
     //kalo status utama sama, urutin dari status pasien/petugas/dokter
     public function scopeOrdered($query, $subtype = 'statusPasien')
     {
-        $statusUtama = "'Pending','Berlangsung','Selesai', 'Dibatalkan'";
+        //yang draft ga bakal keliatan, cuma biar sistem bisa nyimpan datanya aja
+        $statusUtama = "'Draft','Pending','Berlangsung','Selesai', 'Dibatalkan'";
 
         switch ($subtype) {
             case 'statusPasien':
-                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia'";
+                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusPetugas':
-                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung'";
+                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan'";
+                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Pendaftaran Dibatalkan'";
                 break;
             default:
                 $statusUser = "'default'";
         }
 
         return $query->orderByRaw("FIELD(statusUtama, $statusUtama)")
-                    ->orderByRaw("FIELD($subtype, $statusUser)");
+                    ->orderByRaw("FIELD($subtype, $statusUser)")
+                    ->orderBy('tanggalPemeriksaan')
+                    ->orderBy('rentangWaktuKedatangan');
+    }
+
+        public function tanggalHuman(): ?string
+    {
+        return $this->tanggalPemeriksaan
+            ? Carbon::parse($this->tanggalPemeriksaan)->translatedFormat('d F Y')
+            : null;
+    }
+
+    public function waktuKedatanganHuman(): ?string
+    {
+        // kolom kamu bertipe TIME tunggal; tampilkan H : i
+        return $this->rentangWaktuKedatangan
+            ? Carbon::parse($this->rentangWaktuKedatangan)->format('H : i')
+            : null;
     }
 
     public function scopeBerlangsung($q)
     {
         return $q->whereNotIn('statusUtama', ['selesai','batal']);
+    }
+
+    public function bisaDiedit(){
+        if ($this->statusUtama != "Pending") return false;
+        $datetime = $this->tanggalPemeriksaan . ' ' . $this->rentangWaktuKedatangan;
+
+        $givenTime = Carbon::parse($datetime);
+
+        $now = Carbon::now();
+
+        $hoursDiff = $now->diffInHours($givenTime, false);
+        
+        return $hoursDiff >= 12;
     }
 }

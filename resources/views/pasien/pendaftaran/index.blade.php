@@ -5,6 +5,7 @@
 
   {{-- ================== LIST DATA PASIEN ================== --}}
   @php
+    use Carbon\Carbon;
     $hasPasien = isset($dataPasiens) && !$dataPasiens->isEmpty();
   @endphp
 
@@ -95,7 +96,17 @@
 
   <div class="d-flex align-items-center justify-content-between mb-3">
     <h4 class="fw-bold mb-0" style="color:#173B7A;">Pemeriksaan Berlangsung</h4>
-    
+    <a href="{{ route('pasien.daftarpilihjadwal') }}"
+        class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
+      <i class="bi bi-plus-lg"></i>
+      <span>Daftar Pemeriksaan Baru</span>
+    </a>
+    {{-- @if($hasExam)
+      <a href="{{ route('pasien.pemeriksaan.create') }}"
+         class="btn btn-outline-primary d-inline-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg"></i> Daftar Pemeriksaan Baru
+      </a>
+    @endif --}}
   </div>
 
   @if(!$hasExam)
@@ -116,19 +127,17 @@
   @else
     @foreach($pemeriksaanBerlangsung as $ex)
       @php
-        $statusKey   = strtolower($ex->statusUtama ?? '');
-        $statusLabel = match($statusKey) {
-          'pending', 'menunggu antrian' => 'PENDING',
-          'berlangsung', 'dalam antrian' => ' BERLANGSUNG',
-          'selesai' => 'SELESAI',
-          'dibatalkan'   => 'DIBATALKAN',
-          default   => strtoupper($ex->statusUtama ?? '—'),
+        $statusClassPasien = match($ex->statusPasien) {
+          'Pendaftaran Terkirim', 'Menunggu Registrasi Ulang' => 'text-warning',
+          'Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia' => 'text-success',
+          'Pendaftaran Dibatalkan'   => 'text-danger',
+          default   => 'text-muted',
         };
-        $statusClass = match($statusKey) {
-          'pending', 'menunggu antrian' => 'text-warning',
-          'berlangsung', 'dalam antrian' => 'text-primary',
-          'selesai' => 'text-success',
-          'dibatalkan'   => 'text-danger',
+        $statusClassUtama = match($ex->statusUtama) {
+          'Pending'=> 'text-warning',
+          'Berlangsung' => 'text-primary',
+          'Selesai' => 'text-success',
+          'Dibatalkan'   => 'text-danger',
           default   => 'text-muted',
         };
         $tgl   = $ex->tanggalPemeriksaan ? \Carbon\Carbon::parse($ex->tanggalPemeriksaan)->translatedFormat('d F Y') : '—';
@@ -140,14 +149,14 @@
         <div class="card-body p-0">
           <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
             <div class="small">No : <span class="fw-semibold">{{ $noReg }}</span></div>
-            <div class="small fw-semibold {{ $statusClass }}">{{ $statusLabel }}</div>
+            <div class="small fw-semibold {{ $statusClassPasien }}">{{ $ex->statusPasien }}</div>
           </div>
 
           <hr class="my-0">
 
           <div class="row g-3 p-4">
             <div class="col-md-3 d-flex align-items-center justify-content-center">
-              <div class="{{ $statusClass }} fw-bold" style="font-size:1.1rem;">{{ $statusLabel }}</div>
+              <div class="{{ $statusClassUtama }} fw-bold" style="font-size:1.1rem;">{{ $ex->statusUtama }}</div>
             </div>
 
             <div class="col-md-7">
@@ -155,40 +164,54 @@
                 <div class="col-6 text-muted">Nama Lengkap Pasien</div>
                 <div class="col-6 fw-semibold">: {{ optional($ex->dataPasien)->namaLengkap ?? '—' }}</div>
 
-                <div class="col-6 text-muted">Dokter Perujuk</div>
-                <div class="col-6 fw-semibold">: {{ optional($ex->dokter)->nama ?? '—' }}</div>
+                @if ($ex->statusUtama == 'Pending')
+                  <div class="col-6 text-muted">Dokter Perujuk</div>
+                  <div class="col-6 fw-semibold">: {{ $ex->dataRujukan->namaDokterPerujuk }}</div>
+                @elseif ($ex->statusUtama != 'Dibatalkan')
+                  <div class="col-6 text-muted">Dokter Radiologi</div>
+                  <div class="col-6 fw-semibold">: {{ $ex->dokter->user->name }}</div>
+                @endif
 
                 <div class="col-6 text-muted">Jenis Pemeriksaan</div>
-                <div class="col-6 fw-semibold">: {{ optional($ex->jenisPemeriksaan)->nama ?? '—' }}</div>
+                <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $ex->jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
 
                 <div class="col-6 text-muted">Tanggal Pemeriksaan</div>
                 <div class="col-6 fw-semibold">: {{ $tgl }}</div>
 
                 <div class="col-6 text-muted">Waktu Kedatangan</div>
-                <div class="col-6 fw-semibold">: {{ $jam }}</div>
+                <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour()->format('H:i') }}</div>                
               </div>
             </div>
 
-            <div class="col-md-2 d-flex align-items-center justify-content-center h-20">
-              <button class="btn btn-sm btn-light border" disabled>
-                <i class="bi bi-paperclip me-1"></i> Lampiran
-              </button>
+            <div class="col-md-2 d-flex flex-column align-items-end gap-2">
+              <a href="{{ asset('storage/' . $ex->dataRujukan->formulirRujukan) }}" 
+                target="_blank"
+                class="btn btn-light border w-100">
+                 <i class="bi bi-paperclip me-1"></i> Lampiran
+              </a>
             </div>
-
           </div>
 
           <hr class="my-0">
           <div class="px-4 py-2 d-flex justify-content-end gap-2">
-            <a href="{{ route('pasien.homepage', $ex) }}" class="btn btn-sm btn-primary">
-              <i class="bi bi-pencil-square me-1"></i> EDIT
-            </a>
-            {{-- <form action="{{ route('pasien.pemeriksaan.destroy', $ex) }}" method="POST"
-                  onsubmit="return confirm('Hapus pendaftaran ini?');">
-              @csrf @method('DELETE')
-              <button type="submit" class="btn btn-sm btn-danger">
-                <i class="bi bi-trash me-1"></i> HAPUS
-              </button>
-            </form> --}}
+            @if ($ex->bisaDiedit())
+              <a href="{{ route('pasien.editpendaftaran', $ex) }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-pencil-square me-1"></i> EDIT
+              </a>
+              <form action="{{ route('pasien.hapusPendaftaran', $ex) }}" method="POST"
+                    onsubmit="return confirm('Hapus pendaftaran ini?');">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash me-1"></i> HAPUS
+                </button>
+              </form>
+            @elseif ($ex->statusUtama != "Pending")
+              <a href="{{ route('pasien.detailpemeriksaan', $ex) }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-pencil-square me-1"></i> LIHAT DETAIL
+              </a>
+            @endif
+            
           </div>
         </div>
       </div>

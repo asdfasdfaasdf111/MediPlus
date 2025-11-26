@@ -40,7 +40,9 @@ class RumahSakit extends Model
 
     public function dataPemeriksaan()
     {
-        return $this->hasMany(DataPemeriksaan::class)->ordered();
+        return $this->hasMany(DataPemeriksaan::class)
+        ->where('statusUtama', '!=', 'Draft')
+        ->ordered();
     }
 
     public function petugas()
@@ -67,12 +69,21 @@ class RumahSakit extends Model
                     ->orderBy('namaPemeriksaanSpesifik', 'asc');
     }
 
+    public function namaJenisPemeriksaan()
+    {
+        return $this->jenisPemeriksaan()->pluck('namaJenisPemeriksaan')->unique()->values()->toArray();;
+    }
+
     // yg dataPemeriksaan itu buat kalo petugas update jadwal, 
     // jadinya kalo jam dan tanggalnya == jam dan tanggal original, pasti bisa dipilih
     // sama jenis pemeriksaannya juga harus menggunakan modalitas yg sama
     public function jamTersedia($jenisPemeriksaan, $tanggalPemeriksaan, $dataPemeriksaan = null)
     {
         $listJam = [];
+        // kalo tanggal yang dipilih <= hari ini, brarti uda gabisa daftar lagi
+        if (Carbon::parse($tanggalPemeriksaan)->lte(Carbon::today())) {
+            return $listJam;
+        } 
         $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
         $hariIni = $this->jadwalRumahSakit()
                         ->where('indexJadwal', $hariIni)
@@ -89,7 +100,7 @@ class RumahSakit extends Model
                                     $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
                                 })->get();
         while($jamBuka < $jamTutup){
-            if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka == $dataPemeriksaan->rentangWaktuKedatangan && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
+            if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
                 $listJam[] = $jamBuka->format('H:i');
                 $jamBuka->addHour();
                 continue;
@@ -110,6 +121,7 @@ class RumahSakit extends Model
     }
 
     //bisa dibikin lebih efisien tpi ribet
+    //buat dapetin hari apa aja yang jadwalnya uda penuh
     public function jadwalPenuh($jenisPemeriksaan)
     {
         $unavailable = [];

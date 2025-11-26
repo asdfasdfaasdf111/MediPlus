@@ -22,8 +22,7 @@
         }
     </style>
 
-    <div class="content-wrapper">
-        <div class="bg-light">
+    <div class="content-wrapper bg-light min-vh-100">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <div class="flex-grow-1 p-4">
                 <form action="" class="form-inline my-2 my-lg-0" method="GET">
@@ -102,7 +101,6 @@
                     </div>
                 @endif
         </div>
-    </div>
     </div>
 </body>
 

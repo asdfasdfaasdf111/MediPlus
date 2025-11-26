@@ -25,8 +25,8 @@
         <h6 class="fw-bold mb-3" style="color:#0A3A7A;">Menu</h6>
         <ul class="list-unstyled">
           <li class="mb-2"><i class="bi bi-caret-right-fill me-1 text-primary"></i><a href="{{ url('/pasien/homepage') }}" class="text-dark text-decoration-none">Beranda</a></li>
-          <li class="mb-2"><i class="bi bi-caret-right-fill me-1 text-primary"></i><a href="{{ url('/pasien/tentang') }}" class="text-dark text-decoration-none">Tentang Kami</a></li>
-          <li class="mb-2"><i class="bi bi-caret-right-fill me-1 text-primary"></i><a href="{{ url('/pasien/pemeriksaan') }}" class="text-dark text-decoration-none">Pemeriksaan</a></li>
+          <li class="mb-2"><i class="bi bi-caret-right-fill me-1 text-primary"></i><a href="{{ url('/pasien/tentangkami') }}" class="text-dark text-decoration-none">Tentang Kami</a></li>
+          <li class="mb-2"><i class="bi bi-caret-right-fill me-1 text-primary"></i><a href="{{ url('/pasien/pendaftaran') }}" class="text-dark text-decoration-none">Pemeriksaan</a></li>
           <li class="mb-2"><i class="bi bi-caret-right-fill me-1 text-primary"></i><a href="{{ url('/pasien/faq') }}" class="text-dark text-decoration-none">FAQ</a></li>
         </ul>
       </div>

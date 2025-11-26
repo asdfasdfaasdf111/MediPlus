@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class PendaftaranController extends Controller
 {
-    private const HUBUNGAN_OPTS        = ['Diri Sendiri','Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'];
+    private const HUBUNGAN_OPTS        = ['Diri Sendiri', 'Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'];
     private const GOLONGAN_DARAH_OPTS  = ['A', 'B', 'AB', 'O', 'Tidak Tahu'];
     private const JENIS_IDENTITAS_OPTS = ['KTP', 'SIM', 'PASPOR'];
     private const JENIS_KELAMIN_OPTS   = ['Laki-laki', 'Perempuan'];
@@ -30,7 +30,7 @@ class PendaftaranController extends Controller
         $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
             ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
             ->whereNotIn('statusUtama', ['selesai','batal'])   // pakai ini jika belum ada scope berlangsung()
-            ->latest('tanggalPemeriksaan')
+            ->ordered('statusPasien')
             ->paginate(5);
 
         return view('pasien.pendaftaran.index', compact('dataPasiens','pemeriksaanBerlangsung'));

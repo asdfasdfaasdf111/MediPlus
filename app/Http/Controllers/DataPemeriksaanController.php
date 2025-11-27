@@ -100,6 +100,10 @@ class DataPemeriksaanController extends Controller
             ]);
         }
 
+        if ($request->has('catatanPetugas')) {
+            $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
+        }
+
         if (!$draft && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
             $dataPemeriksaan->historyJenisPemeriksaan = $dataPemeriksaan->jenis_pemeriksaan_id;
             $dataPemeriksaan->historyTanggalPemeriksaan = $dataPemeriksaan->tanggalPemeriksaan;
@@ -254,6 +258,19 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusDokter = "Pendaftaran Dibatalkan";
 
         $dataPemeriksaan->save();
+        return redirect()->route('pasien.pendaftaran');
+    }
+
+    //ganti status dari hasil tersedia ke selesai
+    public function selesaiPemeriksaan(Request $request, DataPemeriksaan $dataPemeriksaan){
+        if ($dataPemeriksaan->statusPasien === "Hasil Tersedia"){
+            $dataPemeriksaan->statusUtama = "Selesai";
+            $dataPemeriksaan->statusPasien = "Selesai";
+            $dataPemeriksaan->statusPetugas = "Selesai";
+            $dataPemeriksaan->statusDokter = "Selesai";
+    
+            $dataPemeriksaan->save();
+        }
         return redirect()->route('pasien.pendaftaran');
     }
 }

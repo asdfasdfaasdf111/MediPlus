@@ -75,6 +75,14 @@
         @endforeach
     </div>
 
+    <label class="form-label fw-bold">Catatan</label>
+    <input type="text"  class="form-control"
+                        name="catatanPetugas" id="catatanPetugas"
+                        placeholder="Catatan"
+                        @if(!empty($dataPemeriksaan?->catatanPetugas))
+                            value="{{ $dataPemeriksaan?->catatanPetugas }}"
+                        @endif>
+
     <div class="d-flex justify-content-center gap-3 pt-3">
         <a href="{{ route('petugas.pratinjaupemeriksaan', $dataPemeriksaan) }}" 
            class="btn btn-outline-primary px-5 rounded-pill">

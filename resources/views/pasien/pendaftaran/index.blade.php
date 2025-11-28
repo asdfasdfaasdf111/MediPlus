@@ -1,4 +1,3 @@
-index.blade.php pasien
 @extends('layout.app')
 
 @section('content')

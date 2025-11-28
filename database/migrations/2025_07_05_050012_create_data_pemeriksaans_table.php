@@ -15,13 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dokter_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('jenis_pemeriksaan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('data_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('data_pasien_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('data_rujukan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('data_rujukan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('master_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggalPemeriksaan');
             $table->time('rentangWaktuKedatangan');
             $table->string('namaPendamping')->nullable();
             $table->string('nomorPendamping')->nullable();
+            $table->enum('hubunganPendamping', ['-', 'Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'])->nullable();
             $table->string('historyJenisPemeriksaan')->nullable();
             $table->date('historyTanggalPemeriksaan')->nullable();
             $table->time('historyJamPemeriksaan')->nullable();
@@ -30,12 +32,12 @@ return new class extends Migration
             $table->string('statusDokter');
             $table->string('statusPetugas');
             $table->string('statusPasien');
-            $table->string('riwayatAlamatDomisili');
-            $table->date('riwayatTanggalLahir');
-            $table->string('riwayatJenisKelamin');
-            $table->string('riwayatNoHP');
-            $table->string('riwayatAlergi');
-            $table->string('riwayatGolonganDarah');
+            $table->string('riwayatAlamatDomisili')->nullable();
+            $table->date('riwayatTanggalLahir')->nullable();
+            $table->string('riwayatJenisKelamin')->nullable();
+            $table->string('riwayatNoHP')->nullable();
+            $table->string('riwayatAlergi')->nullable();
+            $table->string('riwayatGolonganDarah')->nullable();
             $table->timestamps();
         });
     }
@@ -48,3 +50,4 @@ return new class extends Migration
         Schema::dropIfExists('data_pemeriksaans');
     }
 };
+

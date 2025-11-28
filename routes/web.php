@@ -255,21 +255,25 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::get('/pendaftaran/tipepasien', [PendaftaranController::class, 'tipePasien'])
         ->name('pasien.pendaftaran.tipepasien');
     
-    //Punya Leo
+    //Nyesuain sama folder viewnya
     Route::get('/daftarpilihjadwal', function () {
         return view('pasien.formdaftarpemeriksaan.daftarpilihjadwal');
     })->name('pasien.daftarpilihjadwal');
+
     Route::get('/daftartipepasien', function () {
-        return view('pasien.daftartipepasien');
+        return view('pasien.formdaftarpemeriksaan.daftartipepasien');
     })->name('pasien.daftartipepasien');
+
     Route::get('/daftardatarujukan', function () {
-        return view('pasien.daftardatarujukan');
+        return view('pasien.formdaftarpemeriksaan.daftardatarujukan');
     })->name('pasien.daftardatarujukan');
+
     Route::get('/daftarringkasan', function () {
-        return view('pasien.daftarringkasan');
+        return view('pasien.formdaftarpemeriksaan.daftarringkasan');
     })->name('pasien.daftarringkasan');
+
     Route::get('/editpendaftaran/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.editpendaftaran', compact('dataPemeriksaan'));
+        return view('pasien.formdaftarpemeriksaan.editpendaftaran', compact('dataPemeriksaan'));
     })->name('pasien.editpendaftaran');
 
     // Form tambah & simpan Data Pasien

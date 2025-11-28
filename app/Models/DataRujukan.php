@@ -14,7 +14,8 @@ class DataRujukan extends Model
         'alasanRujukan',
         'tanggalPemeriksaanFaskes',
         'permintaanPemeriksaan',
-        'formulirRujukan'
+        'formulirRujukan',
+        'namaFile'
     ];
 
     public function dataPasien()

@@ -302,6 +302,10 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
         return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
     })->name('pasien.detailpemeriksaan');
+        Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.hasilpemeriksaan', compact('dataPemeriksaan'));
+    })->name('pasien.hasilpemeriksaan');
+    Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 
 });
 

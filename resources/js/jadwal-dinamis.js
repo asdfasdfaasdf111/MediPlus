@@ -117,6 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(data => {
                 data.forEach((slot, index) => {
+                    const col = document.createElement("div");
+                    col.className = "col";
+
                     const input = document.createElement("input");
                     input.type = "radio";
                     input.className = "btn-check";
@@ -127,17 +130,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     input.required = true;
 
                     const label = document.createElement("label");
-                    label.className = "btn btn-outline-secondary";
+                    label.className = "btn btn-outline-primary rounded-pill w-100 py-2 fw-semibold";
                     label.setAttribute("for", `slot-${index}`);
 
                     const [hour, minute] = slot.split(":").map(Number);
                     const endHour = (hour + 1) % 24;
                     label.textContent = `${slot} - ${String(endHour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 
-                    rentangWaktuKedatangan.appendChild(input);
-                    rentangWaktuKedatangan.appendChild(label);
+                    col.appendChild(input);
+                    col.appendChild(label);
+                    rentangWaktuKedatangan.appendChild(col);
                 });
             });
+
 
         submitBtn.disabled = true;
     });

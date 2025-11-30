@@ -18,4 +18,15 @@ class MasterPasien extends Model
     {
         return $this->hasMany(DataPasien::class);
     }
+
+    public function dataPemeriksaan()
+    {
+        return $this->hasMany(DataPemeriksaan::class);
+    }
+
+    public function draftPemeriksaan()
+    {
+        return $this->hasOne(DataPemeriksaan::class)
+        ->where('statusUtama', 'Draft');
+    }
 }

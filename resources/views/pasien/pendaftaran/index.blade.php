@@ -211,6 +211,12 @@
                 <i class="bi bi-pencil-square me-1"></i> LIHAT DETAIL
               </a>
             @endif
+            {{-- blm slsai, bru tombol doang --}}
+            @if ($ex->statusPasien == "Hasil Tersedia" || $ex->statusUtama == "Selesai")
+              <a href="{{ route('pasien.hasilpemeriksaan', $ex) }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-pencil-square me-1"></i> LIHAT HASIL
+              </a>
+            @endif
             
           </div>
         </div>

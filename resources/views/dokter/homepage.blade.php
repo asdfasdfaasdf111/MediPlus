@@ -13,9 +13,9 @@
 </head>
 <body>
     @include('layout.navbar2')
-
+    
     <div class="row-md-10 p-4">
-        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
             <form action="" class="flex-grow-1" method="GET">
                 <div class="input-group">
                     <input class="form-control form-control-sm w-auto" type="text" name="search" placeholder="Telusuri" style="font-family: 'Open Sans', sans-serif;">
@@ -34,7 +34,7 @@
     </div>
 
     @php $aktif = request('status','semua'); @endphp
-        <ul class="nav nav-tabs border-0 mb-2">
+        <ul class="nav nav-tabs border-0 ms-4 me-4">
           @foreach ([
             'semua' => 'Semua',
             'berlangsung' => 'Berlangsung',
@@ -42,7 +42,8 @@
           ] as $key => $label)
             <li class="nav-item">
               <a class="nav-link {{ $aktif===$key ? 'active' : '' }}"
-                 href="{{ url()->current() . '?status=' . $key }} }}">{{ $label }}</a>
+                href="{{ route('dokter.homepage', ['status' => $key]) }}">
+                {{ $label }}</a>
             </li>
           @endforeach
         </ul>
@@ -50,12 +51,8 @@
     @php
         $query = $dokter->dataPemeriksaan()->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
 
-        if($aktif === 'berlangsung') {
-            $query->where('statusUtama', 'Berlangsung');
-        }
-
-        if($aktif === 'selesai'){
-            $query->where('statusUtama', 'Selesai');
+        if ($aktif !== 'semua') {
+            $query->whereRaw('LOWER(statusUtama) = ?', [strtolower($aktif)]);
         }
 
         $list = $query->get();
@@ -86,8 +83,7 @@
             }
         @endphp
 
-    <div style="background:#F5F8FF;">
-        <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
+        <div class="card border-0 shadow-sm mb-4 ms-4 me-4 mt-2" style="background:#F5F8FF;">
             <div class="card-body p-0">
                 <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
                     <div class="small">
@@ -95,55 +91,54 @@
                     </div>
                     <div class="small fw-semibold {{ $statusClass }}"> {{ $labelKanan }}</div>
                 </div>
-            </div>
-        </div>
 
-        <hr class="my-0">
+                <hr class="my-0">
 
-        <div class="row g-3 p-4 align-items-center">
-            <div class="col-md-2 d-flex align-items-center justify-content-center">
-                <div class="{{ $statusClass }} fw-bold" style="font-size:1.1rem;">
-                    {{ $dataPemeriksaan->statusUtama }}
+                <div class="row g-3 p-4 align-items-center">
+                     <div class="col-md-2 d-flex align-items-center justify-content-center">
+                        <div class="{{ $statusClass }} fw-bold" style="font-size:1.1rem;">
+                            {{ $dataPemeriksaan->statusUtama }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="row gy-1">
+                            <div class="col-5 text-muted">Nama Lengkap Pasien</div>
+                            <div class="col-5 fw-semibold">: {{ $dataPasien->namaLengkap }}</div>
+
+                            <div class="col-5 text-muted">Dokter Perujuk</div>
+                            <div class="col-5 fw-semibold">: {{ $dataRujukan->namaDokterPerujuk }}</div>
+
+                            <div class="col-5 text-muted">Dokter Radiologi</div>
+                            <div class="col-5 fw-semibold">: {{ $dataPemeriksaan->dokter->user->name }}</div>
+
+                            <div class="col-5 text-muted">Jenis Pemeriksaan</div>
+                            <div class="col-5 fw-semibold">: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }} </div>
+
+                            <div class="col-5 text-muted">Tanggal Pemeriksaan</div>
+                            <div class="col-5 fw-semibold">: {{ $tgl }}</div>
+
+                            <div class="col-5 text-muted">Rentang Waktu Kedatangan</div>
+                            <div class="col-5 fw-semibold">: {{ $jamMulai }} - {{ $jamAkhir }}</div>
+                        </div>
+
+                        @if($dataPemeriksaan->statusDokter ==  'Menunggu Laporan')
+                                <div class="col-md-2">
+                                    <a href="{{ route('dokter.detailpemeriksaan', $dataPemeriksaan) }}">
+                                        <button class="bi bi-upload">Upload File</button>
+                                    </a>
+                                </div>
+                            @else
+                                <div class="col-md-2">
+                                    <a href="{{ route('dokter.detailpemeriksaan', $dataPemeriksaan) }}">
+                                        <button class="bi bi-primary">Lihat Detail</button>
+                                    </a>
+                                </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-8">
-            <div class="row gy-1">
-                <div class="col-5 text-muted">Nama Lengkap Pasien</div>
-                <div class="col-5 fw-semibold">: {{ $dataPasien->namaLengkap }}</div>
-
-                <div class="col-5 text-muted">Dokter Perujuk</div>
-                <div class="col-5 fw-semibold">: {{ $dataRujukan->namaDokterPerujuk }}</div>
-
-                <div class="col-5 text-muted">Dokter Radiologi</div>
-                <div class="col-5 fw-semibold">: {{ $dataPemeriksaan->dokter->user->name }}</div>
-
-                <div class="col-5 text-muted">Jenis Pemeriksaan</div>
-                <div class="col-5 fw-semibold">: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }} </div>
-
-                <div class="col-5 text-muted">Tanggal Pemeriksaan</div>
-                <div class="col-5 fw-semibold">: {{ $tgl }}</div>
-
-                <div class="col-5 text-muted">Rentang Waktu Kedatangan</div>
-                <div class="col-5 fw-semibold">: {{ $jamMulai }} - {{ $jamAkhir }}</div>
-            </div>
-
-            @if($dataPemeriksaan->statusDokter ==  'Menunggu Laporan')
-                    <div class="col-md-2">
-                        <a href="{{ route('dokter.detailpemeriksaan', $dataPemeriksaan) }}">
-                            <button class="bi bi-upload">Upload File</button>
-                        </a>
-                    </div>
-                @else
-                    <div class="col-md-2">
-                        <a href="{{ route('dokter.detailpemeriksaan', $dataPemeriksaan) }}">
-                            <button class="bi bi-primary">Lihat Detail</button>
-                        </a>
-                    </div>
-            @endif
-        </div>
-    </div>
         @empty
             <div class="text-center text-muted py-5">
                 <i class="bi bi-inboxes me-1"></i> Belum ada data.

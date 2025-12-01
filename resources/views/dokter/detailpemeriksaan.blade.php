@@ -17,6 +17,7 @@
     $dokter = $dataPemeriksaan->dokter;
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
+    $hasilPemeriksaan = $dataPemeriksaan->hasilPemeriksaan;
 @endphp
 
 <div class="container mt-5">
@@ -108,6 +109,63 @@
         </div>
     </div>
 
+    @if($dataPemeriksaan->statusDokter == 'Menunggu Laporan')
+        <form action="POST" action="{{ route('file.store') }}" class=""></form>
+        <div class="container mt-5">
+            <div class="text-center mb-4">
+                <h4 class="fw-bold text-primary">Unggah Hasil</h4>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 p-4 mb-5" style="max-width: 700px; margin: 0 auto;">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Mitra Radiologi</label>
+                <input type="file" class="form-control" name="file" id="hasilPemeriksaan" accept="application/pdf" @if(empty($hasilPemeriksaan->file)) required @endif>
+                <span id="fileLampiran">
+                    @if (!empty($hasilPemeriksaan->file))
+                        {{ $hasilPemeriksaan->fileLampiran }}
+                    @else
+                        Tidak ada file
+                    @endif
+                </span>
+
+                <script>
+                    const input = document.getElementById('file');
+                    const fileLampiran = document.getElementById('file');
+
+                    input.addEventListener('change', () => {
+                        if(input.files.length > 0) {
+                            fileLampiran.textContent = input.files[0].name;
+                        } else {
+                            fileLampiran.textcontent = 'Tidak ada file';
+                        }
+                    });
+                </script>
+            </div>
+
+            <div class="mb-3">
+                <label for="deskripsi" class="form-lanel fw-semibold">Deskripsi Hasil Analisa</label>
+                <textarea name="deskripsi" id="deskripsi" rows="6" class="form-control" placeholder="Deskripsi Hasil Analisa"></textarea>
+            </div>
+
+            <div class="text-end mb-3">
+                <button type="submit" class="btn btn-primary fw-semibold px-4">
+                    Unggah Draft
+                </button>
+            </div>
+
+            <div class="d-flex justify-content-center gap-4 mt-4">
+                <a href="{{ route('dokter.homepage') }}" class="btn btn-outline-primary fw-semibold px-5" style="border-radius: 25px;">
+                    Kembali
+                </a>
+                <button type="submit" class="btn btn-primary fw-semibold px-5" style="border-radius: 25px;">
+                    Kirim
+                </button>
+            </div>
+
+        </div>
+    @endif
+
 
 {{-- <div>
     <div>Tipe Pasien</div> --}}
@@ -143,21 +201,21 @@
 </div>
 ========================================================== --}}
 
-@if($dataPemeriksaan->statusDokter == 'Menunggu Laporan')
+{{-- @if($dataPemeriksaan->statusDokter == 'Menunggu Laporan')
     <div class="container mt-5">
     {{-- Judul --}}
-    <div class="text-center mb-4">
+    {{-- <div class="text-center mb-4">
         <h4 class="fw-bold text-primary">Unggah Hasil</h4>
-    </div>
+    </div> --}}
 
     {{-- Kartu Form --}}
-    <div class="card shadow-sm border-0 rounded-4 p-4" style="max-width: 700px; margin: 0 auto;">
-        <form action="{{ route('dokter.hasilpemeriksaan', $dataPemeriksaan) }}"
+    {{-- <div class="card shadow-sm border-0 rounded-4 p-4" style="max-width: 700px; margin: 0 auto;">
+        <form id="form-hasil" action="{{ route('dokter.hasilpemeriksaan', $dataPemeriksaan) }}"
               method="POST" enctype="multipart/form-data">
-            @csrf
+            @csrf --}}
 
             {{-- Mitra Radiologi --}}
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                 <label class="form-label fw-semibold">Mitra Radiologi</label>
                 <div class="d-flex align-items-center gap-3">
                     <label class="btn btn-light border d-flex align-items-center px-4">
@@ -166,48 +224,46 @@
                     </label>
                     <span id="file-name" class="text-secondary">Belum ada file</span>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Deskripsi Hasil Analisa --}}
-            <div class="mb-3">
+            {{-- <div class="mb-3">
                 <label for="deskripsi" class="form-label fw-semibold">Deskripsi Hasil Analisa</label>
                 <textarea name="deskripsi" id="deskripsi" class="form-control"
                           placeholder="Deskripsi Hasil Analisa" rows="4"></textarea>
-            </div>
+            </div> --}}
 
             {{-- Tombol Unggah Draft --}}
-            <div class="text-end mb-3">
+            {{-- <div class="text-end mb-3">
                 <button type="submit" class="btn btn-primary fw-semibold px-4">
                     Unggah Draft
                 </button>
+            </div> --}}
+
+            {{-- Tombol Bawah (Kembali & Kirim) --}}
+            {{-- <div class="d-flex justify-content-center gap-4 mt-4">
+                <a href="{{ route('dokter.homepage') }}"
+                class="btn btn-outline-primary fw-semibold px-4"
+                style="border-radius: 25px;">
+                    Kembali
+                </a>
+                <button type="submit"
+                        class="btn btn-primary fw-semibold px-5"
+                        style="border-radius: 25px;">
+                    Kirim
+                </button>
             </div>
         </form>
-    </div>
-
-    {{-- Tombol Bawah (Kembali & Kirim) --}}
-    <div class="d-flex justify-content-center gap-4 mt-4">
-        <a href="{{ route('dokter.homepage') }}"
-           class="btn btn-outline-primary fw-semibold px-4"
-           style="border-radius: 25px;">
-            Kembali
-        </a>
-        <button type="button"
-                class="btn btn-primary fw-semibold px-5"
-                style="border-radius: 25px;">
-            Kirim
-        </button>
-    </div>
+    </div> --}}
 </div>
 
 {{-- Script untuk menampilkan nama file --}}
-<script>
+{{-- <script>
 function showFileName(event) {
     const input = event.target;
     const fileName = input.files.length ? input.files[0].name : 'Belum ada file';
     document.getElementById('file-name').textContent = fileName;
 }
-</script>
-@endif
-
-<a href="{{ route('dokter.homepage') }}"> Kembali </a>
+</script> --}}
 </body>
+</html>

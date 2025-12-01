@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('data_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('hasilPemeriksaan');
             $table->string('fileLampiran');
-            $table->string('mitraRadiologi');
             $table->timestamps();
         });
     }

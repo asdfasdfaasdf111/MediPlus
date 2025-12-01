@@ -26,7 +26,7 @@ class RumahSakitController extends Controller
         foreach ($request->input('jadwal', []) as $index => $jadwal) {
             $jamBuka  = sprintf("%02d:%02d", $jadwal['jamBukaJam'], $jadwal['jamBukaMenit']);
             $jamTutup = sprintf("%02d:%02d", $jadwal['jamTutupJam'], $jadwal['jamTutupMenit']);
-            
+
             if ($jamTutup <= $jamBuka){
                 return back()->withErrors(['jadwal'.($index+1).'jamBuka' => 'Jam tutup harus lebih besar dari jam buka']);
             }

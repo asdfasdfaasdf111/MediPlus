@@ -30,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
             $view->with('petugas', auth()->user()->petugas);
         });
 
+        View::composer('dokter.*', function($view){
+            $view->with('dokter', auth()->user()->dokter);
+        });
+
         View::composer('layout.footer', function ($view) {
         $rumahsakits = cache()->remember('rs_mitra_footer', 3600, function () {
             $q = RumahSakit::query()->orderBy('nama');

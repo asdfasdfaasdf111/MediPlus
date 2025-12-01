@@ -8,19 +8,21 @@
     {{-- Menu Utama Pasien --}}
     <ul class="navbar-nav flex-row gap-4 me-4">
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}" 
+        <a class="nav-link {{ request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
            href="{{ url('/pasien/homepage') }}">Beranda</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('pasien/tentangkami') ? 'active fw-bold text-primary' : '' }}" 
+        <a class="nav-link {{ request()->is('pasien/tentang') ? 'active fw-bold text-primary' : '' }}"
+           href="{{ url('/pasien/tentang') }}">Tentang Kami</a>
+        <a class="nav-link {{ request()->is('pasien/tentangkami') ? 'active fw-bold text-primary' : '' }}"
            href="{{ url('/pasien/tentangkami') }}">Tentang Kami</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('pasien/pemeriksaan') ? 'active fw-bold text-primary' : '' }}" 
+        <a class="nav-link {{ request()->is('pasien/pemeriksaan') ? 'active fw-bold text-primary' : '' }}"
            href="{{ url('/pasien/pemeriksaan') }}">Pemeriksaan</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('pasien/faq') ? 'active fw-bold text-primary' : '' }}" 
+        <a class="nav-link {{ request()->is('pasien/faq') ? 'active fw-bold text-primary' : '' }}"
            href="{{ url('/pasien/faq') }}">FAQ</a>
       </li>
     </ul>

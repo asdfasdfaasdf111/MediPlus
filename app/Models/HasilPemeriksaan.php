@@ -11,8 +11,7 @@ class HasilPemeriksaan extends Model
         'dokter_id',
         'data_pasien_id',
         'hasilPemeriksaan',
-        'fileLampiran',
-        'mitraRadiologi'
+        'fileLampiran'
     ];
 
     public function dataPemeriksaan()

@@ -21,6 +21,25 @@ class PendaftaranController extends Controller
 
     public function index(Request $request)
     {
+        $rumahsakits = RumahSakit::orderBy('nama')->get(['id', 'nama', 'jamBuka', 'jamTutup', 'jumlahPasien']);
+
+        $rsId = $request->query('rumah_sakit');
+        $jenisId = $request->query('jenis_pemeriksaan');
+        $spesifikId = $request->query('spesifik');
+        $tanggal = $request->query('tanggal', now('Asia/Jakarta')->toDateString());
+
+        $jenisList = collect();
+        if ($rsId) {
+            $jenisList = JenisPemeriksaan::where('rumah_sakit_id', $rsId)
+            ->orderBy('namaJenisPemeriksaan')
+            ->get(['id', 'namaJenisPemeriksaan']);
+        }
+
+        $spesifikList = collect();
+        if ($jenisId) {
+            $spesifikList = JenisPemeriksaan::where('id', $jenisId)
+            ->whereNotNull('namaPemeriksaanSpesifik')
+            ->pluck('namaPemeriksaanSpesifik', 'id');
         $user   = $request->user();
         $master = $user->masterPasien ?: MasterPasien::create(['user_id' => $user->id]);
 
@@ -132,23 +151,14 @@ class PendaftaranController extends Controller
         $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
         $validated['alergi'] = $validated['alergi'] ?? '';
 
-        $pasien->update($validated);
-
-        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien diperbarui.');
-    }
-
-    public function destroyDataPasien(Request $request, DataPasien $pasien)
-    {
-        $this->ensureOwned($pasien, $request);
-        $pasien->delete();
-
-        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien dihapus.');
-    }
-
-    private function isoDay(string $date): int
-    {
-        return Carbon::parse($date)->isoWeekday(); // 1..7
-    }
+        $slots = [];
+        if ($rsId && $jenisId && $spesifikId && $tanggal)
 
 
- }
+
+
+
+
+
+
+}

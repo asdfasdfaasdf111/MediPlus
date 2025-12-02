@@ -12,7 +12,7 @@
       <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center">
         <div class="container px-5">
           <div class="col-md-6">
-            <h2 class="display-4 fw-bold text-dark">Mudah, Cepat, dan Tanpa Antri.</h2>
+            <h2 class="display-6 fw-bold text-dark">Mudah, Cepat, dan Tanpa Antri.</h2>
             <p class="lead text-dark mb-3">
               Pilih jadwal pemeriksaan, daftar online, dan langsung datang sesuai waktu yang Anda tentukan.
             </p>
@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <!-- === Section: Cara Kerja (3 Langkah) === -->
+  {{-- YANG HOMEPAGE AKU BIKIN RESPONSIVE BUAT MOBILE NTARAN YA. MAYAN SUSAH --}}
   <section class="py-5 bg-white">
     <div class="container text-center">
       <h2 class="fw-bold mb-5" style="color:#0A3A7A;">Tanpa Antri, Hanya 3 Langkah!</h2>
@@ -78,7 +78,7 @@
     </div>
   </section>
 
-  {{-- Section: Rumah Sakit Mitra --}}
+  {{-- Rumah Sakit Mitra --}}
   <section class="py-5 bg-white" id="mitra">
     <h2 class="fw-bold mb-5 text-center" style="color:#0A3A7A;">Rumah Sakit Mitra</h2>
     <div id="rsCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -90,10 +90,16 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                   <div class="card h-100 shadow-sm">
                     <div class="ratio ratio-16x9">
-                      @if($rs->gambar)
-                        <img src="{{ asset('storage/' . $rs->gambar) }}" class="img-fluid object-fit-cover" alt="">
+                      @if($rs->foto)
+                        {{-- foto dari storage --}}
+                        <img src="{{ asset('storage/' . $rs->foto) }}"
+                             class="img-fluid object-fit-cover"
+                             alt="Foto {{ $rs->nama }}">
                       @else
-                        <img src="{{ asset('images/nophoto.png') }}" class="img-fluid object-fit-cover" alt="">
+                        {{-- fallback kalau belum ada foto --}}
+                        <img src="{{ asset('images/nophoto.png') }}"
+                             class="img-fluid object-fit-cover"
+                             alt="Belum ada foto {{ $rs->nama }}">
                       @endif
                     </div>
 

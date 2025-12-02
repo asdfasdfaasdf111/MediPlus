@@ -5,40 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Petugas | Kelola Jenis Pemeriksaan</title>
-
   <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   @vite('resources/js/inline-edit.js')
 </head>
-<body class="bg-white text-dark">
 
+<body class="bg-white text-dark">
   @include('layout.navbar2')
 
   <div class="container-fluid">
     <div class="row">
-      {{-- SIDEBAR --}}
-      <div class="col-md-2 min-vh-100 p-3 border-end">
-        <ul class="nav flex-column">
-          <li class="nav-item mb-2">
-            <a href="{{ route('petugas.homepage') }}"
-               class="nav-link {{ request()->routeIs('petugas.homepage') ? 'text-primary fw-bold' : 'text-dark' }}">
-              <i class="bi bi-speedometer2 me-2"></i> Dashboard
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{{ route('petugas.kelolajenispemeriksaan') }}"
-               class="nav-link {{ request()->routeIs('petugas.kelolajenispemeriksaan') ? 'text-primary fw-bold' : 'text-dark' }}">
-              <i class="bi bi-clipboard2-check me-2"></i> Jenis Pemeriksaan
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{{ route('petugas.kelolamodalitas') }}"
-               class="nav-link {{ request()->routeIs('petugas.kelolamodalitas') ? 'text-primary fw-bold' : 'text-dark' }}">
-              <i class="bi bi-hdd-rack me-2"></i> Modalitas
-            </a>
-          </li>
-        </ul>
-      </div>
+      @include('layout.sidebarpetugas')
 
       {{-- CONTENT --}}
       <div class="col-md-10 p-4 bg-light">
@@ -68,7 +45,7 @@
         </div>
 
 
-        {{-- TABEL: DOM & ATRIBUT PERSIS KODE TEMANMU (jangan diubah) --}}
+        {{-- TABEL--}}
         <div class="card">
           <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
             <span></span>
@@ -78,19 +55,30 @@
           </div>
 
           <div class="table-responsive">
-            <table class="table align-middle mb-0">
+            <table class="table align-middle mb-0" style="table-layout: fixed;">
+              <colgroup>
+                <col style="width:10%;">  
+                <col style="width:20%;">  
+                <col style="width:20%;">  
+                <col style="width:10%;">  
+                <col style="width:15%;">  
+                <col style="width:12%;">  
+                <col style="width:10%;">  
+                <col style="width:160px;">
+              </colgroup>
+
               <thead class="table-light">
                 <tr class="align-middle">
-                    <th>Modalitas</th>
-                    <th>Nama Jenis Pemeriksaan</th>
-                    <th>Nama Pemeriksaan Spesifik</th>
-                    <th>Kelompok Jenis Pemeriksaan</th>
-                    <th>Memakai Kontras</th>
-                    <th>Lama Pemeriksaan</th>
-                    <th>Didampingi Dokter</th>
-                    <th></th>
+                  <th>Modalitas</th>
+                  <th>Nama Jenis</th>
+                  <th>Spesifik</th>
+                  <th>Kelompok</th>
+                  <th class="text-center">Kontras</th>
+                  <th>Durasi</th>
+                  <th class="text-center">Didampingi</th>
+                  <th></th>
                 </tr>
-                </thead>
+              </thead>
 
               <tbody>
                 @forelse($jenisPemeriksaans as $jenisPemeriksaan)
@@ -126,8 +114,8 @@
                            value="{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}">
                   </td>
 
-                  <td>
-                    <span data-type="checkbox" data-name="pemakaianKontras" class="view-field">
+                  <td class="text-center align-middle">
+                    <span data-type="checkbox" data-name="pemakaianKontras" class="view-field ">
                       {{ $jenisPemeriksaan->pemakaianKontras ? 'Ya' : 'Tidak' }}
                     </span>
                     <input type="checkbox" name="pemakaianKontras" class="edit-field d-none" value="1"
@@ -138,11 +126,11 @@
                     <span data-name="lamaPemeriksaan" class="view-field">{{ $jenisPemeriksaan->lamaPemeriksaan }}</span>
                     <input type="number" name="lamaPemeriksaan" min="1"
                            class="form-control form-control-sm text-center edit-field d-none"
-                           value="{{ $jenisPemeriksaan->lamaPemeriksaan }}" style="max-width:100px">
+                           value="{{ $jenisPemeriksaan->lamaPemeriksaan }}" style="max-width:70px">
                     <span> Menit</span>
                   </td>
 
-                  <td>
+                  <td class="text-center align-middle">
                     <span data-type="checkbox" data-name="diDampingiDokter" class="view-field">
                       {{ $jenisPemeriksaan->diDampingiDokter ? 'Ya' : 'Tidak' }}
                     </span>
@@ -198,11 +186,10 @@
           @endif
         </div>
 
-        {{-- FOOTER SEDERHANA (atau gunakan includeIf jika punya footer admin) --}}
+        {{-- FOOTER --}}
         <div class="text-center text-muted small py-3">
           © {{ date('Y') }} MediPlus — Petugas Panel
         </div>
-        {{-- @includeIf('layout.footer2') --}}
       </div>
     </div>
   </div>

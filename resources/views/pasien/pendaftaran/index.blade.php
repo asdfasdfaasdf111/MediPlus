@@ -223,12 +223,15 @@
       </div>
     @endforeach
 
+    {{-- paginatenya di set di pendaftarancontroller, pake bootstrap di appserviceprovider --}}
     @if(method_exists($pemeriksaanBerlangsung, 'links'))
-      <div class="mt-3">
-        {{ $pemeriksaanBerlangsung->links() }}
+      <div class="mt-3 d-flex justify-content-center">
+        {{ $pemeriksaanBerlangsung->onEachSide(1)->links() }}
       </div>
     @endif
+
   @endif
 
 </div>
 @endsection
+

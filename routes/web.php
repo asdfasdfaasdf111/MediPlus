@@ -6,6 +6,7 @@ use App\Http\Controllers\DataPasienController;
 use App\Http\Controllers\DataRujukanController;
 use App\Http\Controllers\DicomController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\DraftLaporanController;
 use App\Http\Controllers\JenisPemeriksaanController;
 use App\Http\Controllers\KritikSaranController;
 use App\Http\Controllers\ModalitasController;
@@ -15,13 +16,22 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\DashboardPetugasController;
+use App\Http\Controllers\FileController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 Route::get('/', function () {
     return view('authentication/login');
@@ -33,11 +43,23 @@ Route::get('/email/verify', function (){
     return redirect('/login');
 })->middleware('auth')->name('verification.notice');
 
-//kalo user klik tombol verify di gmail mreka, bakal di redirect kesini
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/login');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $user = User::findOrFail($id);
+
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403, 'Link verifikasi tidak valid.');
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
+    return redirect()
+        ->route('login')
+        ->with('success', 'Email Anda berhasil diverifikasi. Silahkan login.');
+})->middleware('signed')->name('verification.verify');
+
 
 //fungsi buat kirim email verification ulang
 Route::post('/email/verification-notification', function (Request $request) {
@@ -55,6 +77,60 @@ Route::post('/register', [AuthenticationController::class, 'registerPasien'])->n
 
 //Logout
 Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+
+//Forgot Password dari Library Laravel -> buat view isi email
+Route::get('/forgotpassword', function () {
+    return view('authentication.forgotpassword');
+})->middleware('guest')->name('password.request');
+
+
+//Form Submission Forgot Password
+Route::post('/forgotpassword', function (HttpRequest $request) {
+    $request->validate([
+        'email' => ['required', 'email'],
+    ]);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return $status === Password::RESET_LINK_SENT
+        ? back()->with('status', 'Link reset password telah dikirim ke email Anda.')
+        : back()->withErrors(['email' => 'Email tidak terdaftar atau gagal mengirim link.']);
+})->middleware('guest')->name('password.email');
+
+//Form Reset Password
+Route::get('/resetpassword/{token}', function (HttpRequest $request, $token) {
+    return view('authentication.resetpassword', [
+        'token' => $token,
+        'email' => $request->query('email'),
+    ]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/resetpassword', function (HttpRequest $request) {
+    $request->validate([
+        'token'    => ['required'],
+        'email'    => ['required', 'email'],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+ 
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('success', 'Password berhasil direset. Silahkan login kembali.')
+        : back()->withErrors(['email' => 'Token tidak valid atau email tidak sesuai.']);
+    })->middleware('guest')->name('password.update');
 
 
 
@@ -81,7 +157,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::post('/kelolajadwalpage/update', [RumahSakitController::class, 'updateJadwal'])
         ->name('admin.updateJadwal');
 
-    
+
 
     Route::get('/logaktivitaspage', function () {
         return view('admin.logaktivitaspage');
@@ -95,7 +171,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.tambahakunpetugaspage');
     })->name('admin.tambahakunpetugaspage');
 
-    
+
 
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
     Route::post('/updateJumlahPasien', [RumahSakitController::class, 'updateJumlahPasien'])->name('admin.updateJumlahPasien');
@@ -107,9 +183,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 });
 
 Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
-    Route::get('/homepage', function(){
-        return view('petugas.homepage');
-    })->name('petugas.homepage');
+    Route::get('/homepage', [DashboardPetugasController::class, 'tampilkanDashboard'])->name('petugas.dashboard');
+    
 
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
@@ -143,15 +218,52 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::post('/tambahModalitas', [ModalitasController::class, 'tambahModalitas'])->name('petugas.tambahModalitas');
     Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
     Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
+
+    Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}',
+                function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId);
+                return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });
+
+    Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}',
+                function ($rumahSakitId, $jenisId) {
+                    $rumahSakit = RumahSakit::find($rumahSakitId);
+                    $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                    return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
+
+    Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan}',
+                function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId) {
+                    $rumahSakit = RumahSakit::find($rumahSakitId);
+                    $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                    $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
+                    return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
 });
 
-Route::get('/dokter/homepage', function(){
-    return view('dokter.homepage');
-})->middleware('auth', 'verified', 'role:dokter');
+// Route::get('/dokter/homepage', function(){
+//     return view('dokter.homepage');
+// })->middleware('auth', 'verified', 'role:dokter');
 
-//buat route yg bisa diakses lebih dari 1 role, asalkan memenuhi kondisi tertentu
+//buat route yg bisa diakses lebih dari 1 role, asalkan memenuhi kondisi tertentu //Punya Leo
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/updateJadwal/{dataPemeriksaan}/{draft}', [DataPemeriksaanController::class, 'updateJadwal'])->name('updateJadwal');
+});
+
+Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(function () {
+    Route::get('/homepage', function(){
+        return view('dokter.homepage');
+    })->name('dokter.homepage');
+
+    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('dokter.detailpemeriksaan', compact('dataPemeriksaan'));
+    })->name('dokter.detailpemeriksaan');
+
+    Route::get('/listdraft', [DraftLaporanController::class, 'index'])->name('dokter.listdaftar');
+    Route::get('/addnew', [DraftLaporanController::class, 'addNew'])->name('dokter.addnew');
+    Route::post('/addnew', [DraftLaporanController::class, 'store'])->name('dokter.submit');
+    Route::get('/{draft}/edit', [DraftLaporanController::class, 'editData'])->name('dokter.edit');
+    Route::put('/{id}/edit', [DraftLaporanController::class, 'updateDraft'])->name('dokter.submitdata');
+    Route::delete('{draft}/delete', [DraftLaporanController::class, 'deleteData'])->name('dokter.delete');
+
+    Route::get('/file-upload/{dataPemeriksaan}', [FileController::class, 'index'])->name('dokter.index');
+    Route::post('file-upload/{dataPemeriksaan}', [FileController::class, 'store'])->name('dokter.hasilpemeriksaan');
 });
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
@@ -159,10 +271,31 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
 
     // Pilih jadwal
     Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pasien.pendaftaran');
-    
+
     // Halaman pilih tipe pasien
     Route::get('/pendaftaran/tipepasien', [PendaftaranController::class, 'tipePasien'])
         ->name('pasien.pendaftaran.tipepasien');
+    
+    //Nyesuain sama folder viewnya
+    Route::get('/daftarpilihjadwal', function () {
+        return view('pasien.formdaftarpemeriksaan.daftarpilihjadwal');
+    })->name('pasien.daftarpilihjadwal');
+
+    Route::get('/daftartipepasien', function () {
+        return view('pasien.formdaftarpemeriksaan.daftartipepasien');
+    })->name('pasien.daftartipepasien');
+
+    Route::get('/daftardatarujukan', function () {
+        return view('pasien.formdaftarpemeriksaan.daftardatarujukan');
+    })->name('pasien.daftardatarujukan');
+
+    Route::get('/daftarringkasan', function () {
+        return view('pasien.formdaftarpemeriksaan.daftarringkasan');
+    })->name('pasien.daftarringkasan');
+
+    Route::get('/editpendaftaran/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.formdaftarpemeriksaan.editpendaftaran', compact('dataPemeriksaan'));
+    })->name('pasien.editpendaftaran');
 
     Route::get('/daftarpilihjadwal', function () {
         return view('pasien.daftarpilihjadwal');
@@ -205,6 +338,19 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     //FaQ page
     Route::view('/faq', 'pasien.faq')->name('pasien.faq');
     Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
+    Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
+    Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
+    Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
+    Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');
+    Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
+    Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
+    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
+    })->name('pasien.detailpemeriksaan');
+        Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.hasilpemeriksaan', compact('dataPemeriksaan'));
+    })->name('pasien.hasilpemeriksaan');
+    Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 
     Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
     Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
@@ -235,24 +381,21 @@ Route::middleware(['auth:web'])->group(function () {
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');
 
-Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}', 
-            function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId); 
+Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}',
+            function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId);
             return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });
-
-Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}', 
-            function ($rumahSakitId, $jenisId) { 
-                $rumahSakit = RumahSakit::find($rumahSakitId); 
+Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}',
+            function ($rumahSakitId, $jenisId) {
+                $rumahSakit = RumahSakit::find($rumahSakitId);
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
-
-Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan?}', 
-            function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId = null) { 
-                $rumahSakit = RumahSakit::find($rumahSakitId); 
+Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan?}',
+            function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId = null) {
+                $rumahSakit = RumahSakit::find($rumahSakitId);
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                 return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
-
-Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', 
-            function ($rumahSakitId) { 
-                $rumahSakit = RumahSakit::find($rumahSakitId); 
-                return $rumahSakit->namaJenisPemeriksaan(); });
+Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) {
+                $rumahSakit = RumahSakit::find($rumahSakitId);
+                return $rumahSakit->namaJenisPemeriksaan(); 
+});

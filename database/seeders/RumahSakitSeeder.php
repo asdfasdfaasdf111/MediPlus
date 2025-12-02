@@ -13,11 +13,12 @@ class RumahSakitSeeder extends Seeder
     public function run(): void
     {
         $superadmin = SuperAdmin::first();
+
         $dataNama = [
-            'Mitra Medika', 
-            'UKRIDA', 
-            'Jakarta', 
-            'Siloam', 
+            'Mitra Medika',
+            'UKRIDA',
+            'Jakarta',
+            'Siloam',
             'Anggrek Mas',
             'Metro Hospitals Kebon Jeruk'];
         $dataAlamat = [

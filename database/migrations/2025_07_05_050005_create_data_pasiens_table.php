@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('noHP');
             $table->string('alergi')->nullable();
             $table->enum('golonganDarah', ['A', 'B', 'AB', 'O', 'Tidak Tahu']);
-            $table->enum('hubunganKeluarga', ['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya']);
+            $table->enum('hubunganKeluarga', ['Diri Sendiri', 'Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya']);
             $table->timestamps();
         });
     }

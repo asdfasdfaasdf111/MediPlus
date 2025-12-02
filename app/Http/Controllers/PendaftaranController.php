@@ -13,13 +13,13 @@ use Illuminate\Http\Request;
 
 class PendaftaranController extends Controller
 {
-    private const HUBUNGAN_OPTS        = ['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'];
+    private const HUBUNGAN_OPTS        = ['Diri Sendiri', 'Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'];
     private const GOLONGAN_DARAH_OPTS  = ['A', 'B', 'AB', 'O', 'Tidak Tahu'];
     private const JENIS_IDENTITAS_OPTS = ['KTP', 'SIM', 'PASPOR'];
     private const JENIS_KELAMIN_OPTS   = ['Laki-laki', 'Perempuan'];
 
 
-    public function index(Request $request)
+   public function index(Request $request)
     {
         $user   = $request->user();
         $master = $user->masterPasien ?: MasterPasien::create(['user_id' => $user->id]);
@@ -131,24 +131,8 @@ class PendaftaranController extends Controller
 
         $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
         $validated['alergi'] = $validated['alergi'] ?? '';
-
         $pasien->update($validated);
 
-        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien diperbarui.');
+        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien berhasil diperbarui!');
     }
-
-    public function destroyDataPasien(Request $request, DataPasien $pasien)
-    {
-        $this->ensureOwned($pasien, $request);
-        $pasien->delete();
-
-        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien dihapus.');
-    }
-
-    private function isoDay(string $date): int
-    {
-        return Carbon::parse($date)->isoWeekday(); // 1..7
-    }
-
-
- }
+}

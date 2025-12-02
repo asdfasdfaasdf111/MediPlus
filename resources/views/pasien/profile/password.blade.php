@@ -5,29 +5,22 @@
 <div class="container-fluid">
   <div class="row">
 
-    {{-- Sidebar --}}
-    <div class="col-md-2 min-vh-100 p-2 mt-3">
-      <ul class="nav flex-column">
-        <li class="nav-item mb-2">
-          <a href="{{ route('profile.edit') }}"
-             class="nav-link {{ request()->routeIs('profile.edit') ? 'text-primary fw-bold' : 'text-dark' }}">
-            <i class="bi bi-person-circle me-2"></i> Edit Profile
-          </a>
-        </li>
-        <li class="nav-item mb-2">
-          <a href="{{ route('profile.password.edit') }}"
-             class="nav-link {{ request()->routeIs('profile.password.*') ? 'text-primary fw-bold' : 'text-dark' }}">
-            <i class="bi bi-shield-lock me-2"></i> Change Password
-          </a>
-        </li>
-      </ul>
-    </div>
+    @include('layout.sidebar')
 
     {{-- Content --}}
     <div class="col-md-10 p-4 bg-light">
 
+            {{-- Alert Success --}}
+      @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show mx-1 mx-md-0 mt-2" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      @endif
+      
       <div class="card shadow-sm">
-        <h4 class="text-center mb-1 pt-5">Change Password</h4>
+        <h4 class="text-center mb-1 pt-5">Ubah Kata Sandi</h4>
         <p class="text-center text-muted mb-4">Perbarui kata sandi akun Anda</p>
 
         <form action="{{ route('profile.password.update') }}" method="POST" novalidate>
@@ -36,7 +29,6 @@
 
           <div class="card-body px-5">
 
-            {{-- ================== KEAMANAN ================== --}}
             <div class="mb-4">
               <div class="d-flex align-items-center">
                 <i class="bi bi-shield-lock me-2"></i>

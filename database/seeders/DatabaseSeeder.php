@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder
             ModalitasSeeder::class,
             JenisPemeriksaanSeeder::class,
             DataRujukanSeeder::class,
-            DataPemeriksaanSeeder::class
+            DataPemeriksaanSeeder::class,
+            DraftLaporanSeeder::class
         ]);
     }
 }

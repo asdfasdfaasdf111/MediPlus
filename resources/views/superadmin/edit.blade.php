@@ -15,7 +15,6 @@
 
     <style>
         .content-wrapper {
-            background-color: #eef4ff;
             min-height: 100vh;
             justify-content: center;
             padding: 20px;
@@ -28,7 +27,7 @@
         }
     </style>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper bg-light">
         <div class="bg-white p-5 pt-4 pb-4 rounded m-5 mt-2 mb-1">
             <form action="{{ route('superadmin.submitdata', $rumahSakit->id) }}" method="POST">
                 @csrf
@@ -70,11 +69,20 @@
                             @endforeach
                         @endif
                 </div>
-                <div class="d-flex align-items-center justify-content-center">
-                    <button type="submit" class="btn btn-primary fw-bold mt-3" style="font-family:'Inter', sans-serif; border-radius: 50px; width: 200px; background-color: #1A76D1">Simpan</button>
-                    <a href="{{ route('superadmin.homepage') }}" class="mt-3 ps-4" style="color: grey">Kembali</a>
+                <div class="d-flex justify-content-center gap-3 pt-3">
+                    <a href="{{ route('superadmin.homepage') }}"
+                    class="btn btn-outline-primary px-5 rounded-pill">
+                        Kembali
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary px-5 rounded-pill">
+                        Simpan
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>

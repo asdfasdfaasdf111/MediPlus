@@ -15,7 +15,7 @@
         </a>
       </div>
 
-      @include('pasien.pendaftaran._form')
+      @include('pasien.pendaftaran.form')
     </div>
   </div>
 </div>

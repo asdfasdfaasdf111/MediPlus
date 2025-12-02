@@ -16,8 +16,6 @@
     $hasilPemeriksaan = $dataPemeriksaan->hasilPemeriksaan;
 @endphp
 
-{{-- Harusny ud benar tpi blm pernah di run, ntr klo yg dokter ud slsai, cek ulang --}}
-
 <div>Hasil Pemeriksaan</div>
 <div>
     <div>Nama Pasien: {{ $dataPasien->namaLengkap }} </div>
@@ -26,10 +24,14 @@
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Hasil Analisa: {{ $hasilPemeriksaan->hasilPemeriksaan }} </div>
     <div>Unduh Hasil:  
-        <a href="{{ asset('storage/' . $hasilPemeriksaan->fileLampiran) }}" target="_blank">
-            Download
-        </a>
+        @foreach(json_decode($hasilPemeriksaan->fileLampiran) as $filePath)
+            <a href="{{ Storage::url($filePath) }}" target="_blank">Download</a><br>
+        @endforeach
     </div>
 </div>
 
-<a href="{{ route('pasien.selesaiPemeriksaan') }}"> Kembali </a>
+<form action="{{ route('pasien.selesaiPemeriksaan', $dataPemeriksaan) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('PUT')
+    <button type="submit" class="btn btn-outline-primary">Kembali</button>
+</form>

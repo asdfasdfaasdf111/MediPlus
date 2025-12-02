@@ -272,6 +272,8 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->save();
         }
         return redirect()->route('pasien.pendaftaran');
+    }
+    
     public function homepageDokter() {
         $dokter = auth()->user()->dokter;
         $status = request('status', 'semua');

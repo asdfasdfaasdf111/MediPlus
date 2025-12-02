@@ -74,6 +74,7 @@
                 'dalam antrian'           => 'DALAM ANTRIAN',
                 'pemeriksaan berlangsung' => 'PEMERIKSAAN BERLANGSUNG',
                 'menunggu laporan'        => 'MENUNGGU LAPORAN',
+                'laporan terkirim'        => 'LAPORAN TERKIRIM',
                 'selesai'                 => 'SELESAI'
             };
 

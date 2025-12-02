@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 @php
@@ -18,6 +20,7 @@
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
     $hasilPemeriksaan = $dataPemeriksaan->hasilPemeriksaan;
+    $draftLaporan = $dokter->draftLaporan;
 @endphp
 
 <div class="container mt-5">
@@ -104,67 +107,108 @@
                 <p class="fw-bold mb-3">{{ $dataRujukan->permintaanPemeriksaan }}</p>
 
                 <label class="form-label mb-1">Formulir Rujukan</label>
-                <p class="fw-bold mb-3">{{ $dataRujukan->formulirRujukan }}</p>
+                <br>
+                <a class="fw-bold mb-3" href="{{ asset('storage/' . $dataRujukan->formulirRujukan) }}" target="_blank">
+                    {{ $dataRujukan->namaFile }}
+                </a>
             </div>
         </div>
     </div>
 
     @if($dataPemeriksaan->statusDokter == 'Menunggu Laporan')
-        <form action="POST" action="{{ route('file.store') }}" class=""></form>
-        <div class="container mt-5">
-            <div class="text-center mb-4">
-                <h4 class="fw-bold text-primary">Unggah Hasil</h4>
+        <form method="POST" action="{{ route('dokter.uploadLaporan', $dataPemeriksaan) }}" class="" enctype="multipart/form-data">
+            @csrf
+            <div class="container mt-5">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold text-primary">Unggah Hasil</h4>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4 p-4 mb-5" style="max-width: 700px; margin: 0 auto;">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Mitra Radiologi</label>
+                    <input type="file" class="form-control" name="files[]" id="hasilPemeriksaan" multiple required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="deskripsi" class="form-lanel fw-semibold">Deskripsi Hasil Analisa</label>
+                    <textarea name="deskripsi" id="deskripsi" rows="6" class="form-control" placeholder="Deskripsi Hasil Analisa"></textarea>
+                </div>
+
+                <div class="text-end mb-3">
+                    <button type="button" class="btn btn-outline-secondary fw-semibold px-4" data-bs-toggle="modal" data-bs-target="#popupDraft">
+                        Unggah Draft
+                    </button>
+                </div>
+
+                <div class="d-flex justify-content-center gap-4 mt-4">
+                    <a href="{{ route('dokter.homepage') }}" class="btn btn-outline-primary fw-semibold px-5" style="border-radius: 25px;">
+                        Kembali
+                    </a>
+                    <button type="submit" class="btn btn-primary fw-semibold px-5" style="border-radius: 25px;">
+                        Kirim
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal fade" id="popupDraft" tabindex="-1" aria-labelledby="popupDraftLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="popupDraftLabel" class="modal-title">Pilih Draft</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+    
+                    <div class="modal-body">
+                        @if(isset($draftLaporan) && $draftLaporan->count())
+                            <div class="list-group">
+                                @foreach($draftLaporan as $draft)
+                                    <button
+                                        type="button"
+                                        class="list-group-item list-group-item-action template-item"
+                                        data-description="{{ htmlspecialchars($draft->deskripsi) }}"
+                                    >
+                                        {{ $draft->judul }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-muted">Tidak ada draft laporan tersedia.</p>
+                        @endif
+                    </div>
+    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="card shadow-sm border-0 rounded-4 p-4 mb-5" style="max-width: 700px; margin: 0 auto;">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Mitra Radiologi</label>
-                <input type="file" class="form-control" name="file" id="hasilPemeriksaan" accept="application/pdf" @if(empty($hasilPemeriksaan->file)) required @endif>
-                <span id="fileLampiran">
-                    @if (!empty($hasilPemeriksaan->file))
-                        {{ $hasilPemeriksaan->fileLampiran }}
-                    @else
-                        Tidak ada file
-                    @endif
-                </span>
-
-                <script>
-                    const input = document.getElementById('file');
-                    const fileLampiran = document.getElementById('file');
-
-                    input.addEventListener('change', () => {
-                        if(input.files.length > 0) {
-                            fileLampiran.textContent = input.files[0].name;
-                        } else {
-                            fileLampiran.textcontent = 'Tidak ada file';
-                        }
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const textarea = document.getElementById('deskripsi');
+    
+                document.querySelectorAll('.template-item').forEach(function(btn) {
+                    btn.addEventListener('click', function () {
+                        const desc = this.getAttribute('data-description') || '';
+                        textarea.value = desc;
+                        const modalEl = document.getElementById('popupDraft');
+                        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                        modal.hide();
                     });
-                </script>
-            </div>
-
-            <div class="mb-3">
-                <label for="deskripsi" class="form-lanel fw-semibold">Deskripsi Hasil Analisa</label>
-                <textarea name="deskripsi" id="deskripsi" rows="6" class="form-control" placeholder="Deskripsi Hasil Analisa"></textarea>
-            </div>
-
-            <div class="text-end mb-3">
-                <button type="submit" class="btn btn-primary fw-semibold px-4">
-                    Unggah Draft
-                </button>
-            </div>
-
-            <div class="d-flex justify-content-center gap-4 mt-4">
-                <a href="{{ route('dokter.homepage') }}" class="btn btn-outline-primary fw-semibold px-5" style="border-radius: 25px;">
-                    Kembali
-                </a>
-                <button type="submit" class="btn btn-primary fw-semibold px-5" style="border-radius: 25px;">
-                    Kirim
-                </button>
-            </div>
-
+                });
+            });
+        </script>
+    @elseif($dataPemeriksaan->statusDokter === 'Laporan Terkirim' || $dataPemeriksaan->statusDokter === 'Selesai')
+        <div>Hasil Analisa: {{ $hasilPemeriksaan->hasilPemeriksaan }} </div>
+        <div>Unduh Hasil:  
+            @foreach(json_decode($hasilPemeriksaan->fileLampiran) as $filePath)
+                <a href="{{ Storage::url($filePath) }}" target="_blank">Download</a><br>
+            @endforeach
         </div>
     @endif
+    
 
 
 {{-- <div>
@@ -265,5 +309,7 @@ function showFileName(event) {
     document.getElementById('file-name').textContent = fileName;
 }
 </script> --}}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

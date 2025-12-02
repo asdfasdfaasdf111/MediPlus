@@ -18,6 +18,7 @@ use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\DashboardPetugasController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\HasilPemeriksaanController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
@@ -262,6 +263,8 @@ Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(
     Route::put('/{id}/edit', [DraftLaporanController::class, 'updateDraft'])->name('dokter.submitdata');
     Route::delete('{draft}/delete', [DraftLaporanController::class, 'deleteData'])->name('dokter.delete');
 
+    Route::post('/uploadLaporan/{dataPemeriksaan}', [HasilPemeriksaanController::class, 'bikinHasilPemeriksaan'])->name('dokter.uploadLaporan');
+
     Route::get('/file-upload/{dataPemeriksaan}', [FileController::class, 'index'])->name('dokter.index');
     Route::post('file-upload/{dataPemeriksaan}', [FileController::class, 'store'])->name('dokter.hasilpemeriksaan');
 });
@@ -352,23 +355,6 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     })->name('pasien.hasilpemeriksaan');
     Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 
-    Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
-    Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
-
-    Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
-    Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');
-    Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
-    Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
-
-    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
-    })->name('pasien.detailpemeriksaan');
-
-    Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.hasilpemeriksaan', compact('dataPemeriksaan'));
-    })->name('pasien.hasilpemeriksaan');
-
-    Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 });
 
 Route::middleware(['auth:web'])->group(function () {

@@ -90,7 +90,7 @@ class DataPemeriksaan extends Model
                 $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan'";
                 break;
             default:
                 $statusUser = "'default'";

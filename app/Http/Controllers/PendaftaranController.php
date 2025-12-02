@@ -26,10 +26,8 @@ class PendaftaranController extends Controller
 
         $dataPasiens = $master->dataPasien()->latest()->get();
 
-        // Pemeriksaan yang masih aktif (bukan selesai/batal)
         $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
             ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
-            ->whereNotIn('statusUtama', ['selesai','batal'])   // pakai ini jika belum ada scope berlangsung()
             ->ordered('statusPasien')
             ->paginate(5);
 

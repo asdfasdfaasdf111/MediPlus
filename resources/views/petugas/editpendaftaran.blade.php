@@ -39,7 +39,7 @@
           </span>
         </div>
 
-        <form method="POST" action="{{ route('petugas.updateJadwal', $dataPemeriksaan) }}"
+        <form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => "false"]) }}"
               class="shadow-sm"
               style="background:#fff;border:1px solid #e9ecef;border-radius:16px;">
 
@@ -60,7 +60,7 @@
               <label for="jenisPemeriksaan" class="form-label" style="font-weight:600;">Jenis Pemeriksaan</label>
               <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select" required
                       style="border-radius:12px;">
-                @foreach($rumahSakit->jenisPemeriksaan->pluck('namaJenisPemeriksaan')->unique() as $namaJenisPemeriksaan)
+                @foreach($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
                   <option value="{{ $namaJenisPemeriksaan }}"
                           {{ $namaJenisPemeriksaan == $jenisPemeriksaan->namaJenisPemeriksaan ? 'selected' : '' }}>
                     {{ $namaJenisPemeriksaan }}
@@ -151,6 +151,17 @@
                 </div>
               </div>
             </div>
+
+            {{-- leo bru tmbhin, blm ad front end ny --}}
+            <label class="form-label fw-bold">Catatan</label>
+            <input type="text"  class="form-control"
+                    name="catatanPetugas" id="catatanPetugas"
+                    placeholder="Catatan"
+                    @if(!empty($dataPemeriksaan?->catatanPetugas))
+                        value="{{ $dataPemeriksaan?->catatanPetugas }}"
+                    @endif>
+
+
           </div>
 
           <div class="border-top text-center" style="padding:20px;">

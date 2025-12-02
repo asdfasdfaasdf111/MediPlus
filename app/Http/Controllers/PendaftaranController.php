@@ -19,27 +19,8 @@ class PendaftaranController extends Controller
     private const JENIS_KELAMIN_OPTS   = ['Laki-laki', 'Perempuan'];
 
 
-    public function index(Request $request)
+   public function index(Request $request)
     {
-        $rumahsakits = RumahSakit::orderBy('nama')->get(['id', 'nama', 'jamBuka', 'jamTutup', 'jumlahPasien']);
-
-        $rsId = $request->query('rumah_sakit');
-        $jenisId = $request->query('jenis_pemeriksaan');
-        $spesifikId = $request->query('spesifik');
-        $tanggal = $request->query('tanggal', now('Asia/Jakarta')->toDateString());
-
-        $jenisList = collect();
-        if ($rsId) {
-            $jenisList = JenisPemeriksaan::where('rumah_sakit_id', $rsId)
-            ->orderBy('namaJenisPemeriksaan')
-            ->get(['id', 'namaJenisPemeriksaan']);
-        }
-
-        $spesifikList = collect();
-        if ($jenisId) {
-            $spesifikList = JenisPemeriksaan::where('id', $jenisId)
-            ->whereNotNull('namaPemeriksaanSpesifik')
-            ->pluck('namaPemeriksaanSpesifik', 'id');
         $user   = $request->user();
         $master = $user->masterPasien ?: MasterPasien::create(['user_id' => $user->id]);
 
@@ -150,15 +131,8 @@ class PendaftaranController extends Controller
 
         $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
         $validated['alergi'] = $validated['alergi'] ?? '';
+        $pasien->update($validated);
 
-        $slots = [];
-        if ($rsId && $jenisId && $spesifikId && $tanggal)
-
-
-
-
-
-
-
-
+        return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien berhasil diperbarui!');
+    }
 }

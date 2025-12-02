@@ -245,6 +245,8 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
 //buat route yg bisa diakses lebih dari 1 role, asalkan memenuhi kondisi tertentu //Punya Leo
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/updateJadwal/{dataPemeriksaan}/{draft}', [DataPemeriksaanController::class, 'updateJadwal'])->name('updateJadwal');
+});
+
 Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(function () {
     Route::get('/homepage', function(){
         return view('dokter.homepage');
@@ -357,7 +359,7 @@ Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan?}',
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                 return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
-Route::get('/api/namaJenisPemeriksaan/{rumahSakit}',
-            function ($rumahSakitId) {
+Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) {
                 $rumahSakit = RumahSakit::find($rumahSakitId);
-                return $rumahSakit->namaJenisPemeriksaan(); });
+                return $rumahSakit->namaJenisPemeriksaan(); 
+});

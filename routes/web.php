@@ -210,7 +210,6 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     })->name('petugas.editpendaftaran');
 
     Route::put('/updatePendaftaran/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updatePendaftaran'])->name('petugas.updatePendaftaran');
-    Route::put('/updateJadwal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateJadwal'])->name('petugas.updateJadwal');
 
     Route::post('/tambahJenisPemeriksaan', [JenisPemeriksaanController::class, 'tambahJenisPemeriksaan'])->name('petugas.tambahJenisPemeriksaan');
     Route::put('/editJenisPemeriksaan/{id}', [JenisPemeriksaanController::class, 'editJenisPemeriksaan'])->name('petugas.editJenisPemeriksaan');
@@ -298,6 +297,26 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
         return view('pasien.formdaftarpemeriksaan.editpendaftaran', compact('dataPemeriksaan'));
     })->name('pasien.editpendaftaran');
 
+    Route::get('/daftarpilihjadwal', function () {
+        return view('pasien.daftarpilihjadwal');
+    })->name('pasien.daftarpilihjadwal');
+
+    Route::get('/daftartipepasien', function () {
+        return view('pasien.daftartipepasien');
+    })->name('pasien.daftartipepasien');
+
+    Route::get('/daftardatarujukan', function () {
+        return view('pasien.daftardatarujukan');
+    })->name('pasien.daftardatarujukan');
+
+    Route::get('/daftarringkasan', function () {
+        return view('pasien.daftarringkasan');
+    })->name('pasien.daftarringkasan');
+
+    Route::get('/editpendaftaran/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.editpendaftaran', compact('dataPemeriksaan'));
+    })->name('pasien.editpendaftaran');
+
     // Form tambah & simpan Data Pasien
     Route::get('/pendaftaran/datapasien/create', [PendaftaranController::class, 'createDataPasien'])
         ->name('pasien.datapasien.create');
@@ -333,6 +352,23 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     })->name('pasien.hasilpemeriksaan');
     Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 
+    Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
+    Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
+
+    Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
+    Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');
+    Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
+    Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
+
+    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
+    })->name('pasien.detailpemeriksaan');
+
+    Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
+        return view('pasien.hasilpemeriksaan', compact('dataPemeriksaan'));
+    })->name('pasien.hasilpemeriksaan');
+
+    Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 });
 
 Route::middleware(['auth:web'])->group(function () {

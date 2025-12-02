@@ -30,40 +30,7 @@
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</div>
 </div>
-==========================================================
-{{-- <div>
-    <div>Tipe Pasien</div> --}}
-    {{-- yang di comment itu antara uda ga diperlukan(kayanya, bahas dlu), atau datanya ga disimpan --}}
-    {{-- <div>Tipe Pasien: </div>
-    <div>Nomor Rekam Medis: </div>
-    <div>Pendaftaran dilakukan untuk: </div>
-    <div>Hubungan dengan Pasien: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div> --}}
-    {{-- <div>
-        Nama Pendamping:
-        @if (!empty($dataPemeriksaan->namaPendamping))
-            {{$dataPemeriksaan->namaPendamping}}
-        @else
-            -
-        @endif
-    </div>
-    <div>
-        Nomor Telepon Pendamping:
-        @if (!empty($dataPemeriksaan->nomorPendamping))
-            {{$dataPemeriksaan->nomorPendamping}}
-        @else
-            -
-        @endif
-    </div>
-    <div>
-        Catatan:
-        @if (!empty($dataPemeriksaan->catatanPetugas))
-            {{$dataPemeriksaan->catatanPetugas}}
-        @else
-            -
-        @endif
-    </div>
-</div>
-========================================================== --}}
+
 <div>
     <div>Data Pasien</div>
     <div>Nama Lengkap: {{ $dataPasien->namaLengkap }}</div>
@@ -78,7 +45,7 @@
         @endif
     </div>
 </div>
-==========================================================
+
 <div>
     <div>Data Rujukan</div>
     <div>Nama Fasilitas Kesehatan: {{ $dataRujukan->namaFaskes }}</div>

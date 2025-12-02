@@ -6,6 +6,7 @@ use App\Models\RumahSakit;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
+
         View::composer('admin.*', function($view){
             $view->with('admin', auth()->user()->admin);
         });
@@ -33,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('pasien.*', function($view){
             $view->with('masterPasien', auth()->user()->masterPasien);
         });
-        
+
         View::composer('dokter.*', function($view){
             $view->with('dokter', auth()->user()->dokter);
         });
@@ -53,4 +57,5 @@ class AppServiceProvider extends ServiceProvider
         $view->with('rumahsakits', $rumahsakits);
         });
     }
+    
 }

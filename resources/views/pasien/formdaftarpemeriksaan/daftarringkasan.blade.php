@@ -107,7 +107,7 @@
            Kembali
         </a>
         <button id="submitBtn" type="submit" class="btn btn-primary px-5 rounded-pill">
-            Berikutnya
+            Daftar
         </button>
     </div>
 </form>

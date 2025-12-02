@@ -27,7 +27,7 @@
 
             <div class="col-md-2 p-4">
                 <form action="{{ route('dokter.listdaftar') }}" method="GET">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold px-3">+ Tambah RS Baru</button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold px-3">List Draft</button>
                 </form>
             </div>
         </div>
@@ -147,32 +147,3 @@
 </body>
 </html>
 
-
-{{-- <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <div class="bg-white shadow-sm rounded p-3">
-                {{ $dataPemeriksaan->id }} {{ $dataPemeriksaan->statusDokter }}
-                <div class="d-flex align-items-center mb-2">
-                    {{ $dataPemeriksaan->statusUtama }}
-                    <div>
-                        <h6 class="mb-0 fw-bold">Nama Lengkap Pasien: {{ $dataPasien->namaLengkap }}</h6>
-                        <small class="text-muted">Dokter Radiologi: {{ $dataPemeriksaan->dokter->user->name }}</small><br>
-                        <small class="text-muted">Jenis Pemeriksaan:  {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</small><br>
-                        <small class="text-muted">Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</small><br>
-                        <small class="text-muted">Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</small><br>
-                    </div>
-                </div>
-                @if($dataPemeriksaan->statusDokter ==  'Menunggu Laporan')
-                    <div class="col-md-2">
-                        <a href="{{ route('dokter.detailpemeriksaan', $dataPemeriksaan) }}">
-                            <button class="bi bi-upload">Upload File</button>
-                        </a>
-                    </div>
-                @else
-                    <div class="col-md-2">
-                        <a href="{{ route('dokter.detailpemeriksaan', $dataPemeriksaan) }}">
-                            <button class="bi bi-primary">Lihat Detail</button>
-                        </a>
-                    </div>
-                @endif
-            </div>
-        </div> --}}

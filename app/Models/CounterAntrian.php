@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class CounterAntrian extends Model
 {
     protected $fillable = [
-        'jenis_pemeriksaan_id',
+        'rumah_sakit_id',
+        'namaJenisPemeriksaan',
         'tanggalAntrian',
         'nomorTerakhir',
     ];
 
-    public function jenisPemeriksaan()
+    public function rumahSakit()
     {
-        return $this->belongsTo(JenisPemeriksaan::class);
+        return $this->belongsTo(rumahSakit::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
+use App\Models\JadwalDokter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,7 @@ class DokterController extends Controller
 
         $admin = auth()->user()->admin;
 
-        Dokter::create([
+        $dokter = Dokter::create([
             'user_id'=> $user->id,
             'admin_id' => $admin->id,
             'rumah_sakit_id' => $admin->rumahSakit->id,
@@ -47,6 +48,16 @@ class DokterController extends Controller
             // Dokter ga pernah minta no hp tapi di databaseny masih ad no hp, kasih default biar ga error, nanti di databasenya hapus kalo ga kepake
             'noHP' => '08123456789',
         ]);
+
+        for ($i = 1; $i <= 7; $i++){
+            JadwalDokter::create([
+                'dokter_id' => $dokter->id,
+                'indexJadwal' => $i,
+                'jamMulai' => '08:00:00',
+                'jamSelesai' => '17:00:00',
+                'kerja' => ($i <= 5 ? true : false),
+            ]);
+        }
 
         // dikomen dulu soalnya belum perlu, cuma mau tes bikin akunnya bisa atau engga, ga perlu beneran kirim email ke gmailnya
         // $user->sendEmailVerificationNotification();

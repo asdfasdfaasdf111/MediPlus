@@ -34,6 +34,7 @@ class HasilPemeriksaanController extends Controller
         ]);
 
         $dataPemeriksaan->statusPasien = 'Hasil Tersedia';
+        $dataPemeriksaan->statusPetugas = 'Laporan Terkirim';
         $dataPemeriksaan->statusDokter = 'Laporan Terkirim';
         $dataPemeriksaan->save();
 

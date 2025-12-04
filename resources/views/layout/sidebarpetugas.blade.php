@@ -22,6 +22,10 @@
         </li>
 
         <li class="nav-item mb-2">
+            {{-- <a href="{{ route('petugas.listantrian', ['rumahSakitId' => auth()->user()->petugas->rumah_sakit_id]) }}"
+                class="nav-link {{ request()->routeIs('petugas.listantrian') ? 'text-primary fw-bold' : 'text-dark' }}">
+                <i class="bi bi-hdd-rack me-2"></i> List Antrian
+            </a> --}}
             <a href="{{ route('petugas.listantrian') }}"
                class="nav-link {{ request()->routeIs('petugas.listantrian') ? 'text-primary fw-bold' : 'text-dark' }}">
                 <i class="bi bi-hdd-rack me-2"></i> List Antrian

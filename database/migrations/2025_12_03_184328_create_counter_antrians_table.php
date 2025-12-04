@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('counter_antrian', function (Blueprint $table) {
+        Schema::create('counter_antrians', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jenis_pemeriksaan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('rumah_sakit_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('namaJenisPemeriksaan');
             $table->date('tanggalAntrian');
             $table->unsignedInteger('nomorTerakhir');
             $table->timestamps();

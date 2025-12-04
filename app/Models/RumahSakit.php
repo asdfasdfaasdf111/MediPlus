@@ -185,5 +185,35 @@ class RumahSakit extends Model
         return Schema::hasColumn('rumah_sakits', 'aktif') ? $q->where('aktif', 1) : $q;
     }
 
+    public function counterAntrian()
+    {
+        return $this->hasMany(CounterAntrian::class);
+    }
+
+    public function counterHariIni($namaJenisPemeriksaan){
+        return $this->counterAntrian()
+                    ->whereDate('tanggalAntrian', Carbon::today())
+                    ->where('namaJenisPemeriksaan', $namaJenisPemeriksaan)
+                    ->first();
+    }
+
+    public function dataDalamPemeriksaan($namaJenisPemeriksaan){
+        return $this->dataPemeriksaan()
+                    ->where('statusPasien', 'Pemeriksaan Berlangsung')
+                    ->whereHas('jenisPemeriksaan', function($query) use ($namaJenisPemeriksaan) {
+                        $query->where('namaJenisPemeriksaan', $namaJenisPemeriksaan);
+                    })
+                    ->first();
+    }
+
+    public function dataDalamAntrian($namaJenisPemeriksaan){
+        return $this->dataPemeriksaan()
+                    ->where('statusPasien', 'Dalam Antrian')
+                    ->whereHas('jenisPemeriksaan', function($query) use ($namaJenisPemeriksaan) {
+                        $query->where('namaJenisPemeriksaan', $namaJenisPemeriksaan);
+                    })
+                    ->orderBy('nomorAntrian', 'asc');
+    }
+
 
 }

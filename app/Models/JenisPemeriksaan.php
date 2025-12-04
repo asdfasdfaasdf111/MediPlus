@@ -27,22 +27,11 @@ class JenisPemeriksaan extends Model
     {
         return $this->hasMany(DataPemeriksaan::class)
         ->where('statusUtama', '!=', 'Draft')
-        ->ordered();;
+        ->ordered();
     }
 
     public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
-    }
-
-    public function counterAntrian()
-    {
-        return $this->hasMany(CounterAntrian::class);
-    }
-
-    public function counterHariIni(){
-        return $this->counterAntrian()
-                    ->whereDate('tanggalAntrian', Carbon::today())
-                    ->first();
     }
 }

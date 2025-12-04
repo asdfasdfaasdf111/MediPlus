@@ -247,7 +247,9 @@
 
                     <div class="mb-0">
                       <div class="small text-muted">Formulir Rujukan</div>
-                      <div class="fw-semibold text-break">{{ $dataRujukan->formulirRujukan }}</div>
+                      <a class="fw-semibold text-break" href="{{ asset('storage/' . $dataRujukan->formulirRujukan) }}" target="_blank">
+                          {{ $dataRujukan->namaFile }}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -261,22 +263,26 @@
           <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
                 Kembali
           </a>
-          {{-- hanya bisa regis ulang kalo <= 6 jam, klo ud > 6 jam lewat atau masih lebih dri 6 jam sblum jadwal, gbs regis ulang  --}}
-          @php
+          @if ($dataPemeriksaan->statusPasien === 'Menunggu Registrasi Ulang')
+              {{-- hanya bisa regis ulang kalo <= 6 jam, klo ud > 6 jam lewat atau masih lebih dri 6 jam sblum jadwal, gbs regis ulang  --}}
+            @php
               $date = $dataPemeriksaan->tanggalPemeriksaan;
-              $time = $dataPemeriksaan->rentangWaktuPemeriksaan;
+              $time = $dataPemeriksaan->rentangWaktuKedatangan;
 
-              $pemeriksaanDateTime = \Carbon::parse("$date $time");
-              $diff = now()->diffInHours($pemeriksaanDateTime);
-          @endphp
-          @if ($diff <= 6)
-            <form action="{{ route('petugas.yourRoute') }}"
-                  method="POST"
-                  onsubmit="return checkWaktu();">
-                @csrf
-                <button type="submit" class="btn btn-primary">Registrasi Ulang</button>
-            </form>
+              $pemeriksaanDateTime = Carbon::parse("$date $time", 'Asia/Jakarta');
+              $pemeriksaanDateTime->setTimezone('Asia/Jakarta');
+              $diff = now('Asia/Jakarta')->diffInHours($pemeriksaanDateTime);
+            @endphp
+            @if ($diff <= 6 && $diff >= -6)
+              <form action="{{ route('petugas.registrasiUlang', $dataPemeriksaan) }}"
+                    method="POST"
+                    onsubmit="return checkWaktu();">
+                  @csrf
+                  <button type="submit" class="btn btn-primary">Registrasi Ulang</button>
+              </form>
+            @endif
           @endif
+          
         </div>
 
       </main>
@@ -286,8 +292,11 @@
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
   <script>
     function checkWaktu() {
-        const pemeriksaanIso = @json($dataPemeriksaan->rentangWaktuPemeriksaan->toIso8601String());
-    
+        const pemeriksaanIso = @json(
+            Carbon::parse(
+                $dataPemeriksaan->tanggalPemeriksaan . ' ' . $dataPemeriksaan->rentangWaktuKedatangan
+            )->toIso8601String()
+        );
         const pemeriksaanTime = new Date(pemeriksaanIso);
         const now = new Date();
     

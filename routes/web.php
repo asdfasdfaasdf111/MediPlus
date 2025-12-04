@@ -19,6 +19,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\DashboardPetugasController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HasilPemeriksaanController;
+use App\Livewire\AntrianController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
@@ -237,9 +238,12 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
                     $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                     return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
 
+    Route::post('/registrasiUlang/{dataPemeriksaan}', [DataPemeriksaanController::class, 'registrasiUlang'])->name('petugas.registrasiUlang');
+    // Route::get('/listantrian', AntrianController::class)->name('petugas.listantrian');
     Route::get('/listantrian', function () {
         return view('petugas.listantrian');
     })->name('petugas.listantrian');
+
 });
 
 // Route::get('/dokter/homepage', function(){

@@ -39,7 +39,7 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusDokter = "Pendaftaran Ditolak";
         }
         $dataPemeriksaan->save();
-        return redirect()->route('petugas.homepage');
+        return redirect()->route('petugas.dashboard');
     }
 
     public function updateJadwal(Request $request, DataPemeriksaan $dataPemeriksaan, $draft){
@@ -305,7 +305,8 @@ class DataPemeriksaanController extends Controller
         $counter = $dataPemeriksaan->jenisPemeriksaan->counterHariIni;
         if ($counter === null) {
             $counter = CounterAntrian::create([
-                'jenis_pemeriksaan_id' => $dataPemeriksaan->jenis_pemeriksaan_id,
+                'rumah_sakit_id' => $dataPemeriksaan->rumah_sakit_id,
+                'namaJenisPemeriksaan' => $dataPemeriksaan->jenisPemeriksaan->namaJenisPemeriksaan,
                 'tanggalAntrian' => Carbon::today(),
                 'nomorTerakhir' => 0,
             ]);
@@ -317,6 +318,6 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPasien = $dataPemeriksaan->statusPetugas = $dataPemeriksaan->statusDokter = 'Dalam Antrian';
         $dataPemeriksaan->save();
 
-        return redirect()->route('petugas.homepage');
+        return redirect()->route('petugas.dashboard');
     }
 }

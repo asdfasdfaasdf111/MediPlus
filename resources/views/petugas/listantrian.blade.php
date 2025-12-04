@@ -14,10 +14,21 @@
 @endphp
 
 <body class="bg-white text-dark">
-  @foreach ($rumahSakit->jenisPemeriksaan as $jenisPemeriksaan)
-      @if ($jenisPemeriksaan->counterHariIni === null)
-          @continue
-      @endif
-  @endforeach
+  @include('layout.navbar2')
+
+  <div class="container-fluid ">
+    <div class="row">
+      @include('layout.sidebarpetugas')
+
+      <div class="col-md-10 p-4  bg-light">
+        @livewire('antrian-controller', ['rumahSakit' => $rumahSakit])
+        <div class="text-center text-muted small py-3">
+          © {{ date('Y') }} MediPlus — Petugas Panel
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

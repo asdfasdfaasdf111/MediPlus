@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class JenisPemeriksaan extends Model
@@ -32,5 +33,16 @@ class JenisPemeriksaan extends Model
     public function rumahSakit()
     {
         return $this->belongsTo(RumahSakit::class);
+    }
+
+    public function counterAntrian()
+    {
+        return $this->hasMany(CounterAntrian::class);
+    }
+
+    public function counterHariIni(){
+        return $this->counterAntrian()
+                    ->whereDate('tanggalAntrian', Carbon::today())
+                    ->first();
     }
 }

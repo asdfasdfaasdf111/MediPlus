@@ -261,6 +261,22 @@
           <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
                 Kembali
           </a>
+          {{-- hanya bisa regis ulang kalo <= 6 jam, klo ud > 6 jam lewat atau masih lebih dri 6 jam sblum jadwal, gbs regis ulang  --}}
+          @php
+              $date = $dataPemeriksaan->tanggalPemeriksaan;
+              $time = $dataPemeriksaan->rentangWaktuPemeriksaan;
+
+              $pemeriksaanDateTime = \Carbon::parse("$date $time");
+              $diff = now()->diffInHours($pemeriksaanDateTime);
+          @endphp
+          @if ($diff <= 6)
+            <form action="{{ route('petugas.yourRoute') }}"
+                  method="POST"
+                  onsubmit="return checkWaktu();">
+                @csrf
+                <button type="submit" class="btn btn-primary">Registrasi Ulang</button>
+            </form>
+          @endif
         </div>
 
       </main>
@@ -268,5 +284,22 @@
   </div>
 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+  <script>
+    function checkWaktu() {
+        const pemeriksaanIso = @json($dataPemeriksaan->rentangWaktuPemeriksaan->toIso8601String());
+    
+        const pemeriksaanTime = new Date(pemeriksaanIso);
+        const now = new Date();
+    
+        const diffMs = pemeriksaanTime - now;
+        const diffHours = diffMs / (1000 * 60 * 60);
+    
+        if (diffHours > 1) {
+            return confirm("Waktu pemeriksaan masih lebih dari 1 jam. Apakah Anda yakin?");
+        }
+    
+        return true;
+    }
+    </script>
 </body>
 </html>

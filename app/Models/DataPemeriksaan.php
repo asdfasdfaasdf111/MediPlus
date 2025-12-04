@@ -33,6 +33,7 @@ class DataPemeriksaan extends Model
         'riwayatNoHP',
         'riwayatAlergi',
         'riwayatGolonganDarah',
+        'nomorAntrian',
     ];
 
     public function dokter()

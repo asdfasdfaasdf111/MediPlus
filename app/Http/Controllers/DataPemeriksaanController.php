@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\CounterAntrian;
 use App\Models\DataPemeriksaan;
 use App\Models\Dokter;
 use App\Models\RumahSakit;
@@ -295,5 +296,27 @@ class DataPemeriksaanController extends Controller
         $list = $query->get();
 
         return view('dokter.homepage', compact('dokter', 'list'));
+    }
+
+    public function registrasiUlang(Request $request, DataPemeriksaan $dataPemeriksaan) {
+        if ($dataPemeriksaan->statusPasien !== 'Menunggu Registrasi Ulang'){
+            return back()->with('error', 'Pasien tidak dalam status Menunggu Registrasi Ulang.');
+        }
+        $counter = $dataPemeriksaan->jenisPemeriksaan->counterHariIni;
+        if ($counter === null) {
+            $counter = CounterAntrian::create([
+                'jenis_pemeriksaan_id' => $dataPemeriksaan->jenis_pemeriksaan_id,
+                'tanggalAntrian' => Carbon::today(),
+                'nomorTerakhir' => 0,
+            ]);
+        }
+        $counter->nomorTerakhir++;
+        $counter->save();
+        
+        $dataPemeriksaan->nomorAntrian = $counter->nomorTerakhir;
+        $dataPemeriksaan->statusPasien = $dataPemeriksaan->statusPetugas = $dataPemeriksaan->statusDokter = 'Dalam Antrian';
+        $dataPemeriksaan->save();
+
+        return redirect()->route('petugas.homepage');
     }
 }

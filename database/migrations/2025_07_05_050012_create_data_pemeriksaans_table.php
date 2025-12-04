@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('riwayatNoHP')->nullable();
             $table->string('riwayatAlergi')->nullable();
             $table->string('riwayatGolonganDarah')->nullable();
+            $table->unsignedInteger('nomorAntrian')->nullable();
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('modalitas_id')->constrained('modalitass')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('namaJenisPemeriksaan');
-            $table->string('namaPemeriksaanSpesifik')->nullable();
+            $table->string('namaPemeriksaanSpesifik');
             $table->string('kelompokJenisPemeriksaan');
             $table->boolean('pemakaianKontras');
             $table->integer('lamaPemeriksaan');

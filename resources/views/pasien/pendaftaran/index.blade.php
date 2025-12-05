@@ -183,7 +183,7 @@
               </div>
             </div>
 
-            <div class="col-md-2 d-flex flex-column align-items-end gap-2">
+            <div class="col-md-2 d-flex flex-column justify-content-center align-items-end gap-2 ">
               <a href="{{ asset('storage/' . $ex->dataRujukan->formulirRujukan) }}" 
                 target="_blank"
                 class="btn btn-light border w-100">

@@ -45,22 +45,27 @@ class DraftLaporanController extends Controller
         return view('dokter.addnew');
     }
 
-    public function store(Request $request){
-        $request->validate([
-            'judul' => 'nullable|string|max:100',
-            'deskripsi' => 'nullable|string'
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'judul'     => 'required|string|max:100',
+            'deskripsi' => 'required|string',
+        ], [
+            'judul.required'     => 'Judul draft wajib diisi.',
+            'deskripsi.required' => 'Deskripsi draft wajib diisi.',
         ]);
 
-        $rumahSakit = DraftLaporan::create([
-            'judul' => $request->judul,
-            'deskripsi' => $request->deskripsi,
-            'dokter_id' => auth()->id()
+        DraftLaporan::create([
+            'judul'     => $validated['judul'],
+            'deskripsi' => $validated['deskripsi'],
+            'dokter_id' => auth()->id(),
         ]);
 
         return redirect(route('dokter.listdaftar'))->with('success', 'Draft berhasil ditambahkan.');
     }
 
-        public function deleteData(DraftLaporan $draft){
+
+    public function deleteData(DraftLaporan $draft){
         $draft->delete();
         return redirect()->route('dokter.listdaftar')->with('success', 'Data berhasil dihapus');
     }

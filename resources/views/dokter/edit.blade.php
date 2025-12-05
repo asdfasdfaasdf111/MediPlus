@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light text-dark" >
     @include('layout.navbar2')
 
     <style>
         .content-wrapper {
-            background-color: #eef4ff;
+            background-color: #f8f9fa;
             min-height: 90vh;
             justify-content: center;
             padding: 1.5rem 2rem;
@@ -28,34 +28,53 @@
     </style>
 
     <div class="content-wrapper">
-        <div class="bg-white p-5 pt-4 pb-4 rounded m-5 mt-4 mb-4">
-            <form action="{{ route('dokter.submitdata', $draft->id) }}" method="POST">
-            @csrf
-            @method('PUT')
+        <div class="bg-white p-5 pt-4 pb-4 rounded m-5 mt-4 mb-4 shadow-sm">
 
-            <h3 class="mb-0 fw-bold text-center" style="color: #012970; font-family: 'Open Sans', sans-serif;">Draft</h3>
-            <div class="">
+            @if ($errors->any())
+              <div class="alert alert-danger small">
+                <ul class="mb-0">
+                  @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif
+
+            <form action="{{ route('dokter.submitdata', $draft->id) }}" method="POST" novalidate>
+                @csrf
+                @method('PUT')
+
+                <h3 class="mb-0 fw-bold text-center" style="color: #012970;">Draft</h3>
+
                 <div class="form-group d-flex flex-column mt-3">
-                    <label>Judul Draft</label>
-                    <input type="text" name="judul" class="form-control form-control-lg" value="{{ $draft->judul }}">
+                    <label class="fw-semibold" for="judul">Judul Draft</label>
+                    <input type="text" id="judul"name="judul" class="form-control form-control-lg" value="{{ old('judul', $draft->judul) }}" placeholder="Judul Draft" >
+                    @error('judul')
+                      <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <div class="form-group d-flex flex-column mt-3" style="font-family:'Inter', sans-serif;">
-                    <label>Deskripsi Draft</label>
-                    <textarea name="deskripsi" class="form-control" rows="10">{{ $draft->deskripsi }}</textarea>
+                <div class="form-group d-flex flex-column mt-3">
+                    <label class="fw-semibold" for="deskripsi">Deskripsi Draft</label>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control" rows="10" placeholder="Deskripsi" >{{ old('deskripsi', $draft->deskripsi) }}</textarea>
+                    @error('deskripsi')
+                      <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <div class="d-flex align-items-center justify-content-center">
-                    <button type="submit" class="btn btn-primary fw-bold m-3" style="font-family:'Inter', sans-serif; border-radius: 50px; width: 200px; background-color: #1A76D1">Simpan</button>
-                    <a href="{{ route('dokter.listdaftar') }}" class="btn btn-primary fw-bold m-3" style="font-family:'Inter', sans-serif; border-radius: 50px; width: 200px; background-color: #ffff; color: #1A76D1; border-color: #1A76D1">Kembali</a>
+                <div class="d-flex justify-content-center gap-3 pt-3">
+                    <a href="{{ route('dokter.listdaftar') }}" class="btn btn-outline-primary px-5 rounded-pill">
+                      Kembali
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill">
+                      Simpan
+                    </button>
                 </div>
-            </div>
 
-        </form>
+            </form>
         </div>
     </div>
+
+    <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
-
-Pemeriksaan MRI Otak dilakukan untuk menilai struktur otak secara detail menggunakan medan magnet dan gelombang radio. Pemeriksaan ini tidak melibatkan radiasi ionisasi. Protokol standar mencakup sekuens T1-weighted, T2-weighted, FLAIR, DWI/ADC, serta T1 post-contrast apabila diberikan media kontras gadolinium.
-

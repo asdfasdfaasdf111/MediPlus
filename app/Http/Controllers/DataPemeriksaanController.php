@@ -38,7 +38,7 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusDokter = "Pendaftaran Ditolak";
         }
         $dataPemeriksaan->save();
-        return redirect()->route('petugas.homepage');
+        return redirect()->route('petugas.dashboard');
     }
 
     public function updateJadwal(Request $request, DataPemeriksaan $dataPemeriksaan, $draft){
@@ -272,6 +272,8 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->save();
         }
         return redirect()->route('pasien.pendaftaran');
+    }
+    
     public function homepageDokter() {
         $dokter = auth()->user()->dokter;
         $status = request('status', 'semua');

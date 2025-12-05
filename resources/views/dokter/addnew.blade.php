@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
-<body class="bg-white text-dark" style="font-family: 'Open Sans', sans-serif;">
+<body class="bg-white text-dark">
     @include('layout.navbar2')
 
     <style>
@@ -37,14 +37,7 @@
 
                 <div class="form-group d-flex flex-column mt-3">
                     <label class="fw-semibold" for="judul">Judul Draft</label>
-                    <input
-                        type="text"
-                        id="judul"
-                        name="judul"
-                        class="form-control form-control-lg"
-                        placeholder="Judul Draft"
-                        value="{{ old('judul') }}"
-                    >
+                    <input type="text" id="judul" name="judul" class="form-control form-control-lg" placeholder="Judul Draft" value="{{ old('judul') }}"  >
                     @error('judul')
                     <div class="text-danger small mt-1">{{ $message }}</div>
                     @enderror
@@ -52,26 +45,18 @@
 
                 <div class="form-group d-flex flex-column mt-3">
                     <label class="fw-semibold" for="deskripsi">Deskripsi Draft</label>
-                    <textarea
-                        name="deskripsi"
-                        id="deskripsi"
-                        class="form-control"
-                        rows="10"
-                        placeholder="Deskripsi"
-                    >{{ old('deskripsi') }}</textarea>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control" rows="10" placeholder="Deskripsi" >{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')
                     <div class="text-danger small mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
-                {{-- Tombol Aksi --}}
                 <div class="d-flex justify-content-center gap-3 pt-3">
-                    <a href="{{ route('dokter.listdaftar') }}"
-                    class="btn btn-outline-primary px-5 rounded-pill">
-                    Kembali
+                    <a href="{{ route('dokter.listdaftar') }}" class="btn btn-outline-primary px-5 rounded-pill">
+                        Kembali
                     </a>
                     <button type="submit" class="btn btn-primary px-5 rounded-pill">
-                    Simpan
+                        Simpan
                     </button>
                 </div>
 

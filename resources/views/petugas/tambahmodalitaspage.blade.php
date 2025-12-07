@@ -20,65 +20,50 @@
             <div class="card shadow-sm">
                 <h4 class="text-center mb-4 pt-5" style="color:#173B7A;">Tambah Modalitas</h4>
                 <div class="card-body px-5">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                            </ul>
-                         </div>
-                    @endif
 
-        <form method="POST" action="{{ route('petugas.tambahModalitas') }}">
-            @csrf
+                  <form method="POST" action="{{ route('petugas.tambahModalitas') }}" novalidate>
+                      @csrf
 
-            <div class="mb-3">
-            <label for="namaModalitas" class="form-label">Nama Modalitas</label>
-            <input type="text"
-                    class="form-control @error('namaModalitas') is-invalid @enderror"
-                    name="namaModalitas" id="namaModalitas"
-                    placeholder="Contoh: CT Scan / MRI / USG"
-                    value="{{ old('namaModalitas') }}" required autofocus autocomplete="off">
-            @error('namaModalitas') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                      <div class="mb-3">
+                        <label for="namaModalitas" class="form-label">Nama Modalitas</label>
+                        <input type="text" class="form-control @error('namaModalitas') is-invalid @enderror" name="namaModalitas" id="namaModalitas" placeholder="CT Scan / MRI / USG" value="{{ old('namaModalitas') }}" autocomplete="off" autofocus >
+                        @error('namaModalitas')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="jenisModalitas" class="form-label">Jenis Modalitas</label>
+                        <input type="text" class="form-control @error('jenisModalitas') is-invalid @enderror" name="jenisModalitas" id="jenisModalitas"placeholder="CT, MR, US, X-Ray" value="{{ old('jenisModalitas') }}" autocomplete="off" >
+                        @error('jenisModalitas')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="kodeRuang" class="form-label">Kode Ruang</label>
+                        <input type="text" class="form-control @error('kodeRuang') is-invalid @enderror" name="kodeRuang" id="kodeRuang" placeholder="RAD-01" value="{{ old('kodeRuang') }}" autocomplete="off">
+                        @error('kodeRuang')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                      </div>
+
+                      <div class="d-flex justify-content-center gap-3 pt-3">
+                        <a href="{{ route('petugas.kelolamodalitas') }}"
+                          class="btn btn-outline-primary px-5 rounded-pill">
+                          Kembali
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5 rounded-pill">
+                          Simpan
+                        </button>
+                      </div>
+                  </form>
+                </div>
             </div>
-
-            <div class="mb-3">
-            <label for="jenisModalitas" class="form-label">Jenis Modalitas</label>
-            <input type="text"
-                    class="form-control @error('jenisModalitas') is-invalid @enderror"
-                    name="jenisModalitas" id="jenisModalitas"
-                    placeholder="Contoh: CT, MR, US, X-Ray"
-                    value="{{ old('jenisModalitas') }}" required autocomplete="off">
-            @error('jenisModalitas') <div class="invalid-feedback">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="mb-3">
-            <label for="kodeRuang" class="form-label">Kode Ruang</label>
-            <input type="text"
-                    class="form-control @error('kodeRuang') is-invalid @enderror"
-                    name="kodeRuang" id="kodeRuang"
-                    placeholder="Contoh: RAD-01"
-                    value="{{ old('kodeRuang') }}" required autocomplete="off">
-            @error('kodeRuang') <div class="invalid-feedback">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="d-flex justify-content-center gap-3 pt-3">
-            <a href="{{ route('petugas.kelolamodalitas') }}"
-                class="btn btn-outline-primary px-5 rounded-pill">
-                Kembali
-            </a>
-            <button type="submit" class="btn btn-primary px-5 rounded-pill">
-                Simpan
-            </button>
-            </div>
-        </form>
         </div>
-    </div>
-    </div>
 
     </div>
-    </div>
+  </div>
 
 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>

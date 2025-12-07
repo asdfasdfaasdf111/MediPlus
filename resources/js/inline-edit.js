@@ -2,7 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle "Edit" button click
     document.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
-            const row = e.target.closest("tr");
+            const button = e.currentTarget;              
+            // kalo e.target yang diambil elemen paling dalam yang diklik langsung,
+            // ubah jadi e.currentTarget biar ambil elemen btn yang dipasang event listener (<button class="edit-btn"> atau <button class="save-btn">)
+            const row = button.closest("tr");
             row.querySelectorAll(".view-field").forEach(el => el.classList.add("d-none"));
             row.querySelectorAll(".edit-field").forEach(el => el.classList.remove("d-none"));
             row.querySelector(".edit-btn").classList.add("d-none");
@@ -13,9 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle "Save" button click
     document.querySelectorAll(".save-btn").forEach(btn => {
         btn.addEventListener("click", async (e) => {
-            const row = e.target.closest("tr");
-            const id = e.target.dataset.id;
-            const route = e.target.dataset.route;
+            const button = e.currentTarget;              
+            const row = button.closest("tr");
+            const id = button.dataset.id;
+            const route = button.dataset.route;
 
             const inputs = row.querySelectorAll(".edit-field");
             const data = {}
@@ -25,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     data[input.name] = input.checked;
                 }
             });
-
+            
             // Send AJAX request with fetch
             const response = await fetch(route, {
                 method: "PUT",
@@ -46,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if ('namaModalitas' in responseData){
                     data['modalitasId'] = responseData.namaModalitas;
                 }
-                
+
                 viewData.forEach(view => {
                     if (view.dataset.type !== "checkbox") view.textContent = data[view.dataset.name];
                     else {

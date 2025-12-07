@@ -58,15 +58,19 @@ class DashboardPetugasController extends Controller
 
          $dataPemeriksaans = $query
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10) // ini udah bukan collection lagi katanya jd paginate
+            ->withQueryString();
 
-        // ini katanya biar  di view tetap bisa pakai $petugas->dataPemeriksaan
-        $petugas->setRelation('dataPemeriksaan', $dataPemeriksaans);
+        // ini disaranin AI biar relasi dataPemeriksaan yg di petugas ke dataPemeriksaan yg di load itu sesuai sama filter dan search
+        $petugas->setRelation('dataPemeriksaan', $dataPemeriksaans->getCollection());
+
 
         
         return view('petugas.dashboard', [
             'petugas' => $petugas,
             'aktif'   => $aktif,    
+            'search'  => $search,
+            'dataPemeriksaans' => $dataPemeriksaans, //ini paginator yang dipake di blade
         ]);
     }
         

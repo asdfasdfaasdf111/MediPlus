@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Modalitas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ModalitasController extends Controller
 {
@@ -13,7 +14,14 @@ class ModalitasController extends Controller
             'namaModalitas' => 'required|string|max:100',
             'jenisModalitas' => 'required|string|max:100',
             'kodeRuang' => 'required|string|max:100',
-        ]);
+        ],
+        [
+            'namaModalitas.required' => 'Nama Modalitas wajib diisi.',
+            'jenisModalitas.required' => 'Jenis Modalitas wajib diisi.',
+            'kodeRuang.required' => 'Kode Ruang wajib diisi.',
+            
+        ]
+    );
 
         Modalitas::create([
             'rumah_sakit_id' => auth()->user()->petugas->rumahSakit->id,
@@ -32,6 +40,11 @@ class ModalitasController extends Controller
             'namaModalitas' => 'required|string|max:100',
             'jenisModalitas' => 'required|string|max:100',
             'kodeRuang' => 'required|string|max:100',
+        ],
+        [
+            'namaModalitas.required'  => 'Nama Modalitas wajib diisi.',
+            'jenisModalitas.required' => 'Jenis Modalitas wajib diisi.',
+            'kodeRuang.required'      => 'Kode Ruang wajib diisi.',
         ]);
 
         $modalitas->namaModalitas = $request->input('namaModalitas');

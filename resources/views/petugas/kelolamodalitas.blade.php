@@ -97,17 +97,17 @@
                     <td class="text-center">
                       <div class="d-flex justify-content-center gap-2">
                         <button type="button"
-                                class="btn btn-sm btn-primary edit-btn"
+                                class="btn btn-warning btn-sm edit-btn d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;"
                                 data-route="{{ route('petugas.editModalitas', $modalitas->id) }}"
                                 data-id="{{ $modalitas->id }}">
-                          Edit
+                          <i class="bi bi-pencil"></i>
                         </button>
 
                         <button type="button"
-                                class="btn btn-sm btn-success save-btn d-none"
+                                class="btn btn-sm btn-success save-btn d-none d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;"
                                 data-route="{{ route('petugas.editModalitas', $modalitas->id) }}"
                                 data-id="{{ $modalitas->id }}">
-                          Simpan
+                          <i class="bi bi-check"></i>
                         </button>
 
                         <form action="{{ route('petugas.hapusModalitas', $modalitas->id) }}"
@@ -116,8 +116,9 @@
                               class="d-inline">
                           @csrf
                           @method('DELETE')
-                          <button type="submit" class="btn btn-sm btn-danger">
-                            <i class=""></i> Hapus
+                          <button type="submit" 
+                          class="btn btn-danger btn-sm d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;">
+                            <i class="bi bi-trash" ></i>
                           </button>
                         </form>
                       </div>

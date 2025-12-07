@@ -26,13 +26,7 @@
           {{-- Search yeah --}}
           <form action="" method="GET" class="flex-grow-1">
             <div class="input-group">
-              <input
-                type="text"
-                class="form-control"
-                name="search"
-                value="{{ request('search') }}"
-                placeholder="Telusuri"
-              >
+              <input id = "petugasSearch" type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Telusuri">
               <button class="btn btn-outline-secondary" type="submit">
                 <i class="bi bi-search"></i>
               </button>
@@ -57,7 +51,7 @@
         </ul>
 
         {{-- kita pakai forelse ya adik2 biar menghandle data kosong --}}
-        @forelse ($petugas->dataPemeriksaan as $dp)
+        @forelse ($dataPemeriksaans as $dp)
           @php
             $statusUtamaRaw   = $dp->statusUtama ?? 'Pending';
             $statusUtamaLower = strtolower($statusUtamaRaw);
@@ -97,10 +91,9 @@
           @endphp
 
           {{-- CARD --}}
-          <div class="card border-0 shadow-sm mb-3">
+          <div class="card border-0 shadow-sm mb-3 petugas-card">
             <div class="card-body p-0">
 
-              {{-- HEADER CARD --}}
               <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
                 <div class="small">
                   No : <span class="fw-semibold">{{ $noReg }}</span>
@@ -185,6 +178,13 @@
           </div>
         @endforelse
 
+        {{-- Paginationnya --}}
+        @if(method_exists($dataPemeriksaans, 'links'))
+          <div class="mt-3 d-flex justify-content-end">
+            {{ $dataPemeriksaans->onEachSide(1)->links() }}
+          </div>
+        @endif
+
         <div class="text-center text-muted small py-3">
           © {{ date('Y') }} MediPlus — Petugas Panel
         </div>
@@ -193,5 +193,6 @@
   </div>
 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+  @vite('resources/js/searchhomepagepetugas.js')
 </body>
 </html>

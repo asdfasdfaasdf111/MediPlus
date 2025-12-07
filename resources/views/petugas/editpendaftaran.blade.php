@@ -34,9 +34,6 @@
           <div>
             <h4 class="mb-1" style="color:#173B7A;">Edit Pendaftaran</h4>
           </div>
-          <span class="badge text-bg-light d-none d-md-inline" style="border-radius:999px;padding:.5rem .75rem;">
-            <i class="bi bi-shield-check me-1"></i> Petugas Panel
-          </span>
         </div>
 
         <form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => "false"]) }}"
@@ -152,14 +149,16 @@
               </div>
             </div>
 
-            {{-- leo bru tmbhin, blm ad front end ny --}}
-            <label class="form-label fw-bold">Catatan</label>
-            <input type="text"  class="form-control"
-                    name="catatanPetugas" id="catatanPetugas"
-                    placeholder="Catatan"
-                    @if(!empty($dataPemeriksaan?->catatanPetugas))
-                        value="{{ $dataPemeriksaan?->catatanPetugas }}"
-                    @endif>
+            <div class="col-12">
+              <label for="catatanPetugas" class="form-label fw-bold">Catatan Perubahan</label>
+              <input type="text" class="form-control rounded-3 @error('catatanPetugas') is-invalid @enderror" name="catatanPetugas" id="catatanPetugas" placeholder="Catatan Perubahan" value="{{ old('catatanPetugas', $dataPemeriksaan->catatanPetugas) }}" >
+              @error('catatanPetugas')
+                <div class="text-danger small mt-1">{{ $message }}</div>
+              @enderror
+              <div class="form-text">
+                Catatan terkait alasan perubahan pada data pendaftaran pasien.
+              </div>
+            </div>
 
 
           </div>

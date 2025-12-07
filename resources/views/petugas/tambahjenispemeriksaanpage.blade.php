@@ -10,7 +10,7 @@
 </head>
 <body class="bg-white text-dark" style="height: 100vh;">
 
-  @include('layout.navbar2') {{-- samakan dengan halaman admin --}}
+  @include('layout.navbar2') 
 
   <div class="container-fluid">
     <div class="row">
@@ -22,25 +22,12 @@
           <h4 class="text-center mb-4 pt-5" style="color:#173B7A;">Tambah Jenis Pemeriksaan</h4>
           <div class="card-body px-5">
 
-            {{-- Notifikasi validasi (opsional) --}}
-            @if ($errors->any())
-              <div class="alert alert-danger">
-                <ul class="mb-0">
-                  @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
-            @endif
-
-            <form method="POST" action="{{ route('petugas.tambahJenisPemeriksaan') }}">
+            <form method="POST" action="{{ route('petugas.tambahJenisPemeriksaan') }}" novalidate>
               @csrf
 
-              {{-- Modalitas --}}
               <div class="mb-3">
                 <label for="modalitasId" class="form-label">Modalitas</label>
-                <select name="modalitasId" id="modalitasId"
-                        class="form-select @error('modalitasId') is-invalid @enderror" required>
+                <select name="modalitasId" id="modalitasId" class="form-select @error('modalitasId') is-invalid @enderror" required>
                   @php
                     $listModalitas = $petugas->rumahSakit->modalitas ?? collect();
                   @endphp
@@ -59,33 +46,24 @@
                 @error('modalitasId') <div class="invalid-feedback">{{ $message }}</div> @enderror
               </div>
 
-              {{-- Nama Jenis Pemeriksaan --}}
+              {{-- Autocompletenya aku matiin aja, kalo mau isi gitu ga perlu dropdown suggestion kayaknya? --}}
               <div class="mb-3">
                 <label for="namaJenisPemeriksaan" class="form-label">Nama Jenis Pemeriksaan</label>
-                <input type="text" class="form-control @error('namaJenisPemeriksaan') is-invalid @enderror"
-                       name="namaJenisPemeriksaan" id="namaJenisPemeriksaan"
-                       placeholder="Contoh: CT-Scan Abdomen"
-                       value="{{ old('namaJenisPemeriksaan') }}" required>
+                <input type="text" class="form-control @error('namaJenisPemeriksaan') is-invalid @enderror" name="namaJenisPemeriksaan" id="namaJenisPemeriksaan" placeholder="CT-Scan Abdomen, MRI Kepala" value="{{ old('namaJenisPemeriksaan') }}" autocomplete="off">
                 @error('namaJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
               </div>
-
+              
               {{-- Nama Pemeriksaan Spesifik --}}
               <div class="mb-3">
                 <label for="namaPemeriksaanSpesifik" class="form-label">Nama Pemeriksaan Spesifik</label>
-                <input type="text" class="form-control @error('namaPemeriksaanSpesifik') is-invalid @enderror"
-                       name="namaPemeriksaanSpesifik" id="namaPemeriksaanSpesifik"
-                       placeholder="Contoh: CT-Scan Abdomen Kontras"
-                       value="{{ old('namaPemeriksaanSpesifik') }}" required>
+                <input type="text" class="form-control @error('namaPemeriksaanSpesifik') is-invalid @enderror" name="namaPemeriksaanSpesifik" id="namaPemeriksaanSpesifik" placeholder="Contoh: CT-Scan Abdomen Kontras" value="{{ old('namaPemeriksaanSpesifik') }}" autocomplete="off">
                 @error('namaPemeriksaanSpesifik') <div class="invalid-feedback">{{ $message }}</div> @enderror
               </div>
 
               {{-- Kelompok Jenis Pemeriksaan --}}
               <div class="mb-3">
                 <label for="kelompokJenisPemeriksaan" class="form-label">Kelompok Jenis Pemeriksaan</label>
-                <input type="text" class="form-control @error('kelompokJenisPemeriksaan') is-invalid @enderror"
-                       name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan"
-                       placeholder="Contoh: Abdomen / Thorax / Kepala"
-                       value="{{ old('kelompokJenisPemeriksaan') }}" required>
+                <input type="text" class="form-control @error('kelompokJenisPemeriksaan') is-invalid @enderror" name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan" placeholder="Contoh: Abdomen / Thorax / Kepala" value="{{ old('kelompokJenisPemeriksaan') }}" autocomplete="off">
                 @error('kelompokJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
               </div>
 

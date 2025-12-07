@@ -47,6 +47,11 @@ class DataPemeriksaanController extends Controller
             'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
+            'catatanPetugas'  => 'required|string|max:255',
+        ],
+        [
+            'catatanPetugas.required' => 'Catatan petugas wajib diisi.',
+            'catatanPetugas.max' => 'Catatan petugas maksimal 255 karakter.',
         ]);
         
         

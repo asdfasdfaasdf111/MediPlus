@@ -16,6 +16,12 @@ class JenisPemeriksaanController extends Controller
             'namaPemeriksaanSpesifik' => 'required|string|max:100',
             'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
+        ],
+        [
+            'namaJenisPemeriksaan.required' => 'Nama Jenis Pemeriksaan wajib diisi.',
+            'namaPemeriksaanSpesifik.required' => 'Nama Pemeriksaan Spesifik wajib diisi.',
+            'kelompokJenisPemeriksaan.required' => 'Kelompok Jenis Pemeriksaan wajib diisi.',
+            'lamaPemeriksaan.required' => 'Lama Pemeriksaan wajib diisi.',
         ]);
 
         JenisPemeriksaan::create([

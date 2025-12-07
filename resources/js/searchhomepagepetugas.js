@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const searchInput = document.getElementById('doctorSearch');
+  const searchInput = document.getElementById('petugasSearch');
   if (!searchInput) return;
 
-  const cards = document.querySelectorAll('.dokter-card');
+  const cards = document.querySelectorAll('.petugas-card');
   const norm  = s => (s || '').toLowerCase().trim();
 
   searchInput.addEventListener('input', function () {

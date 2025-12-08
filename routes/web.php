@@ -247,9 +247,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(function () {
-    Route::get('/homepage', function(){
-        return view('dokter.homepage');
-    })->name('dokter.homepage');
+    // Route::get('/homepage', function(){
+    //     return view('dokter.homepage');
+    // })->name('dokter.homepage');
+
+    Route::get('/homepage', [DataPemeriksaanController::class, 'homepageDokter'])->name('dokter.homepage');
+
 
     Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
         return view('dokter.detailpemeriksaan', compact('dataPemeriksaan'));

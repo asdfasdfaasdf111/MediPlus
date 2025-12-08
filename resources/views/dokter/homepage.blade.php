@@ -15,24 +15,39 @@
 <body class="bg-white text-dark">
     @include('layout.navbar2')
 
-    @php $aktif = request('status','semua'); @endphp
+    @php 
+        $aktif = request('status','semua'); 
+    @endphp
     
     <div class="row-md-10 min-vh-100 py-4 bg-light">
+
+
         <div class="d-flex align-items-center gap-3 flex-wrap mb-3 ms-4 me-4">
-            
-            <form action="doctorSearchForm" method="GET" class="flex-grow-1" >
-            <div class="input-group">
-                <input id="doctorSearch" class="form-control" type="text" name="search" value="{{ request('search') }}" placeholder="Telusuri" >
-                <button class="btn btn-outline-secondary" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
+            <form action="{{ route('dokter.homepage') }}" method="GET" class="flex-grow-1">
+                {{-- biar status tab tetap kebawa waktu user search --}}
+                @if(request('status'))
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                @endif
+
+                <div class="input-group">
+                    <input id="doctorSearch"
+                        class="form-control"
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Telusuri">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
             </form>
 
+
+
             <form action="{{ route('dokter.listdaftar') }}" method="GET" class="d-flex">
-            <button type="submit" class="btn btn-primary fw-bold px-3 d-inline-flex align-items-center gap-2">
-                <span>List Draft</span>
-            </button>
+                <button type="submit" class="btn btn-primary fw-bold px-3 d-inline-flex align-items-center gap-2">
+                    <span>List Draft</span>
+                </button>
             </form>
         </div>
 
@@ -43,23 +58,14 @@
                 'selesai' => 'Selesai'
             ] as $key => $label)
                 <li class="nav-item">
-                <a class="nav-link {{ $aktif===$key ? 'active' : '' }}"
-                    href="{{ route('dokter.homepage', ['status' => $key]) }}">
-                    {{ $label }}
-                </a>
+                    <a class="nav-link {{ $aktif===$key ? 'active' : '' }}"
+                        href="{{ route('dokter.homepage', ['status' => $key]) }}">
+                        {{ $label }}
+                    </a>
                 </li>
             @endforeach
         </ul>
 
-        @php
-        $query = $dokter->dataPemeriksaan()->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
-
-        if ($aktif !== 'semua') {
-            $query->whereRaw('LOWER(statusUtama) = ?', [strtolower($aktif)]);
-        }
-        
-        $list = $query->get();
-        @endphp
 
         @forelse ($list as $dataPemeriksaan)
         @php
@@ -110,33 +116,32 @@
                     <div class="row gy-1">
                         <div class="col-6 text-muted">Nama Lengkap Pasien</div>
                         <div class="col-6 fw-semibold">:
-                        {{ $dataPasien->namaLengkap }}
+                            {{ $dataPasien->namaLengkap }}
                         </div>
 
                         <div class="col-6 text-muted">Dokter Perujuk</div>
                         <div class="col-6 fw-semibold">:
-                        {{ $dataRujukan->namaDokterPerujuk }}
+                            {{ $dataRujukan->namaDokterPerujuk }}
                         </div>
 
                         <div class="col-6 text-muted">Dokter Radiologi</div>
                         <div class="col-6 fw-semibold">:
-                        {{ $dataPemeriksaan->dokter->user->name }}
+                            {{ $dataPemeriksaan->dokter->user->name }}
                         </div>
 
                         <div class="col-6 text-muted">Jenis Pemeriksaan</div>
                         <div class="col-6 fw-semibold">:
-                        {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
-                        - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
+                            {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
                         </div>
 
                         <div class="col-6 text-muted">Tanggal Pemeriksaan</div>
                         <div class="col-6 fw-semibold">:
-                        {{ $tgl }}
+                            {{ $tgl }}
                         </div>
 
                         <div class="col-6 text-muted">Rentang Waktu Kedatangan</div>
-                        <div class="col-6 fw-semibold">:
-                        {{ $jamMulai }} - {{ $jamAkhir }}
+                        <div class="col-6 fw-semibold">: 
+                            {{ $jamMulai }} - {{ $jamAkhir }}
                         </div>
                     </div>
                 </div>
@@ -159,17 +164,20 @@
             </div>
         </div>
         @empty
-        <div class="text-center text-muted py-5">
-            <i class="bi bi-inboxes me-1"></i> Belum ada data.
-        </div>
-        
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inboxes me-1"></i> Belum ada data.
+            </div>
         @endforelse
+
+        @if (method_exists($list, 'links') && $list->hasPages())
+            <div class="mt-3 d-flex justify-content-end ms-4 me-4">
+                {{ $list->onEachSide(1)->links() }}
+            </div>
+        @endif
 
     </div>
 
     <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
-    @vite(['resources/js/searchhomepagedokter.js'])
-
 
 </body>
 </html>

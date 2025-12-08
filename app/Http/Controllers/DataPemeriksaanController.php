@@ -279,26 +279,53 @@ class DataPemeriksaanController extends Controller
         return redirect()->route('pasien.pendaftaran');
     }
     
-    public function homepageDokter() {
+    public function homepageDokter(Request $request){ 
         $dokter = auth()->user()->dokter;
-        $status = request('status', 'semua');
+
+        $status = $request->input('status', 'semua');
+        $search = $request->input('search');
 
         $query = $dokter->dataPemeriksaan()
+                ->with(['dataPasien', 'dataRujukan', 'jenisPemeriksaan', 'dokter.user'])
+                //with ini buat ngehindarin N+1 problem (lazy loading), jadi better ambil data relasiannya langsung
                 ->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
 
-        if($status !== 'semua') {
-            $map = [
-                'berlangsung' => 'Berlangsung',
-                'selesai' => 'Selesai'
-            ];
-
-            if(isset($map[$status])) {
-                $query->where('statusUtama', $map[$status]);
-            }
+        //Logic yang di blade dihapus karna udah dihandle di controller, biar ga double
+        if ($status !== 'semua' && in_array($status, ['berlangsung', 'selesai'])) {
+                $query->whereRaw('LOWER(statusUtama) = ?', [strtolower($status)]);
         }
 
-        $list = $query->get();
+        if ($search) {
+            $search = trim($search);
+
+            $query->where(function ($sub) use ($search) {
+                //Search jadinya kupindahin ke backend soalnya kalo di JS, dia gabisa filter yang page berikutnya di pagination
+                    // Ini buat nama pasien
+                    $sub->whereHas('dataPasien', function ($q) use ($search) {
+                        $q->where('namaLengkap', 'like', "%{$search}%");
+                    })
+                    // Ini buat dokter perujuk
+                    ->orWhereHas('dataRujukan', function ($q) use ($search) {
+                        $q->where('namaDokterPerujuk', 'like', "%{$search}%");
+                    })
+                    // Jenis pemeriksaan + spesifik
+                    ->orWhereHas('jenisPemeriksaan', function ($q) use ($search) {
+                        $q->where('namaJenisPemeriksaan', 'like', "%{$search}%")
+                        ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%");
+                    })
+                    // Dokter radiologi 
+                    ->orWhereHas('dokter.user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $list = $query
+        ->orderBy('created_at', 'desc')
+        ->paginate(10)          
+        ->withQueryString(); //ini buat ngebawa ?status=
 
         return view('dokter.homepage', compact('dokter', 'list'));
     }
 }
+

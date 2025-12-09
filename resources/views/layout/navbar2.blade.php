@@ -7,18 +7,38 @@
   <div class="container h-100 d-flex justify-content-end align-items-center">
     <ul class="navbar-nav flex-row gap-4 me-4">
       
-      {{-- Dropdown User --}}
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link dropdown-toggle d-flex align-items-center"
+           href="#" id="userDropdown" role="button"
+           data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-person-circle me-2"></i>
           Hi, {{ Auth::user()->name }}
         </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          @if(Auth::user()->petugas)
+            <li>
+              <a class="dropdown-item" href="{{ route('petugas.password.edit') }}">
+                <i class="bi bi-shield-lock me-2"></i> Ubah Password
+              </a>
+            </li>
+          @elseif(Auth::user()->dokter)
+            <li>
+              <a class="dropdown-item" href="{{ route('dokter.password.edit') }}">
+                <i class="bi bi-shield-lock me-2"></i> Ubah Password
+              </a>
+            </li>
+          @endif
+
+          <li><hr class="dropdown-divider"></li>
+
           <li>
-            <a class="dropdown-item" href="{{ route('logout') }}"
-              onclick="event.preventDefault(); document.getElementById('logout-form-admin').submit();">
-              <i class="bi bi-box-arrow-right me-2"></i> Keluar
-            </a>
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="dropdown-item">
+                <i class="bi bi-box-arrow-right me-2"></i> Keluar
+              </button>
+            </form>
           </li>
         </ul>
       </li>
@@ -26,7 +46,3 @@
   </div>
 </nav>
 
-{{-- Form Logout --}}
-<form id="logout-form-admin" action="{{ route('logout') }}" method="POST" style="display: none;">
-  @csrf
-</form>

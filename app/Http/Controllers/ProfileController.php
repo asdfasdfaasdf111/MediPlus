@@ -11,12 +11,21 @@ class ProfileController extends Controller
     {
         $user = auth('web')->user();
 
+        //edit profile cuman buat pasien
+        if (!$user->masterPasien) {
+            abort(403);
+        }
+
         return view('pasien.profile.edit', compact('user'));
     }
 
     public function update(Request $request)
     {
         $user = auth('web')->user();
+
+        if (!$user->masterPasien) {
+            abort(403);
+        }
 
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:100'],
@@ -41,7 +50,22 @@ class ProfileController extends Controller
     {
         $user = auth('web')->user();
 
-        return view('pasien.profile.password', compact('user'));
+        if ($user->masterPasien) {
+            // Pasien
+            return view('pasien.profile.password', compact('user'));
+        }
+
+        if ($user->dokter) {
+            // Dokter
+            return view('dokter.password.edit', compact('user'));
+        }
+
+        if ($user->petugas) {
+            // Petugas
+            return view('petugas.password.edit', compact('user'));
+        }
+
+        abort(403);
     }
 
 
@@ -73,8 +97,12 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
+        //ini buat redirect dinamis -> sesuaikan ama route yg manggil
+        $currentRoute = $request->route()->getName();
+        $editRoute = str_replace('.update', '.edit', $currentRoute);
+
         return redirect()
-            ->route('profile.password.edit')
+            ->route($editRoute)
             ->with('success', 'Password berhasil diperbarui!');
     }
 }

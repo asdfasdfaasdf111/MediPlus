@@ -185,7 +185,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
     Route::get('/homepage', [DashboardPetugasController::class, 'tampilkanDashboard'])->name('petugas.dashboard');
     
-
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
 
@@ -235,11 +234,11 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
                     $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                     $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                     return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
-});
 
-// Route::get('/dokter/homepage', function(){
-//     return view('dokter.homepage');
-// })->middleware('auth', 'verified', 'role:dokter');
+    Route::get('/password', [ProfileController::class, 'editPassword'])->name('petugas.password.edit');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('petugas.password.update');
+
+});
 
 //buat route yg bisa diakses lebih dari 1 role, asalkan memenuhi kondisi tertentu //Punya Leo
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -267,6 +266,9 @@ Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(
 
     Route::get('/file-upload/{dataPemeriksaan}', [FileController::class, 'index'])->name('dokter.index');
     Route::post('file-upload/{dataPemeriksaan}', [FileController::class, 'store'])->name('dokter.hasilpemeriksaan');
+
+     Route::get('/password', [ProfileController::class, 'editPassword'])->name('dokter.password.edit');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('dokter.password.update');
 });
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
@@ -355,13 +357,14 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 });
 
-Route::middleware(['auth:web'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:pasien'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
+
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');
 

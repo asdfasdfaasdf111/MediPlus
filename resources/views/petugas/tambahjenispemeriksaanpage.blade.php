@@ -1,16 +1,8 @@
-{{-- resources/views/petugas/jenis_pemeriksaan/tambah.blade.php --}}
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tambah Jenis Pemeriksaan</title>
-  <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-</head>
-<body class="bg-white text-dark" style="height: 100vh;">
+@extends('layout.staff')
 
-  @include('layout.navbar2') 
+@section('title', 'Tambah Jenis Pemeriksaan Petugas')
+
+@section('content')
 
   <div class="container-fluid">
     <div class="row">
@@ -125,6 +117,4 @@
     </div>
   </div>
 
-  <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+@endsection

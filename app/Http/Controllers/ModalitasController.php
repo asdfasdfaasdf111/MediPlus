@@ -30,7 +30,7 @@ class ModalitasController extends Controller
             'kodeRuang' => $request->kodeRuang,
         ]);
 
-        return redirect()->route('petugas.kelolamodalitas')->with('success', 'Modalitas berhasil dibuat!');
+        return redirect()->route('petugas.kelolamodalitas')->with('success', 'Berhasil menambahkan Modalitas!');
     }
 
     public function editModalitas(Request $request, $id){
@@ -62,21 +62,37 @@ class ModalitasController extends Controller
         $modalitas = Modalitas::findOrFail($id);
         $modalitas->delete();
     
-        return redirect()->back()->with('success', 'Modalitas berhasil dihapus.');
+        return redirect()->back()->with('success', 'Berhasil menghapus Modalitas!');
     }
 
     public function tampilkanModalitas(Request $request)
     {
         $petugas = auth()->user()->petugas;
         $rumahSakit = $petugas->rumahSakit;
+
+        // buat nge trim spasi di awal dan akhir
+        $search = trim($request->search ?? '');
+
+        $query = $rumahSakit->modalitas();   // relasi modalitas punya RS ini
         
-        $modalitass = $rumahSakit->modalitas()
-        ->when($request->search, function ($query, $search) {
-            $query->where('namaModalitas', 'like', "%{$search}%")
-            ->orWhere('jenisModalitas', 'like', "%{$search}%");
-        })
-        ->get();
+       if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('namaModalitas', 'like', "%{$search}%")
+                ->orWhere('jenisModalitas', 'like', "%{$search}%")
+                ->orWhere('kodeRuang', 'like', "%{$search}%");
+
+            });
+        }
+
+        $modalitass = $query
+        ->orderBy('namaModalitas')
+        ->paginate(10)         
+        ->withQueryString();   
+
+        return view('petugas.kelolamodalitas', [
+            'petugas'    => $petugas,
+            'modalitass' => $modalitass,
+        ]);
         
-        return view('petugas.kelolamodalitas', compact('modalitass'));
     }
 }

@@ -1,29 +1,27 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Petugas | Kelola Modalitas</title>
-  <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  @vite('resources/js/inline-edit.js')
-</head>
+@extends('layout.staff')
 
-<body class="bg-white text-dark">
-  @include('layout.navbar2')
+@section('title', 'Kelola Modalitas Petugas')
+
+@section('content')
 
   <div class="container-fluid">
     <div class="row">
       @include('layout.sidebarpetugas')
 
-      {{-- CONTENT --}}
       <div class="col-md-10 p-4 bg-light">
+
+        @if (session('success'))
+          <div class="alert alert-success alert-dismissible fade show mx-1 mx-md-0 mt-2" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endif
 
         {{-- Search --}}
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
           <div class="flex-grow-1 me-3">
-            <form action="" method="GET">
+            <form action="{{ route('petugas.kelolamodalitas') }}" method="GET">
               <div class="input-group">
                 <input type="text"
                        class="form-control"
@@ -141,16 +139,10 @@
               {{ $modalitass->appends(request()->query())->links() }}
             </div>
           @endif
-        </div>
-
-        <div class="text-center text-muted small py-3">
-          © {{ date('Y') }} MediPlus — Petugas Panel
-        </div>
+          </div>
 
       </div>
     </div>
   </div>
 
-  <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+@endsection

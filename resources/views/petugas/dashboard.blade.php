@@ -1,37 +1,35 @@
+@extends('layout.staff')
+
+@section('title', 'Dashboard Petugas')
+
+@section('content')
+
 @php
     use Carbon\Carbon;
-    $aktif = request('status', 'semua');
+    $aktif  = $aktif ?? request('status', 'semua');
+    $search = $search ?? request('search');
 @endphp
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Petugas | Dashboard</title>
-  <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-</head>
-
-<body class="bg-white text-dark">
-  @include('layout.navbar2')
 
   <div class="container-fluid ">
     <div class="row">
       @include('layout.sidebarpetugas')
 
       <div class="col-md-10 p-4  bg-light">
+
+        
         <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
-          {{-- Search yeah --}}
-          <form action="" method="GET" class="flex-grow-1">
-            <div class="input-group">
-              <input id = "petugasSearch" type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Telusuri">
-              <button class="btn btn-outline-secondary" type="submit">
-                <i class="bi bi-search"></i>
-              </button>
-            </div>
-          </form>
+           <form action="{{ route('petugas.dashboard') }}"  method="GET" class="flex-grow-1">
+              {{-- ini biar status tab tetap kebawa pas search --}}
+              @if($aktif)
+                <input type="hidden" name="status" value="{{ $aktif }}"> 
+              @endif
+              <div class="input-group">
+                <input id = "petugasSearch" type="text" class="form-control" name="search" value="{{ $search }}" placeholder="Telusuri">
+                <button class="btn btn-outline-secondary" type="submit">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </form>
         </div>
 
         <ul class="nav nav-tabs border-0 mb-2">
@@ -105,7 +103,6 @@
 
               <hr class="my-0">
 
-              {{--CARD --}}
               <div class="row g-3 p-4 align-items-center ">
                 <div class="col-md-2 d-flex align-items-center justify-content-center">
                   <div class="{{ $statusClass }} fw-bold" style="font-size:1.1rem;">
@@ -149,7 +146,6 @@
                   </div>
                 </div>
 
-                {{-- ACTION BUTTON --}}
                 <div class="col-md-2 d-flex flex-column align-items-center gap-2">
                   @if ($isPending)
                     <a href="{{ route('petugas.pratinjaupemeriksaan', $dp) }}" class="btn btn-success w-100" >
@@ -179,20 +175,14 @@
         @endforelse
 
         {{-- Paginationnya --}}
-        @if(method_exists($dataPemeriksaans, 'links'))
-          <div class="mt-3 d-flex justify-content-end">
+        @if(method_exists($dataPemeriksaans, 'links') && $dataPemeriksaans->hasPages())
+          <div class="">
             {{ $dataPemeriksaans->onEachSide(1)->links() }}
           </div>
         @endif
 
-        <div class="text-center text-muted small py-3">
-          © {{ date('Y') }} MediPlus — Petugas Panel
-        </div>
       </div>
     </div>
   </div>
 
-  <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
-  @vite('resources/js/searchhomepagepetugas.js')
-</body>
-</html>
+@endsection

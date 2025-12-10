@@ -35,7 +35,7 @@ class JenisPemeriksaanController extends Controller
             'diDampingiDokter' => $request->diDampingiDokter,
         ]);
 
-        return redirect()->route('petugas.kelolajenispemeriksaan')->with('success', 'Jenis Pemeriksaan berhasil dibuat!');
+        return redirect()->route('petugas.kelolajenispemeriksaan')->with('success', 'Berhasil menambahkan Jenis Pemeriksaan!');
     }
 
     public function editJenisPemeriksaan(Request $request, $id){
@@ -68,25 +68,65 @@ class JenisPemeriksaanController extends Controller
         $jenisPemeriksaan = JenisPemeriksaan::findOrFail($id);
         $jenisPemeriksaan->delete();
     
-        return redirect()->back()->with('success', 'Jenis Pemeriksaan berhasil dihapus.');
+        return redirect()->back()->with('success', 'Berhasil menghapus Jenis Pemeriksaan!');
     }
 
     public function tampilkanJenisPemeriksaan(Request $request)
     {
         $petugas = auth()->user()->petugas;
         $rumahSakit = $petugas->rumahSakit;
+
+        $search = trim($request->search ?? '');
+
+        $query = $rumahSakit->jenisPemeriksaan()
+            ->select('jenis_pemeriksaans.*') //biar ngga n+1 query
+            ->join('modalitass', 'modalitass.id', '=', 'jenis_pemeriksaans.modalitas_id')
+            ->with('modalitas');
+            
+
+        if ($search !== '') {
+                $searchLower = strtolower($search);
+
+                $query->where(function ($q) use ($search, $searchLower) {
+                    $q->whereHas('modalitas', function ($mq) use ($search) {
+                        $mq->where('namaModalitas', 'like', "%{$search}%");
+                })
+                ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
+                ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
+                ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
+                if (is_numeric($search)) {
+                    $q->orWhere('lamaPemeriksaan', $search);
+                }
+                if (in_array($searchLower, ['Ya', 'ya'])) {
+                    $q->orWhere('pemakaianKontras', true)
+                    ->orWhere('diDampingiDokter', true);
+                } elseif (in_array($searchLower, ['Tidak', 'tidak'])) {
+                    $q->orWhere('pemakaianKontras', false)
+                    ->orWhere('diDampingiDokter', false);
+                }
+            });
+        }
         
-        $jenisPemeriksaans = $rumahSakit->jenisPemeriksaan()
-        ->when($request->search, function ($query, $search) {
-            $query->whereHas('modalitas', function ($q) use ($search){
-                $q->where('namaModalitas', 'like', "%{$search}%");
-            })
-            ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
-            ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
-            ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
-        })
-        ->get();
-        
-        return view('petugas.kelolajenispemeriksaan', compact('jenisPemeriksaans'));
+        $jenisPemeriksaans = $query
+        // $rumahSakit->jenisPemeriksaan()
+        //     ->with('modalitas')
+        //     ->when($request->search, function ($query, $search) {
+        //         $query->whereHas('modalitas', function ($q) use ($search){
+        //             $q->where('namaModalitas', 'like', "%{$search}%");
+        //         })
+        //         ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
+        //         ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
+        //         ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
+        //     })
+            ->reorder() //buat reset semua order by
+            ->orderBy('modalitass.namaModalitas', 'asc')   // harus pakai nama tabel
+            ->orderBy('namaJenisPemeriksaan', 'asc') 
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('petugas.kelolajenispemeriksaan', [
+            'petugas'           => $petugas,
+            'jenisPemeriksaans' => $jenisPemeriksaans,
+        ]);
     }
 }

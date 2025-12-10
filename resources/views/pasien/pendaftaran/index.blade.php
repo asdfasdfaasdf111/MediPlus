@@ -3,7 +3,7 @@
 @section('content')
 <div class="container py-4">
 
-  {{-- ================== LIST DATA PASIEN ================== --}}
+  {{-- Nambah Data Pasien --}}
   @php
     use Carbon\Carbon;
     $hasPasien = isset($dataPasiens) && !$dataPasiens->isEmpty();
@@ -11,7 +11,7 @@
 
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
     <div>
-      <h2 class="fw-bold mb-0" style="color:#173B7A;">List Data Pasien</h2>
+      <h4 class="fw-bold mb-0" style="color:#173B7A;">List Data Pasien</h4>
       <div class="text-muted small mt-1">Untuk mendaftar pemeriksaan, tambahkan data pasien.</div>
     </div>
 
@@ -86,18 +86,17 @@
   @endif
 
 
-  {{-- ================== PEMERIKSAAN BERLANGSUNG ================== --}}
-  {{-- jarak antar section diperkecil --}}
+  {{-- UNTUK TAB PEMERIKSAAN --}}
   <hr class="my-4">
 
   @php
+    $aktif = $aktifStatusUtama ?? request('status', 'semua');
     $hasExam = isset($pemeriksaanBerlangsung) && !$pemeriksaanBerlangsung->isEmpty();
   @endphp
 
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h4 class="fw-bold mb-0" style="color:#173B7A;">Pemeriksaan Berlangsung</h4>
-    <a href="{{ route('pasien.daftarpilihjadwal') }}"
-        class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
+  <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
+    <h4 class="fw-bold mb-2 mb-md-0" style="color:#173B7A;">Pemeriksaan</h4>
+    <a href="{{ route('pasien.daftarpilihjadwal') }}" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
       <i class="bi bi-plus-lg"></i>
       <span>Daftar Pemeriksaan Baru</span>
     </a>
@@ -108,6 +107,23 @@
       </a>
     @endif --}}
   </div>
+
+  <ul class="nav nav-tabs border-0 mb-3">
+    @foreach ([
+      'semua'      => 'Semua',
+      'pending'    => 'Pending',
+      'berlangsung'=> 'Berlangsung',
+      'selesai'    => 'Selesai',
+      'dibatalkan' => 'Dibatalkan',
+    ] as $key => $label)
+      <li class="nav-item">
+        <a class="nav-link {{ $aktif === $key ? 'active' : '' }}"
+          href="{{ request()->fullUrlWithQuery(['status' => $key]) }}">
+          {{ $label }}
+        </a>
+      </li>
+    @endforeach
+  </ul>
 
   @if(!$hasExam)
     {{-- EMPTY STATE: tambah Bootstrap Icon + padding diperkecil --}}
@@ -225,7 +241,7 @@
 
     {{-- paginatenya di set di pendaftarancontroller, pake bootstrap di appserviceprovider --}}
     @if(method_exists($pemeriksaanBerlangsung, 'links'))
-      <div class="mt-3 d-flex justify-content-center">
+      <div class="mt-3 d-flex justify-content-end">
         {{ $pemeriksaanBerlangsung->onEachSide(1)->links() }}
       </div>
     @endif

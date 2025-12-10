@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-  <div class="container">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="height: 80px;">
+  <div class="container h-100 d-flex align-items-center">
 
     {{-- LOGO / BRAND --}}
     <a class="navbar-brand d-flex align-items-center" href="{{ url('/pasien/homepage') }}">

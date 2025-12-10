@@ -1,4 +1,4 @@
-<nav class="w-100 border-bottom d-flex justify-content-between align-items-center px-4" style="height: 88px;">
+<nav class="w-100 border-bottom d-flex justify-content-between align-items-center px-4" style="height: 80px;">
     <!-- Logo kiri -->
     <div class="d-flex align-items-center">
         <img src="{{ asset('images/Mediplus.png') }}" alt="Logo" height="40">

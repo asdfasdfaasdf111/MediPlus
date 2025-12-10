@@ -330,12 +330,6 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');
     Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
     Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
-    Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
-    })->name('pasien.detailpemeriksaan');
-        Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.hasilpemeriksaan', compact('dataPemeriksaan'));
-    })->name('pasien.hasilpemeriksaan');
     Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 
     Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
@@ -347,11 +341,11 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
 
     Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
+        return view('pasien.formdaftarpemeriksaan.detailpemeriksaan', compact('dataPemeriksaan'));
     })->name('pasien.detailpemeriksaan');
 
     Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.hasilpemeriksaan', compact('dataPemeriksaan'));
+        return view('pasien.formdaftarpemeriksaan.hasilpemeriksaan', compact('dataPemeriksaan'));
     })->name('pasien.hasilpemeriksaan');
 
     Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');

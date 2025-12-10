@@ -19,7 +19,7 @@
     $dataPasien = $dataPemeriksaan->dataPasien;
 @endphp
 
-<body class="bg-light text-dark">
+<body class="bg-white text-dark">
   <div class="container-fluid py-3 py-md-4">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-10 col-xl-8 min-vh-100 d-flex flex-column">

@@ -27,13 +27,45 @@ class PendaftaranController extends Controller
         $dataPasiens = $master->dataPasien()->latest()->get();
 
         // Pemeriksaan yang masih aktif (bukan selesai/batal)
-        $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
-            ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
-            ->whereNotIn('statusUtama', ['selesai','batal'])   // pakai ini jika belum ada scope berlangsung()
-            ->ordered('statusPasien')
-            ->paginate(5);
+        // $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
+        //     ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
+        //     ->whereNotIn('statusUtama', ['selesai','batal'])   // pakai ini jika belum ada scope berlangsung()
+        //     ->ordered('statusPasien')
+        //     ->paginate(5);
 
-        return view('pasien.pendaftaran.index', compact('dataPasiens','pemeriksaanBerlangsung'));
+        // return view('pasien.pendaftaran.index', compact('dataPasiens','pemeriksaanBerlangsung'));
+
+        //HALOO NTAR TOLONG BANTU CEK DUNG BENER APA NGGA
+        $aktif = $request->input('status', 'semua');
+        $statusMap = [
+            'pending'      => 'Pending',
+            'berlangsung' => 'Berlangsung',
+            'selesai'    => 'Selesai',
+            'dibatalkan'      => 'Dibatalkan',
+        ];
+
+        //Ini buat ngecek semua pemeriksaan pasien
+        $pemeriksaanQuery = DataPemeriksaan::with(['dataPasien','dokter.user','jenisPemeriksaan','dataRujukan'])
+        ->whereHas('dataPasien', function ($q) use ($master) {
+            $q->where('master_pasien_id', $master->id);
+        });
+
+        // Ngefilter by status
+         if ($aktif !== 'semua' && isset($statusMap[$aktif])) {
+            $pemeriksaanQuery->where('statusUtama', $statusMap[$aktif]);
+        }
+
+        $pemeriksaanBerlangsung = $pemeriksaanQuery
+        ->ordered('statusPasien')   
+        ->orderBy('tanggalPemeriksaan', 'desc')
+        ->paginate(5)
+        ->withQueryString();  
+
+        return view('pasien.pendaftaran.index', [
+            'dataPasiens'            => $dataPasiens,
+            'pemeriksaanBerlangsung' => $pemeriksaanBerlangsung,
+            'aktifStatusUtama'       => $aktif,
+        ]);
     }
 
     public function createDataPasien()

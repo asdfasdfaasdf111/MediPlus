@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     @vite(['resources/js/calendar.js'])
     @vite(['resources/js/jadwal-dinamis.js'])
-</head>
+</head> --}}
+
+@extends('layout.app')
+
+@section('title', 'Step 3 Daftar Data Rujukan')
+
+@section('content')
 
 @php
     use Carbon\Carbon;
@@ -17,7 +23,7 @@
     $draftRujukan = $draftData->dataRujukan;
 @endphp
 
-<body class="bg-light text-dark">
+<div class="bg-white text-dark">
 
   <div class="container-fluid py-3 py-md-4">
     <div class="row justify-content-center">
@@ -33,8 +39,7 @@
         </div>
 
         {{-- FORM --}}
-        <form method="POST"
-              action="{{ $draftRujukan ? route('pasien.updateDataRujukan', ['dataPemeriksaan' => $draftData, 'dataRujukan' => $draftRujukan]) : route('pasien.bikinDataRujukan', $draftData) }}" enctype="multipart/form-data" class="bg-white border rounded-4 shadow-sm flex-grow-0">
+        <form  id="formDataRujukan" method="POST" action="{{ $draftRujukan ? route('pasien.updateDataRujukan', ['dataPemeriksaan' => $draftData, 'dataRujukan' => $draftRujukan]) : route('pasien.bikinDataRujukan', $draftData) }}" enctype="multipart/form-data" class="bg-white border rounded-4 shadow-sm flex-grow-0" novalidate>
             @csrf
             @if ($draftRujukan)
                 @method('PUT')
@@ -53,62 +58,60 @@
 
               <div class="col-12">
                 <label for="namaFaskes" class="form-label fw-semibold">Nama Fasilitas Kesehatan Perujuk</label>
-                <input type="text" class="form-control" name="namaFaskes" id="namaFaskes" placeholder="Nama Fasilitas Kesehatan Perujuk"
-                       @if(!empty($draftRujukan?->namaFaskes))
-                           value="{{ $draftRujukan->namaFaskes }}"
-                       @endif
-                    required>
+                <input type="text" class="form-control @error('namaFaskes') is-invalid @enderror" name="namaFaskes" id="namaFaskes" placeholder="Nama Fasilitas Kesehatan Perujuk" value="{{ old('namaFaskes', $draftRujukan->namaFaskes ?? '') }}"   >
+                  @error('namaFaskes')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="col-12 col-md-6">
                 <label for="namaDokterPerujuk" class="form-label fw-semibold">Nama Dokter Perujuk</label>
-                <input type="text" class="form-control" name="namaDokterPerujuk" id="namaDokterPerujuk" placeholder="Nama Dokter Perujuk"
-                       @if(!empty($draftRujukan?->namaDokterPerujuk))
-                           value="{{ $draftRujukan->namaDokterPerujuk }}"
-                       @endif
-                    required>
+                <input type="text" class="form-control @error('namaDokterPerujuk') is-invalid @enderror" name="namaDokterPerujuk" id="namaDokterPerujuk" placeholder="Nama Dokter Perujuk" value="{{ old('namaDokterPerujuk', $draftRujukan->namaDokterPerujuk ?? '') }}" >
+                @error('namaDokterPerujuk')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
               <div class="col-12 col-md-6">
                 <label for="tanggalPemeriksaanFaskes" class="form-label fw-semibold">Tanggal Pemeriksaan di Faskes</label>
-                <input type="date" class="form-control" id="tanggalPemeriksaanFaskes" name="tanggalPemeriksaanFaskes" max="{{ date('Y-m-d') }}"
-                       @if(!empty($draftRujukan?->tanggalPemeriksaanFaskes))
-                           value="{{ $draftRujukan->tanggalPemeriksaanFaskes }}"
-                       @endif
-                    required>
+                <input type="date" class="form-control @error('tanggalPemeriksaanFaskes') is-invalid @enderror" id="tanggalPemeriksaanFaskes" name="tanggalPemeriksaanFaskes" max="{{ date('Y-m-d') }}"  value="{{ old('tanggalPemeriksaanFaskes', $draftRujukan->tanggalPemeriksaanFaskes ?? '') }}" >
+                @error('tanggalPemeriksaanFaskes')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
               <div class="col-12">
                 <label for="diagnosaKerja" class="form-label fw-semibold">Diagnosa Kerja</label>
-                <input type="text" class="form-control" name="diagnosaKerja" id="diagnosaKerja" placeholder="Hasil Diagnosa"
-                       @if(!empty($draftRujukan?->diagnosaKerja))
-                           value="{{ $draftRujukan->diagnosaKerja }}"
-                       @endif
-                    required>
+                <input type="text" class="form-control @error('diagnosaKerja') is-invalid @enderror" name="diagnosaKerja" id="diagnosaKerja" placeholder="Hasil Diagnosa" value="{{ old('diagnosaKerja', $draftRujukan->diagnosaKerja ?? '') }}"   >
+                  @error('diagnosaKerja')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="col-12">
                 <label for="alasanRujukan" class="form-label fw-semibold">Alasan Rujukan</label>
-                <input type="text" class="form-control" name="alasanRujukan" id="alasanRujukan" placeholder="Alasan Rujukan"
-                       @if(!empty($draftRujukan?->alasanRujukan))
-                           value="{{ $draftRujukan->alasanRujukan }}"
-                       @endif
-                    required>
+                <input type="text" class="form-control @error('alasanRujukan') is-invalid @enderror" name="alasanRujukan" id="alasanRujukan" placeholder="Alasan Rujukan"  value="{{ old('alasanRujukan', $draftRujukan->alasanRujukan ?? '') }}"   >
+                  @error('alasanRujukan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="col-12">
                 <label for="permintaanPemeriksaan" class="form-label fw-semibold">Permintaan Pemeriksaan</label>
-                <input type="text" class="form-control" name="permintaanPemeriksaan" id="permintaanPemeriksaan" placeholder="Permintaan Jenis Radiologi"
-                       @if(!empty($draftRujukan?->permintaanPemeriksaan))
-                           value="{{ $draftRujukan->permintaanPemeriksaan }}"
-                       @endif
-                    required>
+                <input type="text" class="form-control @error('permintaanPemeriksaan') is-invalid @enderror" name="permintaanPemeriksaan" id="permintaanPemeriksaan" placeholder="Permintaan Jenis Radiologi" value="{{ old('permintaanPemeriksaan', $draftRujukan->permintaanPemeriksaan ?? '') }}"   >
+                  @error('permintaanPemeriksaan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
               </div>
 
               <div class="col-12">
                 <label for="formulirRujukan" class="form-label fw-semibold">Formulir Rujukan (PDF)</label>
-                <input type="file" class="form-control" name="formulirRujukan" id="formulirRujukan" accept="application/pdf"
-                       @if(empty($draftRujukan?->formulirRujukan)) required @endif>
+                <input type="file" class="form-control  @error('formulirRujukan') is-invalid @enderror" name="formulirRujukan" id="formulirRujukan" accept="application/pdf" @if (!$draftRujukan) required @endif >
+                @error('formulirRujukan')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+
+                <div class="invalid-feedback" id="formulirRujukanErrorJs"></div>
 
                 <div class="small text-muted mt-1" id="fileName">
                     @if (!empty($draftRujukan?->formulirRujukan))
@@ -156,5 +159,13 @@
       });
     });
   </script>
-</body>
-</html>
+{{-- </div>
+</html> --}}
+
+@endsection
+
+@push('page-scripts')
+    @vite(['resources/js/calendar.js'])
+    @vite(['resources/js/jadwal-dinamis.js'])
+    @vite(['resources/js/filerujukan.js'])
+@endpush

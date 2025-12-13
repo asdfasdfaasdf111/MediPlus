@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,13 @@
     @vite(['resources/js/calendar.js'])
     @vite(['resources/js/jadwal-dinamis.js'])
     @vite(['resources/js/switch-datapendaming.js'])
-</head>
+</head> --}}
+
+@extends('layout.app')
+
+@section('title', 'Step 2 Daftar Tipe Pasien')
+
+@section('content')
 
 @php
     use Carbon\Carbon;
@@ -18,9 +24,12 @@
     $masterPasien = auth()->user()->masterPasien;
     $draftData    = $masterPasien->draftPemeriksaan;
     $draftPasien  = $draftData->dataPasien;
+    $punyaPendamping = !empty($draftData->namaPendamping)
+        || !empty($draftData->nomorPendamping)
+        || !empty($draftData->hubunganPendamping);
 @endphp
 
-<body class="bg-light text-dark">
+<div class="bg-white text-dark">
 
   <div class="container-fluid py-3 py-md-4">
     <div class="row justify-content-center">
@@ -38,7 +47,7 @@
         </div>
 
         {{-- FORM  --}}
-        <form method="POST" action="{{ route('pasien.updateTipePasien', $draftData) }}" class="bg-white border rounded-4 shadow-sm flex-grow-0">
+        <form method="POST" action="{{ route('pasien.updateTipePasien', $draftData) }}" class="bg-white border rounded-4 shadow-sm flex-grow-0" novalidate>
             @csrf
             @method('PUT')
 
@@ -70,6 +79,8 @@
               </div>
 
             {{-- Garis pembatas buat yg data pendamping --}}
+            <input type="hidden" name="pakaiPendamping" id="pakaiPendamping" value="{{ $punyaPendamping ? 1 : 0 }}">
+
               <div class="col-12">
                 <hr class="my-3 border-top border-secondary-subtle">
               </div>
@@ -79,42 +90,44 @@
                     Data Pendamping
                 </h6>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="togglePendamping">
+                    <input class="form-check-input" type="checkbox" role="switch"  id="togglePendamping" {{ $punyaPendamping ? 'checked' : '' }}>
                     <label class="form-check-label small" for="togglePendamping">
-                    Isi jika ada
+                      Isi jika ada
                     </label>
+                  </div>
                 </div>
-             </div>
 
 
               <div class="col-12 col-md-6">
                 <label for="namaPendamping" class="form-label fw-semibold">Nama Pendamping</label>
-                    <input type="text" class="form-control js-pendamping-field" name="namaPendamping" id="namaPendamping" placeholder="Nama Pendamping" disabled
-                        @if(!empty($draftData->namaPendamping))
-                            value="{{ $draftData->namaPendamping }}"
-                        @endif>
+                    <input type="text" class="form-control js-pendamping-field @error('namaPendamping') is-invalid @enderror" name="namaPendamping" id="namaPendamping" placeholder="Nama Pendamping" @if(!$punyaPendamping) disabled @endif value="{{ old('namaPendamping', $draftData->namaPendamping) }}">
+                        @error('namaPendamping')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
               </div>
 
               <div class="col-12 col-md-6">
                 <label for="nomorPendamping" class="form-label fw-semibold">Kontak Pendamping</label>
-                <input type="text"
-                        class="form-control js-pendamping-field" name="nomorPendamping" id="nomorPendamping" placeholder="Nomor Handphone" disabled
-                        @if(!empty($draftData->nomorPendamping))
-                            value="{{ $draftData->nomorPendamping }}"
-                        @endif>
+                    <input type="text" class="form-control js-pendamping-field @error('nomorPendamping') is-invalid @enderror" name="nomorPendamping" id="nomorPendamping" placeholder="Nomor Handphone" @if(!$punyaPendamping) disabled @endif value="{{ old('nomorPendamping', $draftData->nomorPendamping) }}">
+                        @error('nomorPendamping')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
               </div>
 
               <div class="col-12 col-md-6">
                 <label for="hubunganPendamping" class="form-label fw-semibold">Hubungan dengan Pasien</label>
-                <select id="hubunganPendamping" name="hubunganPendamping" class="form-select rounded-3 js-pendamping-field" disabled>
+                <select id="hubunganPendamping" name="hubunganPendamping" class="form-select rounded-3 js-pendamping-field @error('hubunganPendamping') is-invalid @enderror"  @if(!$punyaPendamping) disabled @endif>
                     <option value="">Pilih Hubungan</option>
                     @foreach (['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'] as $option)
                         <option value="{{ $option }}"
-                            {{ $draftData->hubunganPendamping === $option ? 'selected' : '' }}>
-                            {{ $option }}
+                          {{ old('hubunganPendamping', $draftData->hubunganPendamping) === $option ? 'selected' : '' }}>
+                          {{ $option }}
                         </option>
                     @endforeach
                 </select>
+                @error('hubunganPendamping')
+                  <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
               </div>
 
 
@@ -137,7 +150,13 @@
     </div>
   </div>
 
-  <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+  {{-- <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 
-</body>
-</html>
+</div>
+</html> --}}
+
+@endsection
+
+@push('page-scripts')
+  @vite(['resources/js/switch-datapendaming.js'])
+@endpush

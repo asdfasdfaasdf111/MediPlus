@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     @vite(['resources/js/calendar.js'])
     @vite(['resources/js/jadwal-dinamis.js'])
-</head>
+</head> --}}
+
+@extends('layout.app')
+
+@section('title', 'Step 1 Daftar Pilih Jadwal')
+
+@section('content')
 
 @php
     use App\Models\RumahSakit;
@@ -21,7 +27,7 @@
     $draftJenisPemeriksaan = $draftData?->jenisPemeriksaan;
 @endphp
 
-<body class="bg-light text-dark">
+<div class="bg-white text-dark">
 
   <div class="container-fluid py-3 py-md-4">
     <div class="row justify-content-center">
@@ -200,7 +206,14 @@
       </div>
     </div>
   </div>
-
+{{-- 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+</div>
+</html> --}}
+
+@endsection
+
+@push('page-scripts')
+  @vite(['resources/js/calendar.js'])
+  @vite(['resources/js/jadwal-dinamis.js'])
+@endpush

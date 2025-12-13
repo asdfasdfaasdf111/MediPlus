@@ -158,7 +158,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         ->name('admin.updateJadwal');
 
 
-
     Route::get('/logaktivitaspage', function () {
         return view('admin.logaktivitaspage');
     })->name('admin.logaktivitaspage');
@@ -170,7 +169,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::get('/tambahakunpetugaspage', function () {
         return view('admin.tambahakunpetugaspage');
     })->name('admin.tambahakunpetugaspage');
-
 
 
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
@@ -324,16 +322,13 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     //FaQ page
     Route::view('/faq', 'pasien.faq')->name('pasien.faq');
     Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
-    Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
-    Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
-    Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
-    Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');
-    Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukan'])->name('pasien.updateDataRujukan');
-    Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
-    Route::put('/selesaiPemeriksaan/{dataPemeriksaan}', [DataPemeriksaanController::class, 'selesaiPemeriksaan'])->name('pasien.selesaiPemeriksaan');
 
     Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
     Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');
+    Route::get('/bikinDataRujukan/{dataPemeriksaan}', function () {
+        return redirect()->route('pasien.daftardatarujukan');
+    });
+
 
     Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasien'])->name('pasien.updateTipePasien');
     Route::put('/updateTanggal/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTanggal'])->name('pasien.updateTanggal');

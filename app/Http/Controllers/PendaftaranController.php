@@ -93,23 +93,25 @@ class PendaftaranController extends Controller
                 'alergi'            => 'nullable|string|max:255',
                 'golonganDarah'     => 'required|in:' . implode(',', self::GOLONGAN_DARAH_OPTS),
             ],
-            [],
             [
-                'namaLengkap'      => 'nama lengkap',
-                'hubunganKeluarga' => 'hubungan dengan pasien',
-                'noHP'             => 'nomor HP',
-                'noIdentitas'      => 'nomor identitas',
+                'namaLengkap.required'       => 'Nama Lengkap wajib diisi.',
+                'hubunganKeluarga.required'  => 'Hubungan dengan Pasien wajib diisi.',
+                'alamatDomisili.required'    => 'Alamat Domisili wajib diisi.',
+                'tanggalLahir.required'      => 'Tanggal Lahir wajib diisi.',
+                'tanggalLahir.date'          => 'Tanggal Lahir tidak valid.',
+                'noIdentitas.required'       => 'Nomor Identitas wajib diisi.',
+                'jenisIdentitas.required'    => 'Jenis Identitas wajib dipilih.',
+                'jenisKelamin.required'      => 'Jenis Kelamin wajib dipilih.',
+                'noHP.required'              => 'Nomor HP wajib diisi.',
+                'golonganDarah.required'     => 'Golongan Darah wajib dipilih.',
             ]
         );
 
-
         $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
 
-        $user   = $request->user();
+        $user   = auth()->user();
         $master = $user->masterPasien ?: MasterPasien::create(['user_id' => $user->id]);
         $validated['master_pasien_id'] = $master->id;
-
-        $validated['alergi'] = $validated['alergi'] ?? '';
 
         DataPasien::create($validated);
 

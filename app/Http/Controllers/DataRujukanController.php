@@ -19,6 +19,18 @@ class DataRujukanController extends Controller
             'permintaanPemeriksaan' => 'required|string',
             'tanggalPemeriksaanFaskes' => 'required|date|before_or_equal:today',
             'formulirRujukan' => 'required|mimes:pdf|max:8192',
+        ],
+        [
+            'namaFaskes.required'            => 'Nama fasilitas kesehatan wajib diisi.',
+            'namaDokterPerujuk.required'     => 'Nama dokter perujuk wajib diisi.',
+            'diagnosaKerja.required'         => 'Diagnosa kerja wajib diisi.',
+            'alasanRujukan.required'         => 'Alasan rujukan wajib diisi.',
+            'permintaanPemeriksaan.required' => 'Permintaan pemeriksaan wajib diisi.',
+            'tanggalPemeriksaanFaskes.required' => 'Tanggal pemeriksaan di faskes wajib diisi.',
+            'tanggalPemeriksaanFaskes.before_or_equal' => 'Tanggal pemeriksaan di faskes tidak boleh setelah hari ini.',
+            'formulirRujukan.required'       => 'Formulir rujukan wajib diunggah.',
+            'formulirRujukan.mimes'          => 'Formulir rujukan harus berupa file PDF.',
+            'formulirRujukan.max'            => 'Ukuran file maksimal 8 MB.',
         ]);
 
         $path = $request->file('formulirRujukan')->store('uploads', 'public');

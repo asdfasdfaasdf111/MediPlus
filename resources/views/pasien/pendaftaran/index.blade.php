@@ -211,7 +211,7 @@
           <hr class="my-0">
           <div class="px-4 py-2 d-flex justify-content-end gap-2">
             @if ($ex->bisaDiedit())
-              <a href="{{ route('pasien.editpendaftaran', $ex) }}" class="btn btn-sm btn-primary">
+              <a href="{{ route('pasien.editpendaftaran', $ex) }}" class="btn btn-sm btn-warning">
                 <i class="bi bi-pencil-square me-1"></i> EDIT
               </a>
               <form action="{{ route('pasien.hapusPendaftaran', $ex) }}" method="POST"

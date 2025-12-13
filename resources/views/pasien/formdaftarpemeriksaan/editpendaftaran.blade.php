@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pemeriksaan Petugas</title>
+    <title>Daftar Pemeriksaan Pasien Baru</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     @vite(['resources/js/calendar.js'])
@@ -11,7 +11,9 @@
 </head>
 
 @php
+    use App\Models\RumahSakit;
     use Carbon\Carbon;
+
     $rumahSakit = $dataPemeriksaan->rumahSakit;
     $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
 @endphp
@@ -20,52 +22,30 @@
     window.rumahSakit = {
         id: {{ $rumahSakit->id }}
     };
-    window.dataPemeriksaan = {
-        id: {{ $dataPemeriksaan->id }}
+    window.jenisPemeriksaan = {
+        id: {{ $jenisPemeriksaan->id }}
     };
 </script>
 
-<form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => "false"]) }}">
+<form method="POST" action="{{ route('pasien.updateTanggal', ['dataPemeriksaan' => $dataPemeriksaan]) }}">
     @csrf
     @method('PUT')
     <div>Pilih Jadwal Pemeriksaan</div>
-    <div>Rumah Sakit: {{ $rumahSakit->nama }}</div>
-
-    <div>Jenis Pemeriksaan</div>
-    <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-control" required>
-        @foreach($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-            <option value="{{ $namaJenisPemeriksaan }}" {{ $namaJenisPemeriksaan == $jenisPemeriksaan->namaJenisPemeriksaan ? 'selected' : '' }}>
-                {{ $namaJenisPemeriksaan }}
-            </option>
-        @endforeach
-    </select>
-
-    <div>Pemeriksaan Spesifik</div>
-    <select id="jenisPemeriksaanSpesifik" name="jenisPemeriksaanSpesifik" class="form-control" required>
-        <option value="-" disabled>
-            -
-        </option>
-        @foreach($rumahSakit->jenisPemeriksaanSpesifik($jenisPemeriksaan->namaJenisPemeriksaan)->get() as $pemeriksaanSpesifik)
-            <option value="{{ $pemeriksaanSpesifik->id }}" {{ $pemeriksaanSpesifik->id == $jenisPemeriksaan->id ? 'selected' : '' }}>
-                {{ $pemeriksaanSpesifik->namaPemeriksaanSpesifik }}
-            </option>
-        @endforeach
-    </select>
-
     <div>Tanggal Pemeriksaan</div>
-    <input type="hidden" name="tanggalPemeriksaan" id="tanggalPemeriksaanInput" value="{{ $dataPemeriksaan->tanggalPemeriksaan }}">
-    <x-calendar :disabled-dates="$rumahSakit->jadwalPenuh($jenisPemeriksaan)" 
-                :default-date="$dataPemeriksaan->tanggalPemeriksaan" 
-                id="tanggalPemeriksaan" 
-                name="tanggalPemeriksaan"
-                required/>
-
+    <input type="hidden" name="tanggalPemeriksaan" id="tanggalPemeriksaanInput"
+            value="{{ $dataPemeriksaan->tanggalPemeriksaan }}">
+    <x-calendar 
+        :disabled-dates="$rumahSakit->jadwalPenuh($jenisPemeriksaan)" 
+        :default-date="$dataPemeriksaan->tanggalPemeriksaan" 
+        id="tanggalPemeriksaan" 
+        name="tanggalPemeriksaan"
+        required/>
 
     <label class="form-label fw-bold">Rentang Waktu Kedatangan</label>
     <div id="rentangWaktuKedatangan" class="d-flex flex-wrap gap-2">
         @php
             $timeSlots = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
-            @endphp
+        @endphp
 
         @foreach ($timeSlots as $slot)
             <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>
@@ -75,21 +55,13 @@
         @endforeach
     </div>
 
-    <label class="form-label fw-bold">Catatan</label>
-    <input type="text"  class="form-control"
-                        name="catatanPetugas" id="catatanPetugas"
-                        placeholder="Catatan"
-                        @if(!empty($dataPemeriksaan?->catatanPetugas))
-                            value="{{ $dataPemeriksaan?->catatanPetugas }}"
-                        @endif>
-
     <div class="d-flex justify-content-center gap-3 pt-3">
-        <a href="{{ route('petugas.pratinjaupemeriksaan', $dataPemeriksaan) }}" 
+        <a href="{{ route('pasien.pendaftaran') }}" 
            class="btn btn-outline-primary px-5 rounded-pill">
-            Kembali
+           Kembali
         </a>
         <button id="submitBtn" type="submit" class="btn btn-primary px-5 rounded-pill">
-            Simpan
+            Perbarui
         </button>
     </div>
 </form>

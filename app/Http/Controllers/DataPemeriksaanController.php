@@ -311,20 +311,51 @@ class DataPemeriksaanController extends Controller
     public function updateTipePasien(Request $request, DataPemeriksaan $dataPemeriksaan){
         $masterPasien = auth()->user()->masterPasien;
 
-        $dataPasien = $masterPasien->dataPasien()
-                                    ->where('id', $request->pilihPasien)
-                                    ->first();
+       $rules = [
+            'pilihPasien'      => ['required', 'integer'],
+            'pakaiPendamping'  => ['nullable', 'boolean'],
+        ];
+
+        if ($request->boolean('pakaiPendamping')) {
+            $rules = array_merge($rules, [
+                'namaPendamping' => ['required', 'string', 'max:50'],
+                'nomorPendamping' => ['required', 'string', 'max:20'],
+                'hubunganPendamping' => ['required', 'string'],
+            ]);
+        }
+
+        $messages = [
+            'pilihPasien.required'   => 'Silakan pilih data pasien.',
+            'namaPendamping.required'   => 'Nama pendamping wajib diisi.',
+            'nomorPendamping.required' => 'Kontak pendamping wajib diisi.',
+            'hubunganPendamping.required' => 'Hubungan dengan pasien wajib dipilih.',
+        ];
         
+        $validated = $request->validate($rules, $messages);
+
+         $dataPasien = $masterPasien->dataPasien()
+            ->where('id', $validated['pilihPasien'])
+            ->first();
+
         if (!$dataPasien){
             return back()->withErrors([
                 'dataPasien' => 'Data Pasien ini tidak ada',
             ]);
         }
 
-        $dataPemeriksaan->data_pasien_id = $request->pilihPasien;
-        $dataPemeriksaan->namaPendamping = $request->namaPendamping;
-        $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
-        $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
+        $dataPemeriksaan->data_pasien_id = $validated['pilihPasien'];
+
+        //Ini untuk isi / kosongin data pendamping sesuai switch
+        if ($request->boolean('pakaiPendamping')) {
+            $dataPemeriksaan->namaPendamping     = $validated['namaPendamping'];
+            $dataPemeriksaan->nomorPendamping    = $validated['nomorPendamping'];
+            $dataPemeriksaan->hubunganPendamping = $validated['hubunganPendamping'];
+        } else {
+            $dataPemeriksaan->namaPendamping     = null;
+            $dataPemeriksaan->nomorPendamping    = null;
+            $dataPemeriksaan->hubunganPendamping = null;
+        }
+
         $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
         $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
         $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;

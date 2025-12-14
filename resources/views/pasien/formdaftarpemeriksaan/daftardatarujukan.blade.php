@@ -23,7 +23,7 @@
     $draftRujukan = $draftData->dataRujukan;
 @endphp
 
-<div class="bg-white text-dark">
+<div class="bg-light text-dark">
 
   <div class="container-fluid py-3 py-md-4">
     <div class="row justify-content-center">

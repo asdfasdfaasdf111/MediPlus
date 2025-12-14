@@ -58,13 +58,14 @@ class PendaftaranController extends Controller
         $pemeriksaanBerlangsung = $pemeriksaanQuery
         ->ordered('statusPasien')   
         ->orderBy('tanggalPemeriksaan', 'desc')
+        ->where('statusUtama', '!=', 'dRAft')
         ->paginate(5)
         ->withQueryString();  
 
         return view('pasien.pendaftaran.index', [
-            'dataPasiens'            => $dataPasiens,
+            'dataPasiens' => $dataPasiens,
             'pemeriksaanBerlangsung' => $pemeriksaanBerlangsung,
-            'aktifStatusUtama'       => $aktif,
+            'aktifStatusUtama' => $aktif,
         ]);
     }
 

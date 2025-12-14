@@ -133,11 +133,7 @@
              background:#EEF3FF;display:flex;align-items:center;justify-content:center;">
           <i class="bi bi-clipboard-plus" style="font-size:1.6rem;color:#2f6fed;"></i>
         </div>
-        <div class="text-muted mb-3">Belum ada pemeriksaan yang berjalan.</div>
-        <a href="{{ route('pasien.homepage') }}"
-           class="btn btn-primary d-inline-flex align-items-center gap-2 px-3">
-          <i class="bi bi-plus-lg"></i> Daftar Pemeriksaan Baru
-        </a>
+        <div class="text-muted mb-3">Tidak ada data.</div>
       </div>
     </div>
   @else

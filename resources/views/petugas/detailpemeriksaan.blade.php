@@ -261,6 +261,26 @@
           <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
                 Kembali
           </a>
+          @if ($dataPemeriksaan->statusPasien === 'Menunggu Registrasi Ulang')
+              {{-- hanya bisa regis ulang kalo <= 6 jam, klo ud > 6 jam lewat atau masih lebih dri 6 jam sblum jadwal, gbs regis ulang  --}}
+            @php
+              $date = $dataPemeriksaan->tanggalPemeriksaan;
+              $time = $dataPemeriksaan->rentangWaktuKedatangan;
+
+              $pemeriksaanDateTime = Carbon::parse("$date $time", 'Asia/Jakarta');
+              $pemeriksaanDateTime->setTimezone('Asia/Jakarta');
+              $diff = now('Asia/Jakarta')->diffInHours($pemeriksaanDateTime);
+            @endphp
+            @if ($diff <= 6 && $diff >= -6)
+              <form action="{{ route('petugas.registrasiUlang', $dataPemeriksaan) }}"
+                    method="POST"
+                    onsubmit="return checkWaktu();">
+                  @csrf
+                  <button type="submit" class="btn btn-primary">Registrasi Ulang</button>
+              </form>
+            @endif
+          @endif
+          
         </div>
 
       </main>

@@ -18,6 +18,7 @@ use App\Http\Controllers\RumahSakitController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\DashboardPetugasController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\HasilPemeriksaanController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
 use App\Models\RumahSakit;
@@ -25,6 +26,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Livewire\AntrianController;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Auth\Events\PasswordReset;
@@ -233,8 +235,18 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
                     $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                     return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
 
+    Route::post('/registrasiUlang/{dataPemeriksaan}', [DataPemeriksaanController::class, 'registrasiUlang'])->name('petugas.registrasiUlang');
+    // Route::get('/listantrian', AntrianController::class)->name('petugas.listantrian');
+    Route::get('/listantrian', function () {
+        return view('petugas.listantrian');
+    })->name('petugas.listantrian');
+
     Route::get('/password', [ProfileController::class, 'editPassword'])->name('petugas.password.edit');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('petugas.password.update');
+
+    Route::get('/listantrian', function () {
+        return view('petugas.listantrian');
+    })->name('petugas.listantrian');
 
 });
 
@@ -265,8 +277,11 @@ Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(
     Route::get('/file-upload/{dataPemeriksaan}', [FileController::class, 'index'])->name('dokter.index');
     Route::post('file-upload/{dataPemeriksaan}', [FileController::class, 'store'])->name('dokter.hasilpemeriksaan');
 
-     Route::get('/password', [ProfileController::class, 'editPassword'])->name('dokter.password.edit');
+    Route::get('/password', [ProfileController::class, 'editPassword'])->name('dokter.password.edit');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('dokter.password.update');
+
+    Route::post('/uploadLaporan/{dataPemeriksaan}', [HasilPemeriksaanController::class, 'bikinHasilPemeriksaan'])->name('dokter.uploadLaporan');
+
 });
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
@@ -371,6 +386,8 @@ Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan?}',
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                 return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
+                
+
 Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) {
                 $rumahSakit = RumahSakit::find($rumahSakitId);
                 return $rumahSakit->namaJenisPemeriksaan(); 

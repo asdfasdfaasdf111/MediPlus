@@ -33,6 +33,7 @@ class DataPemeriksaan extends Model
         'riwayatNoHP',
         'riwayatAlergi',
         'riwayatGolonganDarah',
+        'nomorAntrian',
     ];
 
     public function dokter()
@@ -75,7 +76,7 @@ class DataPemeriksaan extends Model
         return $this->hasMany(Notifikasi::class);
     }
 
-    //urutin dari status utama, pending dlu, berlangsung, baru selesai
+     //urutin dari status utama, pending dlu, berlangsung, baru selesai
     //kalo status utama sama, urutin dari status pasien/petugas/dokter
     public function scopeOrdered($query, $subtype = 'statusPasien')
     {
@@ -84,13 +85,13 @@ class DataPemeriksaan extends Model
 
         switch ($subtype) {
             case 'statusPasien':
-                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Hasil', 'Hasil Tersedia', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusPetugas':
-                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan'";
                 break;
             default:
                 $statusUser = "'default'";

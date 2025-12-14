@@ -82,7 +82,8 @@
                 'dalam antrian'           => 'DALAM ANTRIAN',
                 'pemeriksaan berlangsung' => 'PEMERIKSAAN BERLANGSUNG',
                 'menunggu laporan'        => 'MENUNGGU LAPORAN',
-                'selesai'                 => 'SELESAI',
+                'laporan terkirim'        => 'LAPORAN TERKIRIM',
+                'selesai'                 => 'SELESAI'
             };
 
             $statusClass = match ($dataPemeriksaan->statusUtama){

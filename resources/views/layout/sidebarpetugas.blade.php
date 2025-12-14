@@ -21,5 +21,9 @@
             </a>
         </li>
 
+        <a href="{{ route('petugas.listantrian') }}" class="nav-link {{ request()->routeIs('petugas.listantrian') ? 'text-primary fw-bold' : 'text-dark' }}">
+            <i class="bi bi-list-ul me-2"></i> List Antrian
+        </a>
+
     </ul>
 </div>

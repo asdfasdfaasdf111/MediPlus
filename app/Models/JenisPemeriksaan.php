@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class JenisPemeriksaan extends Model
@@ -26,7 +27,7 @@ class JenisPemeriksaan extends Model
     {
         return $this->hasMany(DataPemeriksaan::class)
         ->where('statusUtama', '!=', 'Draft')
-        ->ordered();;
+        ->ordered();
     }
 
     public function rumahSakit()

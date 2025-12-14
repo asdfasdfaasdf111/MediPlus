@@ -6,7 +6,6 @@
     <title>Dokter | Detail Pemeriksaan</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
 
 @php
@@ -17,6 +16,7 @@
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
     $hasilPemeriksaan = $dataPemeriksaan->hasilPemeriksaan;
+    $draftLaporan     = $dokter->draftLaporan;
 @endphp
 
 <body class="bg-white text-dark">
@@ -123,7 +123,7 @@
             </div>
           </div>
 
-
+          {{-- DATA RUJUKAN --}}
           <div class="col-12">
             <div class="card shadow-sm border-0 rounded-4">
               <div class="card-header fw-semibold d-flex align-items-center">
@@ -170,7 +170,9 @@
                     <div class="mb-0">
                       <div class="small text-muted">Formulir Rujukan</div>
                       <div class="fw-semibold text-break">
-                        {{ $dataRujukan->formulirRujukan }}
+                        <a href="{{ asset('storage/' . $dataRujukan->formulirRujukan) }}" target="_blank" class="text-decoration-none">
+                          <i class="bi bi-file-earmark-pdf me-1"></i>{{ $dataRujukan->namaFile }}
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -179,8 +181,8 @@
             </div>
           </div>
 
-
-          @if($dataPemeriksaan->statusDokter == 'Menunggu Laporan')
+          {{-- UPLOAD HASIL PUNYA LEO --}}
+                    @if($dataPemeriksaan->statusDokter == 'Menunggu Laporan')
             <div class="col-12">
               <div class="card shadow-sm border-0 rounded-4 mb-3">
                 <div class="card-header fw-semibold d-flex align-items-center">
@@ -189,64 +191,139 @@
                 </div>
 
                 <div class="card-body">
-
-                  <form method="POST" action="{{ route('file.store') }}" enctype="multipart/form-data">
+                  <form method="POST"
+                        action="{{ route('dokter.uploadLaporan', $dataPemeriksaan) }}"
+                        enctype="multipart/form-data">
                     @csrf
+
                     <div class="mb-3">
                       <label class="form-label fw-semibold">Mitra Radiologi</label>
-                      <input type="file" class="form-control" name="file" id="hasilPemeriksaan" accept="application/pdf" @if(empty($hasilPemeriksaan?->file)) required @endif  >
-                      <span id="fileLampiran" class="small text-muted d-block mt-1">
-                        @if (!empty($hasilPemeriksaan?->file))
-                          {{ $hasilPemeriksaan->fileLampiran }}
-                        @else
-                          Tidak ada file
-                        @endif
-                      </span>
+                      <input type="file"
+                             class="form-control"
+                             name="files[]"
+                             id="hasilPemeriksaan"
+                             multiple
+                             required>
+                      <div class="form-text">
+                        Kamu bisa unggah lebih dari 1 file (multiple).
+                      </div>
                     </div>
-
-                    <script>
-                      document.addEventListener('DOMContentLoaded', function () {
-                        const input = document.getElementById('hasilPemeriksaan');
-                        const fileLampiran = document.getElementById('fileLampiran');
-
-                        if (input && fileLampiran) {
-                          input.addEventListener('change', () => {
-                            if(input.files.length > 0) {
-                              fileLampiran.textContent = input.files[0].name;
-                            } else {
-                              fileLampiran.textContent = 'Tidak ada file';
-                            }
-                          });
-                        }
-                      });
-                    </script>
 
                     <div class="mb-3">
                       <label for="deskripsi" class="form-label fw-semibold">Deskripsi Hasil Analisa</label>
-                      <textarea name="deskripsi" id="deskripsi" rows="6" class="form-control" placeholder="Deskripsi Hasil Analisa" ></textarea>
+                      <textarea name="deskripsi"
+                                id="deskripsi"
+                                rows="6"
+                                class="form-control"
+                                placeholder="Deskripsi Hasil Analisa"></textarea>
                     </div>
 
-                    <div class="text-end mb-3">
-                      <button type="submit" class="btn btn-primary fw-semibold px-4">
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
+                      <button type="button"
+                              class="btn btn-outline-secondary fw-semibold px-4"
+                              data-bs-toggle="modal"
+                              data-bs-target="#popupDraft">
                         Unggah Draft
                       </button>
-                    </div>
 
-                    <div class="d-flex justify-content-center gap-3 gap-md-4 mt-2">
-                      <a href="{{ route('dokter.homepage') }}"
-                         class="btn btn-outline-primary fw-semibold px-4 px-md-5 rounded-pill">
-                        Kembali
-                      </a>
-                      <button type="submit"
-                              class="btn btn-primary fw-semibold px-4 px-md-5 rounded-pill">
-                        Kirim
-                      </button>
+                      <div class="d-flex gap-3 gap-md-4">
+                        <a href="{{ route('dokter.homepage') }}"
+                           class="btn btn-outline-primary fw-semibold px-4 px-md-5 rounded-pill">
+                          Kembali
+                        </a>
+                        <button type="submit"
+                                class="btn btn-primary fw-semibold px-4 px-md-5 rounded-pill">
+                          Kirim
+                        </button>
+                      </div>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
-          @endif
+
+            {{-- Modal draft --}}
+            <div class="modal fade" id="popupDraft" tabindex="-1" aria-labelledby="popupDraftLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content" style="border-radius:16px;">
+                  <div class="modal-header">
+                    <h5 id="popupDraftLabel" class="modal-title fw-bold">Pilih Draft</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+
+                  <div class="modal-body">
+                    @if(isset($draftLaporan) && $draftLaporan->count())
+                      <div class="list-group">
+                        @foreach($draftLaporan as $draft)
+                          <button
+                            type="button"
+                            class="list-group-item list-group-item-action template-item"
+                            data-description="{{ htmlspecialchars($draft->deskripsi) }}"
+                          >
+                            {{ $draft->judul }}
+                          </button>
+                        @endforeach
+                      </div>
+                    @else
+                      <p class="text-muted mb-0">Tidak ada draft laporan tersedia.</p>
+                    @endif
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const textarea = document.getElementById('deskripsi');
+        
+                    document.querySelectorAll('.template-item').forEach(function(btn) {
+                        btn.addEventListener('click', function () {
+                            const desc = this.getAttribute('data-description') || '';
+                            textarea.value = desc;
+                            const modalEl = document.getElementById('popupDraft');
+                            const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                            modal.hide();
+                        });
+                    });
+                });
+            </script>
+
+            @elseif($dataPemeriksaan->statusDokter === 'Laporan Terkirim' || $dataPemeriksaan->statusDokter === 'Selesai')
+              <div class="col-12">
+                <div class="card shadow-sm border-0 rounded-4">
+                  <div class="card-header fw-semibold d-flex align-items-center">
+                    <i class="bi bi-clipboard-check me-2"></i>
+                    Hasil Pemeriksaan
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-2">
+                      <div class="small text-muted">Hasil Analisa</div>
+                      <div class="fw-semibold text-break">
+                        {{ $hasilPemeriksaan->hasilPemeriksaan }}
+                      </div>
+                    </div>
+
+                    <div class="mt-3">
+                      <div class="small text-muted">Unduh Lampiran</div>
+                      <div class="mt-1">
+                        @foreach(json_decode($hasilPemeriksaan->fileLampiran) as $filePath)
+                          <a class="btn btn-outline-primary btn-sm me-2 mb-2"
+                            href="{{ Storage::url($filePath) }}"
+                            target="_blank">
+                            <i class="bi bi-download me-1"></i>Download
+                          </a>
+                        @endforeach
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            @endif
 
         </div> 
 

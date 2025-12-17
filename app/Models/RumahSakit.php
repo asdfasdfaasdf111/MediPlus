@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
@@ -80,14 +81,16 @@ class RumahSakit extends Model
     public function jamTersedia($jenisPemeriksaan, $tanggalPemeriksaan, $dataPemeriksaan = null)
     {
         $listJam = [];
-        // kalo tanggal yang dipilih <= hari ini, brarti uda gabisa daftar lagi
-        if (Carbon::parse($tanggalPemeriksaan)->lte(Carbon::today())) {
+        // kalo tanggal yang dipilih < hari ini, brarti uda gabisa daftar lagi
+        if (Carbon::parse($tanggalPemeriksaan)->lt(Carbon::today())) {
             return $listJam;
         } 
+        
         $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
         $hariIni = $this->jadwalRumahSakit()
                         ->where('indexJadwal', $hariIni)
                         ->first();
+        if (!$hariIni->buka) return $listJam;
         $jamBuka = Carbon::parse($hariIni->jamBuka);
         $jamBuka = $jamBuka->ceilHour();
 
@@ -100,6 +103,19 @@ class RumahSakit extends Model
                                     $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
                                 })->get();
         while($jamBuka < $jamTutup){
+            $tanggal = Carbon::parse($tanggalPemeriksaan);
+
+            $waktuPemeriksaan = $tanggal
+                ->copy()
+                ->setTimeFrom($jamBuka);
+            $now = Carbon::now();
+
+            $diffInHours = $now->diffInHours($waktuPemeriksaan, false);
+            // kalo <= 12 jam dari sekarang, uda ga bisa daftar di jam ini
+            if ($diffInHours <= 12) {
+                $jamBuka->addHour();
+                continue;
+            }
             if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
                 $listJam[] = $jamBuka->format('H:i');
                 $jamBuka->addHour();
@@ -120,29 +136,74 @@ class RumahSakit extends Model
         return $listJam;
     }
 
-    //bisa dibikin lebih efisien tpi ribet
+    //ambil semua jam yang mungkin selama >= waktu sekarang
+    public function jamTersediaPetugas($jenisPemeriksaan, $tanggalPemeriksaan)
+    {
+        $listJam = [];
+        // kalo tanggal yang dipilih < hari ini, brarti uda gabisa daftar lagi
+        if (Carbon::parse($tanggalPemeriksaan)->lt(Carbon::today())) {
+            return $listJam;
+        } 
+        
+        $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
+        $hariIni = $this->jadwalRumahSakit()
+                        ->where('indexJadwal', $hariIni)
+                        ->first();
+        if (!$hariIni->buka) return $listJam;
+        $jamBuka = Carbon::parse($hariIni->jamBuka);
+        $jamBuka = $jamBuka->ceilHour();
+
+        $jamTutup = Carbon::parse($hariIni->jamTutup);
+        $jamTutup = $jamTutup->floorUnit('hour');
+
+        while($jamBuka < $jamTutup){
+            $tanggal = Carbon::parse($tanggalPemeriksaan);
+
+            $waktuPemeriksaan = $tanggal
+                ->copy()
+                ->setTimeFrom($jamBuka);
+            $now = Carbon::now();
+
+            $diffInHours = $now->diffInHours($waktuPemeriksaan, false);
+            if ($diffInHours < -1) {
+                $jamBuka->addHour();
+                continue;
+            }
+            $listJam[] = $jamBuka->format('H:i');
+            $jamBuka->addHour();
+        }
+
+        return $listJam;
+    }
+
     //buat dapetin hari apa aja yang jadwalnya uda penuh
     public function jadwalPenuh($jenisPemeriksaan)
     {
         $unavailable = [];
-        $data = $this->dataPemeriksaan()
-                    ->whereHas('jenisPemeriksaan', function ($q) use ($jenisPemeriksaan) {
-                        $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
-                    })
-                    ->orderBy('tanggalPemeriksaan', 'asc')
-                    ->get();
-        $prev = null;
-        foreach ($data as $dataPemeriksaan) {
-            //klo tanggalny ud dicek, skip aj
-            if ($prev !== null && $prev->tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan) {
+        $startDate = today();
+        $endDate   = today()->addDays(31);
+
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        foreach ($period as $date) {
+            $tanggal = $date->toDateString();
+
+            $dayIndex = $date->isoWeekday();
+
+            $jadwal = $this->jadwalRumahSakit()
+                ->firstWhere('indexJadwal', $dayIndex);
+
+            if (!$jadwal || !$jadwal->buka) {
+                $unavailable[] = $tanggal;
                 continue;
             }
-            $listJam = $this->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan);
+
+            $listJam = $this->jamTersedia($jenisPemeriksaan, $tanggal);
             if (empty($listJam)){
-                $unavailable[] = $dataPemeriksaan->tanggalPemeriksaan;
+                $unavailable[] = $tanggal;
             }
-            $prev = $dataPemeriksaan;
         }
+
         return $unavailable;
     }
 

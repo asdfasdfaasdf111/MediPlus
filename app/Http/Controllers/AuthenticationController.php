@@ -94,6 +94,14 @@ class AuthenticationController extends Controller
 
         $user->sendEmailVerificationNotification();
 
+        $currentUser = Auth::user();
+
+        if ($currentUser && $currentUser->role === 'petugas') {
+            return redirect()
+            ->route('petugas.pilihdatapasien', ['user' => $user->id])
+            ->with('success', 'Registrasi berhasil! Silahkan cek email Anda untuk verifikasi akun.');
+        }
+
         //izin ubah biar ada alert user cek email verifikasi
         return redirect()
             ->route('login')

@@ -28,6 +28,7 @@ class PendaftaranController extends Controller
 
         $pemeriksaanBerlangsung = DataPemeriksaan::with(['dataPasien','dokter','jenisPemeriksaan'])
             ->whereHas('dataPasien', fn ($q) => $q->where('master_pasien_id', $master->id))
+            ->where('statusUtama', '!=', 'Draft')
             ->ordered('statusPasien')
             ->paginate(5);
 
@@ -80,6 +81,44 @@ class PendaftaranController extends Controller
         DataPasien::create($validated);
 
         return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien berhasil ditambahkan!');
+    }
+
+    //sma kek atas tpi buat yg dibikin petugas waktu onsite
+    public function storeDataPasienPetugas(Request $request, $masterPasienId)
+    {
+        $validated = $request->validate(
+            [
+                'namaLengkap'       => 'required|string|max:150',
+                'hubunganKeluarga'  => 'required|in:' . implode(',', self::HUBUNGAN_OPTS),
+                'alamatDomisili'    => 'required|string|max:255',
+                'tanggalLahir'      => 'required|date',
+                'noIdentitas'       => 'required|string|max:50',
+                'jenisIdentitas'    => 'required|in:' . implode(',', self::JENIS_IDENTITAS_OPTS),
+                'jenisKelamin'      => 'required|in:' . implode(',', self::JENIS_KELAMIN_OPTS),
+                'noHP'              => 'required|string|max:30',
+                'alergi'            => 'nullable|string|max:255',
+                'golonganDarah'     => 'required|in:' . implode(',', self::GOLONGAN_DARAH_OPTS),
+            ],
+            [],
+            [
+                'namaLengkap'      => 'nama lengkap',
+                'hubunganKeluarga' => 'hubungan dengan pasien',
+                'noHP'             => 'nomor HP',
+                'noIdentitas'      => 'nomor identitas',
+            ]
+        );
+
+
+        $validated['namaLengkap'] = mb_strtoupper($validated['namaLengkap'], 'UTF-8');
+
+        $masterPasien = MasterPasien::find($masterPasienId);
+        $validated['master_pasien_id'] = $masterPasien->id;
+
+        $validated['alergi'] = $validated['alergi'] ?? '';
+
+        DataPasien::create($validated);
+
+        return redirect()->route('petugas.daftartipepasien', $masterPasien)->with('success', 'Data pasien berhasil ditambahkan!');
     }
 
     private function ensureOwned(DataPasien $pasien, Request $request): void

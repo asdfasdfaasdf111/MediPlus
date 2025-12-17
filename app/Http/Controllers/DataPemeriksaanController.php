@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\CounterAntrian;
+use App\Models\DataPasien;
 use App\Models\DataPemeriksaan;
 use App\Models\Dokter;
+use App\Models\MasterPasien;
 use App\Models\RumahSakit;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 
 class DataPemeriksaanController extends Controller
 {
@@ -123,6 +128,49 @@ class DataPemeriksaanController extends Controller
         }
     }
 
+    public function updateJadwalOnsite(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $request->validate([
+            'jenisPemeriksaan' => 'required|string',
+            'jenisPemeriksaanSpesifik' => 'required|string',
+            'tanggalPemeriksaan' => 'required|date',
+            'rentangWaktuKedatangan' => 'required|date_format:H:i',
+        ]);
+
+        $user = auth()->user();
+
+        $rumahSakit = $dataPemeriksaan->rumahSakit;
+        $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
+                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->get()
+                                        ->first();
+        if (!$jenisPemeriksaan){
+            return back()->withErrors([
+                'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
+            ]);
+        }
+
+        $listJam = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $timeAvailable = false;
+        foreach ($listJam as $jam){
+            if ($jam == $request->rentangWaktuKedatangan){
+                $timeAvailable = true;
+                break;
+            }
+        }
+        if (!$timeAvailable){
+            return back()->withErrors([
+                'waktu' => 'Jadwal ini tidak tersedia!',
+            ]);
+        }
+
+        $dataPemeriksaan->jenis_pemeriksaan_id = $jenisPemeriksaan->id;
+        $dataPemeriksaan->tanggalPemeriksaan = $request->tanggalPemeriksaan;
+        $dataPemeriksaan->rentangWaktuKedatangan = $request->rentangWaktuKedatangan;
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('petugas.daftartipepasien', ['masterPasien' => $dataPemeriksaan->masterPasien->id]);
+    }
+
     public function updateTanggal(Request $request, DataPemeriksaan $dataPemeriksaan){
         $request->validate([
             'tanggalPemeriksaan' => 'required|date|after:today',
@@ -205,12 +253,68 @@ class DataPemeriksaanController extends Controller
             'tanggalPemeriksaan' => $request->tanggalPemeriksaan,
             'rentangWaktuKedatangan' => $request->rentangWaktuKedatangan,
             'statusUtama' => 'Draft',
-            'statusDokter' => 'Draft',
-            'statusPetugas' => 'Draft',
-            'statusPasien' => 'Draft',
+            'statusDokter' => 'Draft Pasien',
+            'statusPetugas' => 'Draft Pasien',
+            'statusPasien' => 'Draft Pasien',
         ]);
         
         return redirect()->route('pasien.daftartipepasien');
+    }
+
+    public function bikinDraftOnsite(Request $request, $masterPasienId){
+        $request->validate([
+            'jenisPemeriksaan' => 'required|string',
+            'jenisPemeriksaanSpesifik' => 'required|string',
+            'tanggalPemeriksaan' => 'required|date',
+            'rentangWaktuKedatangan' => 'required|date_format:H:i',
+        ]);
+
+        $rumahSakit = auth()->user()->petugas->rumahSakit;
+        $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
+                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->get()
+                                        ->first();
+        if (!$jenisPemeriksaan){
+            return back()->withErrors([
+                'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
+            ]);
+        }
+
+        $masterPasien = MasterPasien::find($masterPasienId);
+
+        DataPemeriksaan::create([
+            'jenis_pemeriksaan_id' => $jenisPemeriksaan->id,
+            'rumah_sakit_id' => $rumahSakit->id,
+            'master_pasien_id' => $masterPasien->id,
+            'tanggalPemeriksaan' => $request->tanggalPemeriksaan,
+            'rentangWaktuKedatangan' => $request->rentangWaktuKedatangan,
+            'statusUtama' => 'Draft',
+            'statusDokter' => 'Draft Petugas',
+            'statusPetugas' => 'Draft Petugas',
+            'statusPasien' => 'Draft Petugas',
+        ]);
+        
+        return redirect()->route('petugas.daftartipepasien', ['masterPasien' => $masterPasien->id]);
+    }
+
+    public function lanjutPendaftaranPasien(){
+        $masterPasien = auth()->user()->masterPasien;
+
+        if ($masterPasien->draftPemeriksaan && $masterPasien->draftPemeriksaan->statusPasien !== 'Draft Pasien') {
+            $masterPasien->draftPemeriksaan->delete();
+        }
+
+        return view('pasien.formdaftarpemeriksaan.daftarpilihjadwal', compact('masterPasien'));
+    }
+
+    public function lanjutPendaftaranPetugas($user){
+        $masterPasien = User::findOrFail($user)->masterPasien;
+
+        if ($masterPasien->draftPemeriksaan && $masterPasien->draftPemeriksaan->statusPasien !== 'Draft Petugas') {
+            $masterPasien->draftPemeriksaan->delete();
+        }
+
+        return view('petugas.daftarpilihjadwal', compact('user'));
     }
 
     public function updateTipePasien(Request $request, DataPemeriksaan $dataPemeriksaan){
@@ -241,6 +345,34 @@ class DataPemeriksaanController extends Controller
         return redirect()->route('pasien.daftardatarujukan');
     }
 
+    public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $masterPasien = $dataPemeriksaan->masterPasien;
+
+        $dataPasien = $masterPasien->dataPasien()
+                                    ->where('id', $request->pilihPasien)
+                                    ->first();
+        
+        if (!$dataPasien){
+            return back()->withErrors([
+                'dataPasien' => 'Data Pasien ini tidak ada',
+            ]);
+        }
+
+        $dataPemeriksaan->data_pasien_id = $request->pilihPasien;
+        $dataPemeriksaan->namaPendamping = $request->namaPendamping;
+        $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
+        $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
+        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
+        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
+        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;
+        $dataPemeriksaan->riwayatNoHP = $dataPasien->riwayatNoHP;
+        $dataPemeriksaan->riwayatAlergi = $dataPasien->riwayatAlergi;
+        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->riwayatGolonganDarah;
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('petugas.daftardatarujukan', $masterPasien);
+    }
+
     public function finalisasiDraft(Request $request, DataPemeriksaan $dataPemeriksaan){
         $dataPemeriksaan->statusUtama = 'Pending';
         $dataPemeriksaan->statusDokter = 'Pendaftaran Baru';
@@ -249,6 +381,16 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->save();
         
         return redirect()->route('pasien.pendaftaran');
+    }
+
+    public function finalisasiDraftPetugas(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $dataPemeriksaan->statusUtama = 'Pending';
+        $dataPemeriksaan->statusDokter = 'Pendaftaran Baru';
+        $dataPemeriksaan->statusPetugas = 'Pendaftaran Baru';
+        $dataPemeriksaan->statusPasien = 'Pendaftaran Terkirim';
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('petugas.dashboard');
     }
 
     public function hapusPendaftaran(Request $request, DataPemeriksaan $dataPemeriksaan){

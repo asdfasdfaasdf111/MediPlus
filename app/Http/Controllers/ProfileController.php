@@ -65,6 +65,16 @@ class ProfileController extends Controller
             return view('petugas.password.edit', compact('user'));
         }
 
+        if ($user->admin) {
+            // Admin
+            return view('admin.password.edit', compact('user'));
+        }
+
+        if ($user->superadmin) {
+            // Superadmin
+            return view('superadmin.password.edit', compact('user'));
+        }
+
         abort(403);
     }
 
@@ -97,12 +107,12 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        //ini buat redirect dinamis -> sesuaikan ama route yg manggil
-        $currentRoute = $request->route()->getName();
-        $editRoute = str_replace('.update', '.edit', $currentRoute);
+        // redirect dinamis ke homepage sesuai prefix route (admin/dokter/petugas/superadmin)
+        $currentRoute = $request->route()->getName(); // contoh: admin.password.update
+        $prefix = explode('.', $currentRoute)[0];     // hasil: admin
 
         return redirect()
-            ->route($editRoute)
+            ->route($prefix . '.homepage')
             ->with('success', 'Password berhasil diperbarui!');
-    }
+        }
 }

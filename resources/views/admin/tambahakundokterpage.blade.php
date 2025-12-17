@@ -58,7 +58,7 @@
             <div class="card shadow-sm">
                 <h4 class="text-center mb-4 pt-5">Tambah Akun Dokter</h4>
                 <div class="card-body px-5">
-                <form method="POST" action="{{ route('admin.tambahAkunDokter') }}">
+                <form method="POST" action="{{ route('admin.tambahAkunDokter') }}" novalidate>
                     @csrf
                     <!-- Nama Lengkap -->
                     <div class="mb-3">

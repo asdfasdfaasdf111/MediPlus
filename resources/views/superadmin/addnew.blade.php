@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
 <body>
     @include('layout.navbar2')
@@ -37,7 +36,7 @@
             <form action="{{ route('superadmin.submit') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <h3 class="mb-0 fw-bold" style="color: #012970; font-family: 'Open Sans', sans-serif;">Data Rumah Sakit</h3>
+                <h3 class="mb-0 fw-bold" style="color: #012970; ">Data Rumah Sakit</h3>
                 <div class="form-group d-flex flex-column mt-3">
                     <label>Nama Rumah Sakit</label>
                     <input type="text" class="form-control form-control-lg @error('nama_rs') is-invalid @enderror" name="nama_rs" placeholder="Nama Rumah Sakit" value="{{ old('nama_rs') }}">
@@ -69,7 +68,7 @@
                 </div>
 
 
-                <h3 class="mb-0 fw-bold mt-4" style="color: #012970; font-family: 'Open Sans', sans-serif;">Data Admin Rumah Sakit</h3>
+                <h3 class="mb-0 fw-bold mt-4" style="color: #012970;">Data Admin Rumah Sakit</h3>
                 <div class="form-group d-flex flex-column mt-3">
                     <label>Nama Lengkap</label>
                     <input type="text" class="form-control form-control-lg @error('nama_admin') is-invalid @enderror" name="nama_admin" placeholder="Nama Lengkap" value="{{ old('nama_admin') }}" >

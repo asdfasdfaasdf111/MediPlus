@@ -119,6 +119,13 @@ class PendaftaranController extends Controller
         return redirect()->route('pasien.pendaftaran')->with('success', 'Data pasien berhasil ditambahkan!');
     }
 
+    public function destroyDataPasien($id){
+        $dataPasien = DataPasien::findOrFail($id);
+        $dataPasien->delete();
+
+        return redirect()->back()->with('success', 'Berhasil menghapus Data Pasien!');
+    }
+
     private function ensureOwned(DataPasien $pasien, Request $request): void
     {
         $master = $request->user()->masterPasien;

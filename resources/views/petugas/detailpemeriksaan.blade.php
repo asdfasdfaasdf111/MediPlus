@@ -276,7 +276,7 @@
                     method="POST"
                     onsubmit="return checkWaktu();">
                   @csrf
-                  <button type="submit" class="btn btn-primary">Registrasi Ulang</button>
+                  <button type="submit" class="btn btn-primary px-4 px-md-4 rounded-pill">Registrasi Ulang</button>
               </form>
             @endif
           @endif

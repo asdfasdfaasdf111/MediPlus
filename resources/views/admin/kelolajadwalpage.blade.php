@@ -65,133 +65,120 @@
     <div class="row g-4">
 
         <div class="container my-4">
-  @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-  @endif
-  @if ($errors->any())
-    <div class="alert alert-danger">
-      <div class="fw-semibold mb-1">Periksa kembali input:</div>
-      <ul class="mb-0">
-        @foreach ($errors->all() as $e)
-          <li>{{ $e }}</li>
-        @endforeach
-      </ul>
-    </div>
-  @endif
 
-  <div class="card shadow-sm">
-    <div class="card-body mt-2">
+        <div class="card shadow-sm">
+          <div class="card-body mt-2">
 
-      <form action="{{ route('admin.updateJadwal') }}" method="POST">
-        @csrf
+            <form action="{{ route('admin.updateJadwal') }}" method="POST">
+              @csrf
 
-        @php
-          use Carbon\Carbon;
-          // $rows diharapkan dikirim dari controller@index.
-          // Fallback aman kalau lupa compact('rows'):
-          $rows = $rows ?? ($admin->rumahSakit->jadwalRumahSakit()->orderBy('indexJadwal')->get());
-        @endphp
+              @php
+                use Carbon\Carbon;
+                // $rows diharapkan dikirim dari controller@index.
+                // Fallback aman kalau lupa compact('rows'):
+                $rows = $rows ?? ($admin->rumahSakit->jadwalRumahSakit()->orderBy('indexJadwal')->get());
+              @endphp
 
-        <div class="table-responsive">
-          <table class="table table-bordered align-middle">
-            <thead class="table-light">
-              <tr>
-                <th style="width: 20%">Hari</th>
-                <th style="width: 15%" class="text-center">Buka</th>
-                <th style="width: 30%">Jam Buka</th>
-                <th style="width: 30%">Jam Tutup</th>
-                <th style="width: 5%"></th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($rows as $jadwal)
-                @php
-                  // gunakan indexJadwal (1..7) agar cocok dgn model updateJadwal()
-                  $key = $jadwal->indexJadwal;
-                  $rowKey = "jadwal.$key";
-                  $jb = $jadwal->jamBuka ? Carbon::parse($jadwal->jamBuka) : null;
-                  $jt = $jadwal->jamTutup ? Carbon::parse($jadwal->jamTutup) : null;
-                  $isBuka = old("$rowKey.buka", $jadwal->buka) ? 1 : 0;
-                @endphp
+              <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width: 20%">Hari</th>
+                      <th style="width: 15%" class="text-center">Buka</th>
+                      <th style="width: 30%">Jam Buka</th>
+                      <th style="width: 30%">Jam Tutup</th>
+                      <th style="width: 5%"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($rows as $jadwal)
+                      @php
+                        // gunakan indexJadwal (1..7) agar cocok dgn model updateJadwal()
+                        $key = $jadwal->indexJadwal;
+                        $rowKey = "jadwal.$key";
+                        $jb = $jadwal->jamBuka ? Carbon::parse($jadwal->jamBuka) : null;
+                        $jt = $jadwal->jamTutup ? Carbon::parse($jadwal->jamTutup) : null;
+                        $isBuka = old("$rowKey.buka", $jadwal->buka) ? 1 : 0;
+                      @endphp
 
-                <tr>
-                  <td class="fw-semibold">{{ $jadwal->namaHari }}</td>
+                      <tr>
+                        <td class="fw-semibold">{{ $jadwal->namaHari }}</td>
 
-                  <td class="text-center">
-                    {{-- hidden supaya saat uncheck tetap kirim 0 --}}
-                    <input type="hidden" name="jadwal[{{ $key }}][buka]" value="0">
-                    <div class="form-check d-inline-block">
-                      <input class="form-check-input"
-                             type="checkbox"
-                             name="jadwal[{{ $key }}][buka]"
-                             value="1"
-                             {{ $isBuka ? 'checked' : '' }}>
-                    </div>
-                  </td>
+                        <td class="text-center">
+                          {{-- hidden supaya saat uncheck tetap kirim 0 --}}
+                          <input type="hidden" name="jadwal[{{ $key }}][buka]" value="0">
+                          <div class="form-check d-inline-block">
+                            <input class="form-check-input"
+                                  type="checkbox"
+                                  name="jadwal[{{ $key }}][buka]"
+                                  value="1"
+                                  {{ $isBuka ? 'checked' : '' }}>
+                          </div>
+                        </td>
 
-                  <td>
-                    <div class="input-group">
-                      <input type="number"
-                             name="jadwal[{{ $key }}][jamBukaJam]"
-                             value="{{ old("$rowKey.jamBukaJam", $jb ? $jb->format('H') : '08') }}"
-                             min="0" max="23"
-                             class="form-control text-center @error("$rowKey.jamBukaJam") is-invalid @enderror"
-                             placeholder="HH">
-                      <span class="input-group-text">:</span>
-                      <input type="number"
-                             name="jadwal[{{ $key }}][jamBukaMenit]"
-                             value="{{ old("$rowKey.jamBukaMenit", $jb ? $jb->format('i') : '00') }}"
-                             min="0" max="59"
-                             class="form-control text-center @error("$rowKey.jamBukaMenit") is-invalid @enderror"
-                             placeholder="MM">
-                    </div>
-                    @error("$rowKey.jamBukaJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    @error("$rowKey.jamBukaMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                  </td>
+                        <td>
+                          <div class="input-group">
+                            <input type="number"
+                                  name="jadwal[{{ $key }}][jamBukaJam]"
+                                  value="{{ old("$rowKey.jamBukaJam", $jb ? $jb->format('H') : '08') }}"
+                                  min="0" max="23"
+                                  class="form-control text-center @error("$rowKey.jamBukaJam") is-invalid @enderror"
+                                  placeholder="HH">
+                            <span class="input-group-text">:</span>
+                            <input type="number"
+                                  name="jadwal[{{ $key }}][jamBukaMenit]"
+                                  value="{{ old("$rowKey.jamBukaMenit", $jb ? $jb->format('i') : '00') }}"
+                                  min="0" max="59"
+                                  class="form-control text-center @error("$rowKey.jamBukaMenit") is-invalid @enderror"
+                                  placeholder="MM">
+                          </div>
+                          @error("$rowKey.jamBukaJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                          @error("$rowKey.jamBukaMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        </td>
 
-                  <td>
-                    <div class="input-group">
-                      <input type="number"
-                             name="jadwal[{{ $key }}][jamTutupJam]"
-                             value="{{ old("$rowKey.jamTutupJam", $jt ? $jt->format('H') : '16') }}"
-                             min="0" max="23"
-                             class="form-control text-center @error("$rowKey.jamTutupJam") is-invalid @enderror"
-                             placeholder="HH">
-                      <span class="input-group-text">:</span>
-                      <input type="number"
-                             name="jadwal[{{ $key }}][jamTutupMenit]"
-                             value="{{ old("$rowKey.jamTutupMenit", $jt ? $jt->format('i') : '00') }}"
-                             min="0" max="59"
-                             class="form-control text-center @error("$rowKey.jamTutupMenit") is-invalid @enderror"
-                             placeholder="MM">
-                    </div>
-                    @error("$rowKey.jamTutupJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    @error("$rowKey.jamTutupMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                  </td>
+                        <td>
+                          <div class="input-group">
+                            <input type="number"
+                                  name="jadwal[{{ $key }}][jamTutupJam]"
+                                  value="{{ old("$rowKey.jamTutupJam", $jt ? $jt->format('H') : '16') }}"
+                                  min="0" max="23"
+                                  class="form-control text-center @error("$rowKey.jamTutupJam") is-invalid @enderror"
+                                  placeholder="HH">
+                            <span class="input-group-text">:</span>
+                            <input type="number"
+                                  name="jadwal[{{ $key }}][jamTutupMenit]"
+                                  value="{{ old("$rowKey.jamTutupMenit", $jt ? $jt->format('i') : '00') }}"
+                                  min="0" max="59"
+                                  class="form-control text-center @error("$rowKey.jamTutupMenit") is-invalid @enderror"
+                                  placeholder="MM">
+                          </div>
+                          @error("$rowKey.jamTutupJam")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                          @error("$rowKey.jamTutupMenit")<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                        </td>
 
-                  <td class="text-end">
-                    @if($isBuka)
-                      <span class="badge bg-success">Buka</span>
-                    @else
-                      <span class="badge bg-secondary">Tutup</span>
-                    @endif
-                  </td>
-                </tr>
-              @endforeach
-            </tbody>
-          </table>
+                        <td class="text-end">
+                          @if($isBuka)
+                            <span class="badge bg-success">Buka</span>
+                          @else
+                            <span class="badge bg-secondary">Tutup</span>
+                          @endif
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-save me-1"></i> Simpan
+                </button>
+              </div>
+
+            </form>
+          </div>
         </div>
-
-        <div class="d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-save me-1"></i> Simpan
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-</div>
+      </div>
 
     </div>    
 </div>

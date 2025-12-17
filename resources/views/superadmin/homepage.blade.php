@@ -7,7 +7,6 @@
     <title>Dashboard Superadmin</title>
     <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
 <body>
     @include('layout.navbar2')
@@ -35,10 +34,29 @@
             </div>
             <div class="col-md-2 p-4">
                 <form action="{{ route('superadmin.addnew') }}" method="GET">
-                    <button type="submit" class="btn btn-primary w-100 fw-bold px-3">+ Tambah RS Baru</button>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold px-3">
+                      <i class="bi bi-plus me-2"></i> Tambah RS Baru
+                    </button>
                 </form>
             </div>
         </div>
+
+       @if(session('success'))
+            <div id="successAlert" class="alert alert-success alert-dismissible fade show mx-4 mt-2" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            {{-- Auto tutup alert abis 3 detik --}}
+            <script>
+                setTimeout(() => {
+                const el = document.getElementById('successAlert');
+                if (el) bootstrap.Alert.getOrCreateInstance(el).close();
+                }, 3000);
+            </script>
+        @endif
+
+
 
         <div class="mt-3">
                 @if($totalRS === 0)
@@ -65,18 +83,16 @@
                                         </div>
                                     </div>
 
+
+                                    {{-- FOOTER CARD  --}}
+                                    <div class="mt-auto">
                                     {{-- GARIS PEMBATAS --}}
                                     <hr class="my-2">
 
-                                    {{-- FOOTER CARD  --}}
-                                    <div class="d-flex justify-content-between align-items-center mt-3 mb-2 mt-auto">
-                                        <small class="text-muted me-auto">ID: {{ $rs->id }}</small>
-
-                                        <div class="d-flex gap-2">
+                                        <div class="d-flex justify-content-end gap-2 pt-3 pb-2">
                                             <form action="{{ route('superadmin.edit', $rs) }}"
                                                 method="GET" style="display:inline;">
-                                                <button type="submit"
-                                                        class="btn btn-warning btn-sm d-flex align-items-center gap-2">
+                                                <button type="submit" class="btn btn-warning btn-sm d-flex align-items-center gap-2">
                                                     <i class="bi bi-pencil-square"></i>
                                                     <span>Edit</span>
                                                 </button>

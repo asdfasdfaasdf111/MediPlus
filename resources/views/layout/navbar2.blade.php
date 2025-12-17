@@ -1,4 +1,4 @@
-<nav class="w-100 border-bottom d-flex justify-content-between align-items-center px-4" style="height: 80px;">
+<nav class="w-100 border-bottom d-flex justify-content-between align-items-center px-4" style="height: 80px ; ">
     <!-- Logo kiri -->
     <div class="d-flex align-items-center">
         <img src="{{ asset('images/Mediplus.png') }}" alt="Logo" height="40">
@@ -28,7 +28,20 @@
                 <i class="bi bi-shield-lock me-2"></i> Ubah Password
               </a>
             </li>
+          @elseif(Auth::user()->admin)
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.password.edit') }}">
+                <i class="bi bi-shield-lock me-2"></i> Ubah Password
+              </a>
+            </li>
+          @elseif(Auth::user()->superadmin)
+            <li>
+              <a class="dropdown-item" href="{{ route('superadmin.password.edit') }}">
+                <i class="bi bi-shield-lock me-2"></i> Ubah Password
+              </a>
+            </li>
           @endif
+
 
           <li><hr class="dropdown-divider"></li>
 

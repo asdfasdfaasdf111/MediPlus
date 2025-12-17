@@ -144,6 +144,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->prefix('superadmin')
     Route::get('/{rumahSakit}/edit', [RumahSakitController::class, 'editData'])->name('superadmin.edit');
     Route::put('/{id}/edit', [RumahSakitController::class, 'updateDataRS'])->name('superadmin.submitdata');
     Route::delete('{rumahSakit}/delete', [RumahSakitController::class, 'deleteData'])->name('superadmin.delete');
+
+    Route::get('/password', [ProfileController::class, 'editPassword'])->name('superadmin.password.edit');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('superadmin.password.update');
 });
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
@@ -180,6 +183,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::delete('/hapusAkunPetugas/{id}', [PetugasController::class, 'hapusAkunPetugas'])->name('admin.hapusAkunPetugas');
     Route::delete('/hapusAkunDokter/{id}', [DokterController::class, 'hapusAkunDokter'])->name('admin.hapusAkunDokter');
 
+    Route::get('/password', [ProfileController::class, 'editPassword'])->name('admin.password.edit');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('admin.password.update');
 });
 
 Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {

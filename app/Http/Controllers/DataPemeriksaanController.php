@@ -357,12 +357,12 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->hubunganPendamping = null;
         }
 
-        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
-        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
-        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;
-        $dataPemeriksaan->riwayatNoHP = $dataPasien->riwayatNoHP;
-        $dataPemeriksaan->riwayatAlergi = $dataPasien->riwayatAlergi;
-        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->riwayatGolonganDarah;
+        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->alamatDomisili;
+        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->tanggalLahir;
+        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->jenisKelamin;
+        $dataPemeriksaan->riwayatNoHP = $dataPasien->noHP;
+        $dataPemeriksaan->riwayatAlergi = $dataPasien->alergi;
+        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->golonganDarah;
         $dataPemeriksaan->save();
         
         return redirect()->route('pasien.daftardatarujukan');

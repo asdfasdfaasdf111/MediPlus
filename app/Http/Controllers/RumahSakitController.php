@@ -164,30 +164,43 @@ class RumahSakitController extends Controller
         $rumahSakit = $admin->rumahSakit;
         $userAdmin = $admin->user;
 
-        $request->validate([
-            'nama_rs' => 'nullable|string|max:100',
-            'alamat' => 'nullable|string|max:100',
-            'noTelepon' => 'nullable|string|max:10',
+        $validated = $request->validate([
+            'nama_rs' => 'required|string|max:100',
+            'alamat' => 'required|string|max:100',
+            'noTelepon' => 'required|string|max:12',
 
-            'nama_admin' => 'nullable|string|max:100',
-            'email' => 'nullable|email|unique:users,email,'.$userAdmin->id,
+            'nama_admin' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,'.$userAdmin->id,
             'password' => 'nullable|confirmed|min:8'
         ],
         [
-            'password.confirmed' => 'The password does not match, try again.'
-        ]);
+            'nama_rs.required'=> 'Nama Rumah Sakit wajib diisi.',
+            'alamat.required' => 'Alamat Rumah Sakit wajib diisi.',
+            'noTelepon.required' => 'No. Telepon Rumah Sakit wajib diisi.',
+            'nama_admin.required' => 'Nama Admin wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.unique'  => 'Email sudah digunakan.',
 
+            'password.confirmed' => 'Konfirmasi Password tidak sesuai.',
+            'password.min'         => 'Password minimal 8 karakter.',
+        ]);
+        
         $rumahSakit->update([
-            'nama' => $request->nama_rs ?? $rumahSakit->nama,
-            'alamat' => $request->alamat ?? $rumahSakit->alamat,
-            'noTelepon' => $request->noTelepon ?? $rumahSakit->noTelepon
+            'nama'      => $validated['nama_rs'],
+            'alamat'    => $validated['alamat'],
+            'noTelepon' => $validated['noTelepon'],
         ]);
 
         $userAdmin->update([
-            'name' => $request->nama_admin ?? $userAdmin->name,
-            'email' => $request->email ?? $userAdmin->email,
-            'password' => $request->password ? Hash::make($request->password) : $userAdmin->password
+            'name'     => $validated['nama_admin'],
+            'email'    => $validated['email'],
         ]);
+
+        if (!empty($validated['password'])) {
+            $userAdmin->update([
+                'password' => Hash::make($validated['password']),
+            ]);
+        }
 
         return redirect('/superadmin/homepage')->with('success', 'Data berhasil diupdate');
     }
@@ -203,12 +216,16 @@ class RumahSakitController extends Controller
         $userAdmin = auth()->user()->superadmin;
 
         $rumahSakits = $userAdmin->rumahSakit()
-            ->when($request->search, function ($query, $search) {
-                $query->where('nama', 'like', "%{$search}%")
+        ->when($request->search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
                 ->orWhere('alamat', 'like', "%{$search}%")
                 ->orWhere('noTelepon', 'like', "%{$search}%");
-            })
-            ->get();
+            });
+        })
+        ->orderBy('nama', 'asc')
+        ->get();
+
 
         $totalRS = $userAdmin->rumahSakit()->count();
 

@@ -49,7 +49,7 @@
         </div>
 
 <div class="col-md-10 p-4 bg-light">
-    {{-- Header atas: Search + Tambah Akun --}}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="flex-grow-1 me-3">
             <form action="" method="GET"> 
@@ -72,29 +72,37 @@
     <div class="row">
         @foreach ($dokters as $dok)
             <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <div class="bg-white shadow-sm rounded p-3">
+                <div class="bg-white shadow-sm rounded p-3 d-flex flex-column h-100" style="min-height: 140px;">
+
                     <div class="d-flex align-items-center mb-2">
                         <img src="{{ asset('images/user-icon.png') }}" alt="Foto Dokter" class="rounded-circle me-3" width="50" height="50">
-                        <div>
-                            <h6 class="mb-0 fw-bold">{{ $dok->user->name }}</h6>
-                            <small class="text-muted">{{ $dok->namaSpesialis }}</small><br>
-                            <small class="text-muted">{{ $dok->user->email }}</small>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                            <h6 class="mb-0 fw-bold text-truncate">{{ $dok->user->name }}</h6>
+                            <small class="text-muted d-block text-truncate">{{ $dok->spesialis }}</small>
+                            <small class="text-muted d-block text-truncate">{{ $dok->user->email }}</small>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Id: {{ $dok->id }} </small>
-                        <form action="{{ route('admin.hapusAkunDokter', $dok->user->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i> Hapus
-                            </button>
-                        </form>
+
+                    <div class="mt-auto pt-2">
+                        <hr class="my-2">
+
+                        <div class="d-flex justify-content-end">
+                            <form action="{{ route('admin.hapusAkunDokter', $dok->user->id) }}" method="POST" class="m-0" onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-2">
+                                    <i class="bi bi-trash"></i>
+                                    <span>Hapus</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
+
                 </div>
             </div>
         @endforeach
     </div>
+
 </div>
 <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>

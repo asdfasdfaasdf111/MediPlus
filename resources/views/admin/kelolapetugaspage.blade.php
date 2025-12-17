@@ -66,33 +66,43 @@
                 </div>
             </div>
 
-        {{-- Daftar Petugas --}}
-    <div class="row">
-        @foreach ($petugass as $ptg)
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <div class="bg-white shadow-sm rounded p-3">
-                    <div class="d-flex align-items-center mb-2">
-                        <img src="{{ asset('images/user-icon.png') }}" alt="Foto Petugas" class="rounded-circle me-3" width="50" height="50">
-                        <div>
-                            <h6 class="mb-0 fw-bold">{{ $ptg->user->name }}</h6>
-                            <small class="text-muted">{{ $ptg->user->email }}</small>
+       {{-- Daftar Petugas --}}
+            <div class="row">
+                @foreach ($petugass as $ptg)
+                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                        <div class="bg-white shadow-sm rounded p-3 d-flex flex-column h-100" style="min-height: 140px;">
+
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="{{ asset('images/user-icon.png') }}" alt="Foto Petugas"
+                                    class="rounded-circle me-3" width="50" height="50">
+                                <div class="flex-grow-1" style="min-width: 0;">
+                                    <h6 class="mb-0 fw-bold text-truncate">{{ $ptg->user->name }}</h6>
+                                    <small class="text-muted d-block text-truncate">{{ $ptg->user->email }}</small>
+                                </div>
+                            </div>
+
+                            <div class="mt-auto pt-2">
+                                <hr class="my-2">
+
+                                <div class="d-flex justify-content-end">
+                                    <form action="{{ route('admin.hapusAkunPetugas', $ptg->user->id) }}"
+                                        method="POST"
+                                        class="m-0"
+                                        onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-2">
+                                            <i class="bi bi-trash"></i>
+                                            <span>Hapus</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Id: {{ $ptg->id }}</small>
-
-                        <form action="{{ route('admin.hapusAkunPetugas', $ptg->user->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i> Hapus
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                @endforeach
             </div>
-        @endforeach
     </div>
-</div>
 <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>

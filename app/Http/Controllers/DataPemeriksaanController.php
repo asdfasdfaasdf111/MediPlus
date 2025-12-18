@@ -10,6 +10,7 @@ use App\Models\Dokter;
 use App\Models\MasterPasien;
 use App\Models\RumahSakit;
 use App\Models\User;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class DataPemeriksaanController extends Controller
                 'dokter_id' => 'Dokter ini tidak tersedia pada jadwal tersebut',
             ]);
         }
+        $petugas = auth()->user()->petugas;
 
         if ($request->status == 'accepted'){
             $dataPemeriksaan->statusUtama = "Berlangsung";
@@ -36,12 +38,14 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusPetugas = "Menunggu Registrasi Ulang";
             $dataPemeriksaan->statusDokter = "Menunggu Registrasi Ulang";
             $dataPemeriksaan->dokter_id = $request->dokterId;
+            LogService::create('Menerima pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         else{
             $dataPemeriksaan->statusUtama = "Dibatalkan";
             $dataPemeriksaan->statusPasien = "Pendaftaran Ditolak";
             $dataPemeriksaan->statusPetugas = "Pendaftaran Ditolak";
             $dataPemeriksaan->statusDokter = "Pendaftaran Ditolak";
+            LogService::create('Menolak pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         $dataPemeriksaan->save();
         return redirect()->route('petugas.dashboard');
@@ -111,9 +115,11 @@ class DataPemeriksaanController extends Controller
         }
 
         if (!$draft && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
+            $petugas = auth()->user()->petugas;
             $dataPemeriksaan->historyJenisPemeriksaan = $dataPemeriksaan->jenis_pemeriksaan_id;
             $dataPemeriksaan->historyTanggalPemeriksaan = $dataPemeriksaan->tanggalPemeriksaan;
             $dataPemeriksaan->historyJamPemeriksaan = $dataPemeriksaan->rentangWaktuKedatangan;
+            LogService::create('Mengubah pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         $dataPemeriksaan->jenis_pemeriksaan_id = $jenisPemeriksaan->id;
         $dataPemeriksaan->tanggalPemeriksaan = $request->tanggalPemeriksaan;
@@ -135,8 +141,6 @@ class DataPemeriksaanController extends Controller
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
-
-        $user = auth()->user();
 
         $rumahSakit = $dataPemeriksaan->rumahSakit;
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
@@ -389,6 +393,8 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPetugas = 'Pendaftaran Baru';
         $dataPemeriksaan->statusPasien = 'Pendaftaran Terkirim';
         $dataPemeriksaan->save();
+        $petugas = auth()->user()->petugas;
+        LogService::create('Membuat pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         
         return redirect()->route('petugas.dashboard');
     }
@@ -459,6 +465,8 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->nomorAntrian = $counter->nomorTerakhir;
         $dataPemeriksaan->statusPasien = $dataPemeriksaan->statusPetugas = $dataPemeriksaan->statusDokter = 'Dalam Antrian';
         $dataPemeriksaan->save();
+        $petugas = auth()->user()->petugas;
+        LogService::create('Meregistrasi ulang pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
 
         return redirect()->route('petugas.dashboard');
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JenisPemeriksaan;
 use App\Models\Modalitas;
 use App\Models\RumahSakit;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 
 class JenisPemeriksaanController extends Controller
@@ -18,7 +19,7 @@ class JenisPemeriksaanController extends Controller
             'lamaPemeriksaan' => 'required|integer|min:1',
         ]);
 
-        JenisPemeriksaan::create([
+        $jenisPemeriksaan = JenisPemeriksaan::create([
             'modalitas_id' => $request->modalitasId,
             'rumah_sakit_id' => auth()->user()->petugas->rumahSakit->id,
             'namaJenisPemeriksaan' => $request->namaJenisPemeriksaan,
@@ -28,7 +29,9 @@ class JenisPemeriksaanController extends Controller
             'lamaPemeriksaan' => $request->lamaPemeriksaan,
             'diDampingiDokter' => $request->diDampingiDokter,
         ]);
+        $petugas = auth()->user()->petugas;
 
+        LogService::create('Membuat jenis pemeriksaan baru dengan id: '.$jenisPemeriksaan->id, $petugas->id);
         return redirect()->route('petugas.kelolajenispemeriksaan')->with('success', 'Jenis Pemeriksaan berhasil dibuat!');
     }
 
@@ -52,6 +55,8 @@ class JenisPemeriksaanController extends Controller
 
         $jenisPemeriksaan->save();
 
+        $petugas = auth()->user()->petugas;
+        LogService::create('Mengupdate jenis pemeriksaan dengan id: '.$jenisPemeriksaan->id, $petugas->id);
         return response()->json([
             'success' => true,
             'namaModalitas' => Modalitas::findOrFail($jenisPemeriksaan->modalitas_id)->namaModalitas
@@ -61,7 +66,9 @@ class JenisPemeriksaanController extends Controller
     public function hapusJenisPemeriksaan($id){
         $jenisPemeriksaan = JenisPemeriksaan::findOrFail($id);
         $jenisPemeriksaan->delete();
-    
+        $petugas = auth()->user()->petugas;
+        
+        LogService::create('Menghapus jenis pemeriksaan dengan id: '.$id, $petugas->id);
         return redirect()->back()->with('success', 'Jenis Pemeriksaan berhasil dihapus.');
     }
 

@@ -309,6 +309,13 @@ Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(
 
     Route::get('/file-upload/{dataPemeriksaan}', [FileController::class, 'index'])->name('dokter.index');
     Route::post('file-upload/{dataPemeriksaan}', [FileController::class, 'store'])->name('dokter.hasilpemeriksaan');
+
+    Route::get('/ubahjadwalkerja', function () {
+        return view('dokter.ubahjadwalkerja');
+    })->name('dokter.ubahjadwalkerja');
+
+    Route::post('/updateJadwal', [DokterController::class, 'updateJadwal'])
+        ->name('dokter.updateJadwal');
 });
 
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {

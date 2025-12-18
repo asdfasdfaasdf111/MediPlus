@@ -1,7 +1,7 @@
 @php use Carbon\Carbon;@endphp
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -13,6 +13,7 @@
 </head>
 <body>
     @include('layout.navbar2')
+    @include('layout.sidebardokter')
     
     <div class="row-md-10 p-4">
         <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -24,7 +25,7 @@
                     </button>
                 </div>
             </form>
-
+            
             <div class="col-md-2 p-4">
                 <form action="{{ route('dokter.listdaftar') }}" method="GET">
                     <button type="submit" class="btn btn-primary w-100 fw-bold px-3">List Draft</button>
@@ -32,16 +33,16 @@
             </div>
         </div>
     </div>
-
+    
     @php $aktif = request('status','semua'); @endphp
-        <ul class="nav nav-tabs border-0 ms-4 me-4">
-          @foreach ([
+    <ul class="nav nav-tabs border-0 ms-4 me-4">
+        @foreach ([
             'semua' => 'Semua',
             'berlangsung' => 'Berlangsung',
             'selesai' => 'Selesai'
-          ] as $key => $label)
+            ] as $key => $label)
             <li class="nav-item">
-              <a class="nav-link {{ $aktif===$key ? 'active' : '' }}"
+                <a class="nav-link {{ $aktif===$key ? 'active' : '' }}"
                 href="{{ route('dokter.homepage', ['status' => $key]) }}">
                 {{ $label }}</a>
             </li>

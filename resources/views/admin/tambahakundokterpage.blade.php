@@ -58,7 +58,7 @@
             <div class="card shadow-sm">
                 <h4 class="text-center mb-4 pt-5">Tambah Akun Dokter</h4>
                 <div class="card-body px-5">
-                <form method="POST" action="{{ route('admin.tambahAkunDokter') }}" novalidate>
+                <form method="POST" action="{{ route('admin.tambahAkunDokter') }}" novalidate enctype="multipart/form-data">
                     @csrf
                     <!-- Nama Lengkap -->
                     <div class="mb-3">
@@ -106,6 +106,16 @@
                         <input type="password" class="form-control" 
                             name="password_confirmation" id="password_confirmation" placeholder="Konfirmasi Password" required>
                     </div>
+
+                    {{-- Foto Profil --}}
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Foto Profil</label>
+                        <input type="file" class="form-control @error('foto') is-invalid @enderror" name="foto"  id="foto" accept="image/*">
+                        @error('foto')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
 
                     <!-- Tombol Aksi -->
                     <div class="d-flex justify-content-center gap-3 pt-3">

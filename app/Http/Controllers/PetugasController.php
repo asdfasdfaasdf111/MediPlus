@@ -24,8 +24,24 @@ class PetugasController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
-            'password' => 'required|confirmed|min:8'
+            'password' => 'required|confirmed|min:8',
+            'foto'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ],
+        [
+                'name.required'  => 'Nama lengkap wajib diisi.',
+                'password.required' => 'Password wajib diisi.',
+                'password.confirmed'  => 'Password dan konfirmasi password tidak sesuai.',
+                'password.min'  => 'Password minimal 8 karakter.',
+
+                'foto.image'   => 'File foto harus berupa gambar.',
+                'foto.mimes'  => 'Foto harus berformat jpeg, jpg, png, gif, atau svg.',
+                'foto.max' => 'Ukuran foto maksimal 2MB.',
         ]);
+
+        $pathFoto = null;
+        if ($request->hasFile('foto')) {
+            $pathFoto = $request->file('foto')->store('foto_petugas', 'public');
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -43,6 +59,7 @@ class PetugasController extends Controller
             'rumah_sakit_id' => $admin->rumahSakit->id,
             // Petugas ga pernah minta no hp tapi di databaseny masih ad no hp, kasih default biar ga error, nanti di databasenya hapus kalo ga kepake
             'noHP' => '08123456789',
+            'foto' => $pathFoto,
         ]);
 
         // dikomen dulu soalnya belum perlu, cuma mau tes bikin akunnya bisa atau engga, ga perlu beneran kirim email ke gmailnya

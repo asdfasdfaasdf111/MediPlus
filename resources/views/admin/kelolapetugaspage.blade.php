@@ -46,13 +46,14 @@
             </ul>
         </div>
 
+
         <div class="col-md-10 p-4 bg-light">
             {{-- Header atas: Search + Tambah Akun --}}
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="flex-grow-1 me-3">
                     <form action="" method="GET"> 
                         <div class="input-group">
-                            <input type="text" class="form-control" name="search" placeholder="Cari Petugas">
+                            <input type="text" class="form-control" name="search" placeholder="Cari Petugas" value="{{ request('search') }}">
                             <button class="btn btn-outline-secondary" type="submit">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -66,15 +67,17 @@
                 </div>
             </div>
 
-       {{-- Daftar Petugas --}}
+            {{-- Daftar Petugas --}}
             <div class="row">
-                @foreach ($petugass as $ptg)
+                @forelse ($petugass as $ptg)
                     <div class="col-12 col-md-6 col-lg-4 mb-4">
                         <div class="bg-white shadow-sm rounded p-3 d-flex flex-column h-100" style="min-height: 140px;">
 
                             <div class="d-flex align-items-center mb-2">
-                                <img src="{{ asset('images/user-icon.png') }}" alt="Foto Petugas"
-                                    class="rounded-circle me-3" width="50" height="50">
+                                @php
+                                    $fotoPetugas = $ptg->foto  ? asset('storage/' . $ptg->foto)   : asset('images/user-icon.png');
+                                @endphp
+                                <img src="{{ $fotoPetugas }}" alt="Foto Petugas"  class="rounded-circle me-3" width="50" height="50">
                                 <div class="flex-grow-1" style="min-width: 0;">
                                     <h6 class="mb-0 fw-bold text-truncate">{{ $ptg->user->name }}</h6>
                                     <small class="text-muted d-block text-truncate">{{ $ptg->user->email }}</small>
@@ -85,10 +88,7 @@
                                 <hr class="my-2">
 
                                 <div class="d-flex justify-content-end">
-                                    <form action="{{ route('admin.hapusAkunPetugas', $ptg->user->id) }}"
-                                        method="POST"
-                                        class="m-0"
-                                        onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
+                                    <form action="{{ route('admin.hapusAkunPetugas', $ptg->user->id) }}" method="POST"  class="m-0"  onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger d-flex align-items-center gap-2">
@@ -101,8 +101,21 @@
 
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-12">
+                        <div class="alert text-center mb-0">
+                            @if(request('search'))
+                                Tidak ada data petugas untuk kata kunci
+                                "<strong>{{ request('search') }}</strong>".
+                            @else
+                                Tidak ada data petugas.
+                            @endif
+                        </div>
+                    </div>
+                @endforelse
             </div>
-    </div>
+
+        </div>
+
 <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>

@@ -12,6 +12,7 @@ class Petugas extends Model
         'user_id',
         'admin_id',
         'rumah_sakit_id',
+        'foto',
     ];
 
     public function user()

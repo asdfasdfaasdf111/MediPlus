@@ -54,6 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
         jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
             tanggalPemeriksaan.calendar.clear(false);
 
+            fetch(`/api/jadwalPenuhPetugas/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
+                .then(res => res.json())
+                .then(data => {
+                    tanggalPemeriksaan.calendar.set("disable", data);
+                });
+
             tanggalPemeriksaan.calendar.set("disable", []);
             while (rentangWaktuKedatangan.firstChild) {
                 rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
@@ -69,14 +75,15 @@ document.addEventListener("DOMContentLoaded", () => {
             rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
         }
         tanggalPemeriksaanInput.value = dateStr;
-
+        
         const idPart = window.dataPemeriksaan?.id ? `/${window.dataPemeriksaan.id}` : "";
         const jenisValue = jenisPemeriksaanSpesifik ? jenisPemeriksaanSpesifik.value : window.jenisPemeriksaan.id;
         const url = `/api/jamTersediaPetugas/${rumahSakitValue}/${jenisValue}/${dateStr}`;
-
+        
         fetch(url)
-            .then(res => res.json())
-            .then(data => {
+        .then(res => res.json())
+        .then(data => {
+                // console.log(data);
                 data.forEach((slot, index) => {
                     const col = document.createElement("div");
                     col.className = "col";

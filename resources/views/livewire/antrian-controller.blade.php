@@ -1,25 +1,25 @@
 <div>
-    @foreach ($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-        @if ($rumahSakit->counterHariIni($namaJenisPemeriksaan) === null)
+    @foreach ($rumahSakit->modalitas as $modalitas)
+        @if ($rumahSakit->counterHariIni($modalitas->id) === null)
             @continue
         @endif
 
         @php
-          $dataSekarang = $rumahSakit->dataDalamPemeriksaan($namaJenisPemeriksaan);
-          $dataAntrian = $rumahSakit->dataDalamAntrian($namaJenisPemeriksaan)->get();
+          $dataSekarang = $rumahSakit->dataDalamPemeriksaan($modalitas->id);
+          $dataAntrian = $rumahSakit->dataDalamAntrian($modalitas->id)->get();
         @endphp
 
         <div>
             <div>
-                {{ $namaJenisPemeriksaan }}
+                {{ $modalitas->namaModalitas }}
             </div>
           <div>
             Sekarang: 
             @if($dataSekarang === null)
                 -
             @else
-                {{ $namaJenisPemeriksaan.'-'.$dataSekarang->nomorAntrian }}
-                <button wire:click="selesaiPemeriksaanSekarang('{{ $namaJenisPemeriksaan }}')" class="btn btn-primary">
+                {{ $modalitas->namaModalitas.'-'.$dataSekarang->nomorAntrian }}
+                <button wire:click="selesaiPemeriksaanSekarang('{{ $modalitas->id }}')" class="btn btn-primary">
                   Selesaikan Pemeriksaan Sekarang
                 </button>
             @endif
@@ -31,9 +31,9 @@
                 -
             @else
                 @foreach($dataAntrian as $dataPemeriksaan)
-                  {{ $namaJenisPemeriksaan }} - {{ $dataPemeriksaan->nomorAntrian }}
+                  {{ $modalitas->namaModalitas }} - {{ $dataPemeriksaan->nomorAntrian }}
                 @endforeach
-                <button wire:click="lanjutAntrian('{{ $namaJenisPemeriksaan }}')" class="btn btn-primary">
+                <button wire:click="lanjutAntrian('{{ $modalitas->id }}')" class="btn btn-primary">
                   Lanjut Antrian Berikutnya
                 </button>
             @endif

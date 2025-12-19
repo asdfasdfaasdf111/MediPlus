@@ -405,6 +405,11 @@ Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}',
                 $rumahSakit = RumahSakit::find($rumahSakitId);
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
+Route::get('/api/jadwalPenuhPetugas/{rumahSakit}/{jenis}',
+            function ($rumahSakitId, $jenisId) {
+                $rumahSakit = RumahSakit::find($rumahSakitId);
+                $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                return $rumahSakit->jadwalPenuhPetugas($jenisPemeriksaan); });
 Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan?}',
             function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId = null) {
                 $rumahSakit = RumahSakit::find($rumahSakitId);

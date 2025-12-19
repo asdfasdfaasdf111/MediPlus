@@ -450,11 +450,12 @@ class DataPemeriksaanController extends Controller
         if ($dataPemeriksaan->statusPasien !== 'Menunggu Registrasi Ulang'){
             return back()->with('error', 'Pasien tidak dalam status Menunggu Registrasi Ulang.');
         }
-        $counter = $dataPemeriksaan->jenisPemeriksaan->counterHariIni;
+        $modalitas = $dataPemeriksaan->jenisPemeriksaan->modalitas;
+        $counter = $dataPemeriksaan->rumahSakit->counterHariIni($modalitas->id);
         if ($counter === null) {
             $counter = CounterAntrian::create([
                 'rumah_sakit_id' => $dataPemeriksaan->rumah_sakit_id,
-                'namaJenisPemeriksaan' => $dataPemeriksaan->jenisPemeriksaan->namaJenisPemeriksaan,
+                'modalitas_id' => $modalitas->id,
                 'tanggalAntrian' => Carbon::today(),
                 'nomorTerakhir' => 0,
             ]);
@@ -469,5 +470,24 @@ class DataPemeriksaanController extends Controller
         LogService::create('Meregistrasi ulang pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
 
         return redirect()->route('petugas.dashboard');
+        // $counter = $dataPemeriksaan->jenisPemeriksaan->counterHariIni;
+        // if ($counter === null) {
+        //     $counter = CounterAntrian::create([
+        //         'rumah_sakit_id' => $dataPemeriksaan->rumah_sakit_id,
+        //         'namaJenisPemeriksaan' => $dataPemeriksaan->jenisPemeriksaan->namaJenisPemeriksaan,
+        //         'tanggalAntrian' => Carbon::today(),
+        //         'nomorTerakhir' => 0,
+        //     ]);
+        // }
+        // $counter->nomorTerakhir++;
+        // $counter->save();
+        
+        // $dataPemeriksaan->nomorAntrian = $counter->nomorTerakhir;
+        // $dataPemeriksaan->statusPasien = $dataPemeriksaan->statusPetugas = $dataPemeriksaan->statusDokter = 'Dalam Antrian';
+        // $dataPemeriksaan->save();
+        // $petugas = auth()->user()->petugas;
+        // LogService::create('Meregistrasi ulang pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
+
+        // return redirect()->route('petugas.dashboard');
     }
 }

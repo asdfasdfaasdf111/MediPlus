@@ -46,6 +46,9 @@
         <div>Data Setelah:</div>
         <div> {{ $dataPemeriksaan->rentangWaktuKedatangan }} </div>
     @endif
+@endif
+
+@if (!empty($dataPemeriksaan->catatanPetugas))
     <div>Catatan Petugas</div>
     <div> {{$dataPemeriksaan->catatanPetugas}} </div>
 @endif

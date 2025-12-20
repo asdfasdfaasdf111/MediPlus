@@ -154,16 +154,6 @@
               </div>
             </div>
 
-            {{-- leo bru tmbhin, blm ad front end ny --}}
-            <label class="form-label fw-bold">Catatan</label>
-            <input type="text"  class="form-control"
-                    name="catatanPetugas" id="catatanPetugas"
-                    placeholder="Catatan"
-                    @if(!empty($dataPemeriksaan?->catatanPetugas))
-                        value="{{ $dataPemeriksaan?->catatanPetugas }}"
-                    @endif>
-
-
           </div>
 
           <div class="border-top text-center" style="padding:20px;">

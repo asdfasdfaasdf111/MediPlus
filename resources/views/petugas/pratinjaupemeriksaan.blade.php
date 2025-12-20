@@ -279,6 +279,15 @@
                           </select>
                         </div>
                       </div>
+                      {{-- leo bru tmbhin, blm ad front end ny --}}
+                      <label class="form-label fw-bold">Catatan</label>
+                      <input type="text"  class="form-control"
+                              name="catatanPetugas" id="catatanPetugas"
+                              placeholder="Catatan"
+                              @if(!empty($dataPemeriksaan?->catatanPetugas))
+                                  value="{{ $dataPemeriksaan?->catatanPetugas }}"
+                              @endif>
+
 
                       <div class="d-flex justify-content-center gap-2 gap-md-3 pt-4">
                         <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">

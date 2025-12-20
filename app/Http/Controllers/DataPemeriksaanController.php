@@ -32,6 +32,10 @@ class DataPemeriksaanController extends Controller
         }
         $petugas = auth()->user()->petugas;
 
+        if ($request->has('catatanPetugas')) {
+            $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
+        }
+
         if ($request->status == 'accepted'){
             $dataPemeriksaan->statusUtama = "Berlangsung";
             $dataPemeriksaan->statusPasien = "Menunggu Registrasi Ulang";
@@ -109,10 +113,6 @@ class DataPemeriksaanController extends Controller
             return back()->withErrors([
                 'waktu' => 'Jadwal ini tidak tersedia!',
             ]);
-        }
-
-        if ($request->has('catatanPetugas')) {
-            $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
         }
 
         if (!$draft && empty($dataPemeriksaan->historyJenisPemeriksaan)) {

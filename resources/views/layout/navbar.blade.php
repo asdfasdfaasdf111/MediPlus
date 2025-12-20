@@ -47,7 +47,7 @@
 
         {{-- MENU desktop--}}
         <li class="nav-item d-none d-lg-block">
-          <a class="nav-link {{ request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
+          <a class="nav-link {{ request()->is('/') || request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
              href="{{ url('/pasien/homepage') }}">
             Beranda
           </a>

@@ -136,18 +136,20 @@
               {{-- Waktu --}}
               <div class="col-12 col-md-6">
                 <div class="h-100 bg-white border rounded-3">
-                  <div class="border-bottom d-flex align-items-center justify-content-between px-3 py-2"> <label class="form-label fw-bold mb-0">Rentang Waktu Kedatangan</label> <span class="badge text-bg-light rounded-pill">1 jam/slot</span>
+                  <div class="border-bottom d-flex align-items-center justify-content-between px-3 py-2"> <label class="form-label fw-bold mb-0">Rentang Waktu Kedatangan</label> <span id="slotInfo" class="badge text-bg-light rounded-pill">1 jam/slot</span>
                   </div>
 
                   <div class="p-3">
                     <div id="rentangWaktuKedatangan" class="row row-cols-1 row-cols-md-2 g-3">
                         @if ($draftData)
                             @php
-                                $timeSlots = $rumahSakit->jamTersediaPetugas(
-                                    $draftJenisPemeriksaan,
-                                    $draftData->tanggalPemeriksaan,
-                                    $draftData
-                                );
+                              $result = $rumahSakit->jamTersediaPetugas(
+                                  $draftJenisPemeriksaan,
+                                  $draftData->tanggalPemeriksaan,
+                                  $draftData
+                              );
+                              $timeSlots = $result['listJam'] ?? [];
+                              $jump = $result['jump'];
                             @endphp
 
                             @foreach ($timeSlots as $slot)
@@ -159,7 +161,7 @@
                                   <label class="btn btn-outline-primary rounded-pill w-100 py-2 fw-semibold" for="slot-{{ $loop->index }}">
                                       {{ Carbon::parse($slot)->format('H:i') }}
                                       –
-                                      {{ Carbon::parse($slot)->addHour()->format('H:i') }}
+                                      {{ Carbon::parse($slot)->addHour($jump)->format('H:i') }}
                                   </label>
                                 </div>
                             @endforeach

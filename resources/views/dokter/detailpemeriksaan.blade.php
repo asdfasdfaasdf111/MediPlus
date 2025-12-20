@@ -21,6 +21,7 @@
     $dataRujukan = $dataPemeriksaan->dataRujukan;
     $hasilPemeriksaan = $dataPemeriksaan->hasilPemeriksaan;
     $draftLaporan = $dokter->draftLaporan;
+    $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <div class="container mt-5">
@@ -50,7 +51,7 @@
                 <p class="fw-bold">{{ $dataPemeriksaan->tanggalPemeriksaan }}</p>
 
                 <label class="form-label mt-1">Rentang Waktu Kedatangan</label>
-                <p class="fw-bold">{{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</p>
+                <p class="fw-bold">{{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString() }}</p>
             </div>
         </div>
     </div>

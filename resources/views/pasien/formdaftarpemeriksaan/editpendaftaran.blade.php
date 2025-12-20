@@ -14,6 +14,7 @@
     use Carbon\Carbon;
     $rumahSakit = $dataPemeriksaan->rumahSakit;
     $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+    $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <script>
@@ -64,13 +65,15 @@
     <label class="form-label fw-bold">Rentang Waktu Kedatangan</label>
     <div id="rentangWaktuKedatangan" class="d-flex flex-wrap gap-2">
         @php
-            $timeSlots = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+            $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+            
+            $timeSlots = $result['listJam'] ?? [];
             @endphp
 
         @foreach ($timeSlots as $slot)
             <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>
             <label class="btn btn-outline-secondary" for="slot-{{ $loop->index }}">
-                {{ Carbon::parse($slot)->format('H:i') }} - {{ Carbon::parse($slot)->addHour()->format('H:i') }}
+                {{ Carbon::parse($slot)->format('H:i') }} - {{ Carbon::parse($slot)->addHour($jump)->format('H:i') }}
             </label>
         @endforeach
     </div>

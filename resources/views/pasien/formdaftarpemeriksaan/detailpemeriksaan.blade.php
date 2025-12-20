@@ -15,6 +15,7 @@
     $dokter = $dataPemeriksaan->dokter;
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
+    $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <div>Ringkasan Pemeriksaan</div>
@@ -57,7 +58,7 @@
         <div>Dokter Radiologi: {{ $dokter->user->name }}</div>
     @endif
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
-    <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}</div>
+    <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString() }}</div>
 </div>
 
 ==========================================================

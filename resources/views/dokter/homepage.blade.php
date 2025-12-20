@@ -68,7 +68,8 @@
             $noReg    = $dataPemeriksaan->noRegistrasi ?? ('REG-'.str_pad($dataPemeriksaan->id, 6, '0', STR_PAD_LEFT));
             $tgl      = $dataPemeriksaan->tanggalPemeriksaan ? Carbon::parse($dataPemeriksaan->tanggalPemeriksaan)->translatedFormat('d F Y') : '-';
             $jamMulai = $dataPemeriksaan->rentangWaktuKedatangan ? Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H : i') : '-';
-            $jamAkhir = $dataPemeriksaan->rentangWaktuKedatangan ? Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->format('H : i') : '-';
+            $jump = $jenisPemeriksaan->getJump();
+            $jamAkhir = $dataPemeriksaan->rentangWaktuKedatangan ? Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->format('H : i') : '-';
 
             // Status Kanan Atas
             $labelKanan = match (strtolower($dataPemeriksaan->statusDokter ?? '')){

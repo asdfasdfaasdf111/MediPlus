@@ -74,7 +74,8 @@
             $noReg = $dp->noRegistrasi ?? ('REG-' . str_pad($dp->id, 6, '0', STR_PAD_LEFT));
             $tgl = $dp->tanggalPemeriksaan ? Carbon::parse($dp->tanggalPemeriksaan)->translatedFormat('d F Y') : '-';
             $jamMulai = $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->format('H : i') : '-';
-            $jamAkhir = $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->addHour()->format('H : i') : '-';
+            $jump = $jenis->getJump();
+            $jamAkhir = $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->addHour($jump)->format('H : i') : '-';
 
             $statusPetugasRaw   = $dp->statusPetugas ?? null;
             $statusPetugasLower = strtolower($statusPetugasRaw ?? '');

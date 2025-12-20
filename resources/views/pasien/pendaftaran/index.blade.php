@@ -143,6 +143,7 @@
         $tgl   = $ex->tanggalPemeriksaan ? \Carbon\Carbon::parse($ex->tanggalPemeriksaan)->translatedFormat('d F Y') : '—';
         $jam   = $ex->rentangWaktuKedatangan ? \Carbon\Carbon::parse($ex->rentangWaktuKedatangan)->format('H:i') : '—';
         $noReg = 'REG-' . str_pad($ex->id, 6, '0', STR_PAD_LEFT);
+        $jump = $ex->jenisPemeriksaan->getJump();
       @endphp
 
       <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
@@ -179,7 +180,7 @@
                 <div class="col-6 fw-semibold">: {{ $tgl }}</div>
 
                 <div class="col-6 text-muted">Waktu Kedatangan</div>
-                <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour()->format('H:i') }}</div>                
+                <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour($jump)->format('H:i') }}</div>                
               </div>
             </div>
 

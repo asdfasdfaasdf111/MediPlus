@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const tanggalPemeriksaanInput = document.getElementById('tanggalPemeriksaanInput');
     const rentangWaktuKedatangan = document.getElementById('rentangWaktuKedatangan');
     const submitBtn = document.getElementById('submitBtn');
+    const slotInfo = document.getElementById('slotInfo');
+
     
     let rumahSakitValue = rumahSakit ? rumahSakit.value : window.rumahSakit.id;
     if (rumahSakit !== null){
@@ -116,7 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                data.forEach((slot, index) => {
+                const jump = data.jump;
+                const listJam = data.listJam;
+                listJam.forEach((slot, index) => {
                     const col = document.createElement("div");
                     col.className = "col";
 
@@ -134,13 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     label.setAttribute("for", `slot-${index}`);
 
                     const [hour, minute] = slot.split(":").map(Number);
-                    const endHour = (hour + 1) % 24;
+                    const endHour = (hour + jump) % 24;
                     label.textContent = `${slot} - ${String(endHour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 
                     col.appendChild(input);
                     col.appendChild(label);
                     rentangWaktuKedatangan.appendChild(col);
                 });
+                if (slotInfo != null){
+                    slotInfo.textContent = `${jump} jam/slot`;
+                }
             });
 
 

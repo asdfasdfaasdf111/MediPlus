@@ -15,8 +15,9 @@
   $dokter           = $dataPemeriksaan->dokter;
   $dataPasien       = $dataPemeriksaan->dataPasien;
   $dataRujukan      = $dataPemeriksaan->dataRujukan;
+  $jump = $jenisPemeriksaan->getJump();
 
-  $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString();
+  $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString();
 
 @endphp
 

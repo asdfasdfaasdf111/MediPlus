@@ -96,7 +96,8 @@ class DataPemeriksaanController extends Controller
             ]);
         }
 
-        $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){
@@ -153,7 +154,8 @@ class DataPemeriksaanController extends Controller
             ]);
         }
 
-        $listJam = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $result = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){
@@ -193,7 +195,8 @@ class DataPemeriksaanController extends Controller
         $rumahSakit = $dataPemeriksaan->rumahSakit;
         $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
 
-        $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){
@@ -228,15 +231,16 @@ class DataPemeriksaanController extends Controller
                                         ->where('id', $request->jenisPemeriksaanSpesifik)
                                         ->get()
                                         ->first();
+
         if (!$jenisPemeriksaan){
             return back()->withErrors([
                 'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
             ]);
         }
-
         $user = auth()->user();
 
-        $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan);
+        $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){

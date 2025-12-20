@@ -15,6 +15,7 @@
   use Carbon\Carbon;
   $rumahSakit       = $dataPemeriksaan->rumahSakit;
   $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+  $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <script>
@@ -125,7 +126,8 @@
 
                 <div style="padding:16px;">
                   @php
-                    $timeSlots = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+                    $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+                    $timeSlots = $result['listJam'] ?? [];
                   @endphp
 
                   <div id="rentangWaktuKedatangan" class="d-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:.9rem;">
@@ -140,7 +142,7 @@
                       <label class="btn btn-outline-primary"
                             for="slot-{{ $loop->index }}"
                             style="display:block;width:100%;text-align:center;border-radius:999px;padding:.6rem 0;">
-                        {{ \Carbon\Carbon::parse($slot)->format('H:i') }} – {{ \Carbon\Carbon::parse($slot)->addHour()->format('H:i') }}
+                        {{ \Carbon\Carbon::parse($slot)->format('H:i') }} – {{ \Carbon\Carbon::parse($slot)->addHour($jump)->format('H:i') }}
                       </label>
                     @endforeach
                   </div>

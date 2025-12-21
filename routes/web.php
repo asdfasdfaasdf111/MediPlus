@@ -19,14 +19,15 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\DashboardPetugasController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HasilPemeriksaanController;
+use App\Livewire\AntrianController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
+use App\Models\MasterPasien;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
-use App\Livewire\AntrianController;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Auth\Events\PasswordReset;
@@ -356,7 +357,7 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
     Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraft'])->name('pasien.finalisasiDraft');
 
     Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
-        return view('pasien.formdaftarpemeriksaan.detailpemeriksaan', compact('dataPemeriksaan'));
+        return view('pasien.detailpemeriksaan', compact('dataPemeriksaan'));
     })->name('pasien.detailpemeriksaan');
 
     Route::get('/hasilpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {

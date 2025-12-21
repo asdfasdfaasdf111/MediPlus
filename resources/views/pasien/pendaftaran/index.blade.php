@@ -181,6 +181,11 @@
 
                 <div class="col-6 text-muted">Waktu Kedatangan</div>
                 <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour($jump)->format('H:i') }}</div>                
+
+                @if ($ex->statusPasien === 'Dalam Antrian')
+                  <div class="col-6 text-muted">Nomor Antrian</div>
+                  <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->modalitas->namaModalitas }}-{{$ex->nomorAntrian}}</div>                
+                @endif
               </div>
             </div>
 

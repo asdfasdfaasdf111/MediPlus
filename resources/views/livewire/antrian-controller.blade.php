@@ -31,7 +31,7 @@
                 -
             @else
                 @foreach($dataAntrian as $dataPemeriksaan)
-                  {{ $modalitas->namaModalitas }} - {{ $dataPemeriksaan->nomorAntrian }}
+                  {{ $modalitas->namaModalitas }}-{{ $dataPemeriksaan->nomorAntrian }}
                 @endforeach
                 <button wire:click="lanjutAntrian('{{ $modalitas->id }}')" class="btn btn-primary">
                   Lanjut Antrian Berikutnya

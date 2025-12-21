@@ -189,7 +189,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 });
 
 Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->group(function () {
-    Route::get('/homepage', [DashboardPetugasController::class, 'tampilkanDashboard'])->name('petugas.dashboard');
+    Route::get('/homepage', [DashboardPetugasController::class, 'tampilkanDashboard'])->name('petugas.homepage');
     
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');

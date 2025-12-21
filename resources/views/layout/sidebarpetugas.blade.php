@@ -1,9 +1,9 @@
 <div class="col-md-2 min-vh-100 p-3 border-end">
     <ul class="nav flex-column">
         <li class="nav-item mb-2">
-            <a href="{{ route('petugas.dashboard') }}"
-               class="nav-link {{ request()->routeIs(['petugas.dashboard','petugas.pratinjaupemeriksaan', 'petugas.detailpemeriksaan', 'petugas.editpendaftaran']) ? 'text-primary fw-bold' : 'text-dark' }}">
-                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            <a href="{{ route('petugas.homepage') }}"
+               class="nav-link {{ request()->routeIs(['petugas.tambahpendaftaranbaru', 'petugas.homepage','petugas.pratinjaupemeriksaan', 'petugas.detailpemeriksaan', 'petugas.editpendaftaran']) ? 'text-primary fw-bold' : 'text-dark' }}">
+                <i class="bi bi-speedometer2 me-2"></i> Homepage
             </a>
         </li>
 

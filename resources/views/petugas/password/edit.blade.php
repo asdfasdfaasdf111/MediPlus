@@ -61,7 +61,7 @@
 
             {{-- Tombol Aksi --}}
             <div class="d-flex justify-content-center gap-3 pt-4 pb-4">
-              <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-primary px-5 rounded-pill">Kembali</a>
+              <a href="{{ route('petugas.homepage') }}" class="btn btn-outline-primary px-5 rounded-pill">Kembali</a>
               <button type="submit" class="btn btn-primary px-5 rounded-pill">Perbarui</button>
             </div>
 

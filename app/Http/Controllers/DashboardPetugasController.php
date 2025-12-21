@@ -66,7 +66,7 @@ class DashboardPetugasController extends Controller
 
 
         
-        return view('petugas.dashboard', [
+        return view('petugas.homepage', [
             'petugas' => $petugas,
             'aktif'   => $aktif,    
             'search'  => $search,

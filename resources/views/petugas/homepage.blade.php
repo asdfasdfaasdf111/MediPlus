@@ -1,6 +1,6 @@
 @extends('layout.staff')
 
-@section('title', 'Dashboard Petugas')
+@section('title', 'Homepage Petugas')
 
 @section('content')
 
@@ -15,22 +15,32 @@
       @include('layout.sidebarpetugas')
 
       <div class="col-md-10 p-4  bg-light">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
 
-        
-        <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
-           <form action="{{ route('petugas.dashboard') }}"  method="GET" class="flex-grow-1">
-              {{-- ini biar status tab tetap kebawa pas search --}}
+          <div class="flex-grow-1 me-3">
+            <form action="{{ route('petugas.homepage') }}" method="GET">
+              
               @if($aktif)
-                <input type="hidden" name="status" value="{{ $aktif }}"> 
+                <input type="hidden" name="status" value="{{ $aktif }}">
               @endif
+
               <div class="input-group">
-                <input id = "petugasSearch" type="text" class="form-control" name="search" value="{{ $search }}" placeholder="Telusuri">
+                <input id="petugasSearch" type="text" class="form-control" name="search" value="{{ $search }}" placeholder="Telusuri" >
                 <button class="btn btn-outline-secondary" type="submit">
                   <i class="bi bi-search"></i>
                 </button>
               </div>
             </form>
+          </div>
+
+          <div class="col-12 col-md-3 mt-2 mt-md-0">
+            <a href="{{ route('petugas.tambahpendaftaranbaru') }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" >
+              <i class="bi bi-plus-lg"></i>
+              <span>Tambah Pendaftaran Baru</span>
+            </a>
+          </div>
         </div>
+
 
         <ul class="nav nav-tabs border-0 mb-2">
           @foreach ([
@@ -46,11 +56,6 @@
               </a>
             </li>
           @endforeach
-          <a href="{{ route('petugas.tambahpendaftaranbaru') }}"
-              class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
-            <i class="bi bi-plus-lg"></i>
-            <span>Tambah Pendaftaran Baru</span>
-          </a>
         </ul>
 
         {{-- kita pakai forelse ya adik2 biar menghandle data kosong --}}

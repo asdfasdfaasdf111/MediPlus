@@ -45,7 +45,7 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusDokter = "Pendaftaran Ditolak";
         }
         $dataPemeriksaan->save();
-        return redirect()->route('petugas.dashboard');
+        return redirect()->route('petugas.homepage');
     }
 
     public function updateJadwal(Request $request, DataPemeriksaan $dataPemeriksaan, $draft){
@@ -520,7 +520,7 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPasien = 'Pendaftaran Terkirim';
         $dataPemeriksaan->save();
         
-        return redirect()->route('petugas.dashboard');
+        return redirect()->route('petugas.homepage');
     }    
 
     public function hapusPendaftaran(Request $request, DataPemeriksaan $dataPemeriksaan){
@@ -619,7 +619,7 @@ class DataPemeriksaanController extends Controller
         $petugas = auth()->user()->petugas;
         LogService::create('Meregistrasi ulang pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
 
-        return redirect()->route('petugas.dashboard');
+        return redirect()->route('petugas.homepage');
         // $counter = $dataPemeriksaan->jenisPemeriksaan->counterHariIni;
         // if ($counter === null) {
         //     $counter = CounterAntrian::create([

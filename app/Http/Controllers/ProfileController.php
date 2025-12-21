@@ -108,11 +108,11 @@ class ProfileController extends Controller
         $user->save();
 
         // redirect dinamis ke homepage sesuai prefix route (admin/dokter/petugas/superadmin)
-        $currentRoute = $request->route()->getName(); // contoh: admin.password.update
-        $prefix = explode('.', $currentRoute)[0];     // hasil: admin
+        // $currentRoute = $request->route()->getName(); // contoh: admin.password.update
+        // $prefix = explode('.', $currentRoute)[0];     // hasil: admin
 
         return redirect()
-            ->route($prefix . '.homepage')
+            ->route($user->role . '.homepage')
             ->with('success', 'Password berhasil diperbarui!');
         }
 }

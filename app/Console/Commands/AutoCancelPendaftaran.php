@@ -27,16 +27,28 @@ class AutoCancelPendaftaran extends Command
     {
         $semuaData = DataPemeriksaan::with('jenisPemeriksaan')
                         ->where('statusUtama', 'Pending')
-                        ->whereDate('tanggalPemeriksaan', today())
-                        ->where('rentangWaktuKedatangan', '<', Carbon::now())
+                        ->whereDate('tanggalPemeriksaan', '<=', today())
                         ->get();
         foreach ($semuaData as $data){
-            $waktuSelesai = Carbon::parse($data->rentangWaktuKedatangan)->copy()
-                                ->addHours($data->jenisPemeriksaan->getJump());
-            Log::info('User data', ['user' => $waktuSelesai]);
+            $waktuSelesai = Carbon::parse($data->tanggalPemeriksaan . ' ' . $data->rentangWaktuKedatangan)->copy()
+            ->addHours($data->jenisPemeriksaan->getJump());
+
             if ($waktuSelesai->lte(Carbon::now())) {
                 $data->cancelPendaftaran('Pendaftaran dibatalkan karena tidak terdapat balasan dari petugas rumah sakit', 'Pendaftaran Dibatalkan');
             }
+        }
+
+        $bufferAutoCancel = config('pendaftaran.regis_ulang_auto_cancel');
+        $semuaData = DataPemeriksaan::with('jenisPemeriksaan')
+                        ->where('statusPasien', 'Menunggu Registrasi Ulang')
+                        ->get()
+                        ->filter(function ($item) use ($bufferAutoCancel) {
+                            $scheduled = Carbon::parse($item->tanggalPemeriksaan . ' ' . $item->rentangWaktuKedatangan);
+
+                            return Carbon::now()->diffInHours($scheduled, false) <= -$bufferAutoCancel;
+                        });
+        foreach ($semuaData as $data){
+            $data->cancelPendaftaran('Pendaftaran dibatalkan karena pasien tidak datang untuk registrasi ulang', 'Pendaftaran Dibatalkan');
         }
     }
 }

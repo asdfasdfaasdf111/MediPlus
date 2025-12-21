@@ -36,6 +36,14 @@
           </div>
         </div>
 
+        {{-- ditambahin leo, blm ad frontend --}}
+        @if ($dataPemeriksaan->cancelled_at)
+            <div class="text-danger">
+                Dibatalkan pada:
+                {{ $dataPemeriksaan->cancelled_at->format('d M Y, H:i') }}
+            </div>
+        @endif
+
         <div class="row g-3">
 
           {{-- Ringkasan Pemeriksaan --}}

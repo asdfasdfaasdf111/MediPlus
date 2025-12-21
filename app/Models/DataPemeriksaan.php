@@ -34,6 +34,11 @@ class DataPemeriksaan extends Model
         'riwayatAlergi',
         'riwayatGolonganDarah',
         'nomorAntrian',
+        'cancelled_at',
+    ];
+
+    protected $casts = [
+        'cancelled_at' => 'datetime',
     ];
 
     public function dokter()
@@ -134,5 +139,27 @@ class DataPemeriksaan extends Model
         $hoursDiff = $now->diffInHours($givenTime, false);
         
         return $hoursDiff >= 12;
+    }
+
+    public function cancelPendaftaran($catatan, $statusPasien, $statusPetugas = null, $statusDokter = null){
+        if ($this->statusUtama === 'Dibatalkan') {
+            return false;
+        }
+        if (empty($statusPetugas)){
+            $statusPetugas = $statusPasien;
+        }
+        if (empty($statusDokter)){
+            $statusDokter = $statusPasien;
+        }
+
+        $this->update([
+            'statusUtama' => 'Dibatalkan',
+            'statusPasien' => $statusPasien,
+            'statusPetugas' => $statusPetugas,
+            'statusDokter' => $statusDokter,
+            'catatanPetugas' => $catatan,
+            'cancelled_at' => now(),
+        ]);
+        return true;
     }
 }

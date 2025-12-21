@@ -39,6 +39,7 @@ return new class extends Migration
             $table->string('riwayatAlergi')->nullable();
             $table->string('riwayatGolonganDarah')->nullable();
             $table->unsignedInteger('nomorAntrian')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamps();
         });
     }

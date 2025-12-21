@@ -49,6 +49,7 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusPasien = "Pendaftaran Ditolak";
             $dataPemeriksaan->statusPetugas = "Pendaftaran Ditolak";
             $dataPemeriksaan->statusDokter = "Pendaftaran Ditolak";
+            $dataPemeriksaan->cancelled_at = now();
             LogService::create('Menolak pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         $dataPemeriksaan->save();
@@ -409,6 +410,7 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPasien = "Pendaftaran Dibatalkan";
         $dataPemeriksaan->statusPetugas = "Pendaftaran Dibatalkan";
         $dataPemeriksaan->statusDokter = "Pendaftaran Dibatalkan";
+        $dataPemeriksaan->cancelled_at = now();
 
         $dataPemeriksaan->save();
         return redirect()->route('pasien.pendaftaran');

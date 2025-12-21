@@ -1,14 +1,14 @@
 <div class="container-fluid py-4">
 
   <div class="row g-3">
-    @foreach ($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-        @if ($rumahSakit->counterHariIni($namaJenisPemeriksaan) === null)
+    @foreach ($rumahSakit->modalitas as $modalitas)
+        @if ($rumahSakit->counterHariIni($modalitas->id) === null)
             @continue
         @endif
 
         @php
-          $dataSekarang = $rumahSakit->dataDalamPemeriksaan($namaJenisPemeriksaan);
-          $dataAntrian = $rumahSakit->dataDalamAntrian($namaJenisPemeriksaan)->get();
+          $dataSekarang = $rumahSakit->dataDalamPemeriksaan($modalitas->id);
+          $dataAntrian = $rumahSakit->dataDalamAntrian($modalitas->id)->get();
         @endphp
 
         <div class="col-12 col-lg-6">
@@ -18,7 +18,7 @@
                 <div>
                   <div class="d-flex align-items-center gap-2 flex-wrap">
                     <h5 class="mb-0 fw-bold" style="color:#012970;">
-                      {{ $namaJenisPemeriksaan }}
+                      {{ $modalitas->namaModalitas }}
                     </h5>
                   </div>
                 </div>
@@ -68,7 +68,7 @@
                     </div>
 
                     <button
-                      wire:click="selesaiPemeriksaanSekarang('{{ $namaJenisPemeriksaan }}')"
+                      wire:click="selesaiPemeriksaanSekarang('{{ $modalitas->id }}')"
                       class="btn btn-success btn-sm px-3"
                     >
                       <i class="bi bi-check2-circle me-1"></i> Selesaikan
@@ -114,7 +114,7 @@
 
                   <div class="d-flex justify-content-end">
                     <button
-                      wire:click="lanjutAntrian('{{ $namaJenisPemeriksaan }}')"
+                      wire:click="lanjutAntrian('{{ $modalitas->id }}')"
                       class="btn btn-primary btn-sm px-3"
                     >
                       <i class="bi bi-skip-forward-circle me-1"></i> Lanjut Antrian Berikutnya

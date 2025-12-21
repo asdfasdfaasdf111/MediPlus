@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    const rumahSakit = document.getElementById('rumahSakit');
     const jenisPemeriksaan = document.getElementById('jenisPemeriksaan');
     const jenisPemeriksaanSpesifik = document.getElementById('jenisPemeriksaanSpesifik');
     const tanggalPemeriksaan = document.getElementById('tanggalPemeriksaan');
@@ -8,48 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const rentangWaktuKedatangan = document.getElementById('rentangWaktuKedatangan');
     const submitBtn = document.getElementById('submitBtn');
     
-    let rumahSakitValue = rumahSakit ? rumahSakit.value : window.rumahSakit.id;
-    if (rumahSakit !== null){
-        //kalo isiny kosong, brarti ga ad draft data, jadi tanggalnya di disable
-        if (jenisPemeriksaanSpesifik.value == ""){
-            tanggalPemeriksaan.calendar.set("disable", [
-                function(date){
-                    return true;
-                }
-            ]);
-        }
+    let rumahSakitValue = window.rumahSakit.id;
 
-        rumahSakit.addEventListener("change", (e) => {
-            rumahSakitValue = rumahSakit.value;
-            fetch(`/api/namaJenisPemeriksaan/${rumahSakitValue}`)
-                .then(res => res.json())
-                .then(data => {
-                    jenisPemeriksaan.innerHTML = '<option value="-" disabled selected>-</option>';
-    
-                    data.forEach(item => {
-                        const option = document.createElement("option");
-                        option.value = item;
-                        option.textContent = item;
-                        jenisPemeriksaan.appendChild(option);
-                    });
-                });
-
-            while (jenisPemeriksaanSpesifik.firstChild) {
-                jenisPemeriksaanSpesifik.removeChild(jenisPemeriksaanSpesifik.firstChild);
+    //kalo isiny kosong, brarti ga ad draft data, jadi tanggalnya di disable
+    if (jenisPemeriksaanSpesifik.value == ""){
+        tanggalPemeriksaan.calendar.set("disable", [
+            function(date){
+                return true;
             }
-            
-            tanggalPemeriksaan.calendar.set("disable", [
-                function(date){
-                    return true;
-                }
-            ]);
-    
-            while (rentangWaktuKedatangan.firstChild) {
-                rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
-            }
-    
-            submitBtn.disabled = true;
-        });
+        ]);
     }
 
     if (jenisPemeriksaan !== null){
@@ -87,13 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
         //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
         jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
             tanggalPemeriksaan.calendar.clear(false);
-            
-            fetch(`/api/jadwalPenuh/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
+
+            fetch(`/api/jadwalPenuhPetugas/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
                 .then(res => res.json())
                 .then(data => {
                     tanggalPemeriksaan.calendar.set("disable", data);
                 });
 
+            tanggalPemeriksaan.calendar.set("disable", []);
             while (rentangWaktuKedatangan.firstChild) {
                 rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
             }
@@ -108,14 +75,15 @@ document.addEventListener("DOMContentLoaded", () => {
             rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
         }
         tanggalPemeriksaanInput.value = dateStr;
-
+        
         const idPart = window.dataPemeriksaan?.id ? `/${window.dataPemeriksaan.id}` : "";
         const jenisValue = jenisPemeriksaanSpesifik ? jenisPemeriksaanSpesifik.value : window.jenisPemeriksaan.id;
-        const url = `/api/jamTersedia/${rumahSakitValue}/${jenisValue}/${dateStr}${idPart}`;
-
+        const url = `/api/jamTersediaPetugas/${rumahSakitValue}/${jenisValue}/${dateStr}`;
+        
         fetch(url)
-            .then(res => res.json())
-            .then(data => {
+        .then(res => res.json())
+        .then(data => {
+                // console.log(data);
                 data.forEach((slot, index) => {
                     const col = document.createElement("div");
                     col.className = "col";

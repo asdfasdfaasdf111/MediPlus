@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
@@ -80,14 +81,16 @@ class RumahSakit extends Model
     public function jamTersedia($jenisPemeriksaan, $tanggalPemeriksaan, $dataPemeriksaan = null)
     {
         $listJam = [];
-        // kalo tanggal yang dipilih <= hari ini, brarti uda gabisa daftar lagi
-        if (Carbon::parse($tanggalPemeriksaan)->lte(Carbon::today())) {
+        // kalo tanggal yang dipilih < hari ini, brarti uda gabisa daftar lagi
+        if (Carbon::parse($tanggalPemeriksaan)->lt(Carbon::today())) {
             return $listJam;
         } 
+        
         $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
         $hariIni = $this->jadwalRumahSakit()
                         ->where('indexJadwal', $hariIni)
                         ->first();
+        if (!$hariIni->buka) return $listJam;
         $jamBuka = Carbon::parse($hariIni->jamBuka);
         $jamBuka = $jamBuka->ceilHour();
 
@@ -99,25 +102,63 @@ class RumahSakit extends Model
                                 ->whereHas('jenisPemeriksaan', function ($q) use ($jenisPemeriksaan) {
                                     $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
                                 })->get();
-        while($jamBuka < $jamTutup){
-            if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
-                $listJam[] = $jamBuka->format('H:i');
-                $jamBuka->addHour();
-                continue;
+        //untuk setiap jam, nyimpen uda berapa menit yg kepake
+        $penggunaanKuota = array_fill(0, 24, 0);
+
+        foreach ($dataHariIni as $data) {
+            $index = Carbon::parse($data->rentangWaktuKedatangan)->hour;
+            $dur = $data->jenisPemeriksaan->lamaPemeriksaan;
+            while($dur > 0){
+                $penggunaanKuota[$index] += min($dur, 60);
+                $dur -= 60;
+                $index++;
             }
-            $totalTime = 0;
-            $dataJamIni = $dataHariIni->where('rentangWaktuKedatangan', $jamBuka->format('H:i:s'));
-            foreach($dataJamIni as $data){
-                $jenisSekarang = $data->jenisPemeriksaan;
-                $totalTime += $jenisSekarang->lamaPemeriksaan;
-            }
-            if ($totalTime + $jenisPemeriksaan->lamaPemeriksaan <= 60){
-                $listJam[] = $jamBuka->format('H:i');
-            }
-            $jamBuka->addHour();
         }
 
-        return $listJam;
+        $jump = $jenisPemeriksaan->getJump();
+
+        while($jamBuka < $jamTutup){
+            //kalo sisa waktunya udah ga cukup, brarti ga usah tunjukin jamnya
+            if ($jamBuka->copy()->addHour($jump)->gt($jamTutup)){
+                break;
+            }
+            $tanggal = Carbon::parse($tanggalPemeriksaan);
+
+            $waktuPemeriksaan = $tanggal
+                ->copy()
+                ->setTimeFrom($jamBuka);
+            $now = Carbon::now();
+
+            $diffInHours = $now->diffInHours($waktuPemeriksaan, false);
+            // kalo <= 12 jam dari sekarang, uda ga bisa daftar di jam ini
+            if ($diffInHours <= 12) {
+                $jamBuka->addHour($jump);
+                continue;
+            }
+            //kalo jamnya itu sama dengan yang diedit sekarang, uda fix bisa(jadi kaya ga ganti jam gitu)
+            if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
+                $listJam[] = $jamBuka->format('H:i');
+                $jamBuka->addHour($jump);
+                continue;
+            }
+            
+            $index = Carbon::parse($jamBuka)->hour;
+            $totalJam = 0;
+            for ($i = $index; $i < min($index + $jump, 24); $i++){
+                $totalJam += $penggunaanKuota[$i];
+            }
+            if ($totalJam + $jenisPemeriksaan->lamaPemeriksaan <= 60 * $jump){
+                $listJam[] = $jamBuka->format('H:i');
+            }
+            $jamBuka->addHour($jump);
+        }
+
+        $slots = [
+            'jump' => $jump,
+            'listJam' => $listJam,
+        ];
+
+        return $slots;
     }
 
     //bisa dibikin lebih efisien tpi ribet

@@ -14,9 +14,9 @@ class AntrianController extends Component
         $this->rumahSakit = $rumahSakit;
     }
 
-    public function lanjutAntrian($namaJenisPemeriksaan)
+    public function lanjutAntrian($modalitasId)
     {
-        $dataSekarang = $this->rumahSakit->dataDalamPemeriksaan($namaJenisPemeriksaan);
+        $dataSekarang = $this->rumahSakit->dataDalamPemeriksaan($modalitasId);
 
         if($dataSekarang){
             $dataSekarang->statusPasien = 'Menunggu Hasil';
@@ -25,7 +25,7 @@ class AntrianController extends Component
             $dataSekarang->save();
         }
 
-        $dataBerikutnya = $this->rumahSakit->dataDalamAntrian($namaJenisPemeriksaan)->first();
+        $dataBerikutnya = $this->rumahSakit->dataDalamAntrian($modalitasId)->first();
         if($dataBerikutnya){
             $dataBerikutnya->statusPasien = 'Pemeriksaan Berlangsung';
             $dataBerikutnya->statusPetugas = 'Pemeriksaan Berlangsung';
@@ -35,8 +35,8 @@ class AntrianController extends Component
 
     }
 
-    public function selesaiPemeriksaanSekarang($namaJenisPemeriksaan){
-        $dataSekarang = $this->rumahSakit->dataDalamPemeriksaan($namaJenisPemeriksaan);
+    public function selesaiPemeriksaanSekarang($modalitasId){
+        $dataSekarang = $this->rumahSakit->dataDalamPemeriksaan($modalitasId);
 
         if($dataSekarang){
             $dataSekarang->statusPasien = 'Menunggu Hasil';

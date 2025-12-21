@@ -6,7 +6,8 @@ window.initCalendar = function (elementId, disabledDates, defaultDate) {
     const calendar = flatpickr(`#${elementId}`, {
         inline: true,
         dateFormat: "Y-m-d",
-        minDate: new Date().fp_incr(1),
+        minDate: new Date().fp_incr(0),
+        maxDate: new Date().fp_incr(31),
         locale: Indonesian,
         disable: disabledDates || [],
         defaultDate: defaultDate || null,

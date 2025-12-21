@@ -46,6 +46,11 @@
               </a>
             </li>
           @endforeach
+          <a href="{{ route('petugas.tambahpendaftaranbaru') }}"
+              class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
+            <i class="bi bi-plus-lg"></i>
+            <span>Tambah Pendaftaran Baru</span>
+          </a>
         </ul>
 
         {{-- kita pakai forelse ya adik2 biar menghandle data kosong --}}

@@ -242,10 +242,6 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
                     return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
 
     Route::post('/registrasiUlang/{dataPemeriksaan}', [DataPemeriksaanController::class, 'registrasiUlang'])->name('petugas.registrasiUlang');
-    // Route::get('/listantrian', AntrianController::class)->name('petugas.listantrian');
-    Route::get('/listantrian', function () {
-        return view('petugas.listantrian');
-    })->name('petugas.listantrian');
 
     Route::get('/password', [ProfileController::class, 'editPassword'])->name('petugas.password.edit');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('petugas.password.update');
@@ -254,6 +250,39 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
         return view('petugas.listantrian');
     })->name('petugas.listantrian');
 
+    Route::get('/tambahpendaftaranbaru', function () {
+        return view('petugas.tambahpendaftaranbaru');
+    })->name('petugas.tambahpendaftaranbaru');
+
+    Route::get('/daftartipepasien/{masterPasien}', function (MasterPasien $masterPasien) {
+        return view('petugas.daftaronsite.daftartipepasien', compact('masterPasien'));
+    })->name('petugas.daftartipepasien');
+
+    Route::get('/daftartambahdatapasien/{masterPasien}', function (MasterPasien $masterPasien) {
+        return view('petugas.daftaronsite.daftartambahdatapasien', compact('masterPasien'));
+    })->name('petugas.daftartambahdatapasien');
+
+    Route::get('/daftardatarujukan/{masterPasien}', function (MasterPasien $masterPasien) {
+        return view('petugas.daftaronsite.daftardatarujukan', compact('masterPasien'));
+    })->name('petugas.daftardatarujukan');
+
+    Route::get('/daftarpilihjadwal/{user}', [DataPemeriksaanController::class, 'lanjutPendaftaranPetugas'])->name('petugas.daftarpilihjadwal');
+
+    Route::post('/submitemailpasien', [PasienController::class, 'submitEmailPasien'])->name('petugas.submitemailpasien');
+    Route::put('/updateJadwalOnsite/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateJadwalOnsite'])->name('petugas.updateJadwalOnsite');
+    Route::post('/bikindraftonsite/{masterPasienId}', [DataPemeriksaanController::class, 'bikinDraftOnsite'])->name('petugas.bikinDraftOnsite');
+
+    Route::post('/bikindatapasienbaru/{masterPasienId}', [PendaftaranController::class, 'storeDataPasienPetugas'])
+        ->name('petugas.bikindatapasienbaru');
+
+    Route::put('/updateTipePasien/{dataPemeriksaan}', [DataPemeriksaanController::class, 'updateTipePasienPetugas'])->name('petugas.updateTipePasien');
+
+    Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukanPetugas'])->name('petugas.bikinDataRujukan');
+    Route::put('/updateDataRujukan/{dataPemeriksaan}/{dataRujukan}', [DataRujukanController::class, 'updateDataRujukanPetugas'])->name('petugas.updateDataRujukan');
+    Route::get('/daftarringkasan/{masterPasien}', function (MasterPasien $masterPasien) {
+        return view('petugas.daftaronsite.daftarringkasan', compact('masterPasien'));
+    })->name('petugas.daftarringkasan');
+    Route::put('/finalisasiDraft/{dataPemeriksaan}', [DataPemeriksaanController::class, 'finalisasiDraftPetugas'])->name('petugas.finalisasiDraft');
 });
 
 //buat route yg bisa diakses lebih dari 1 role, asalkan memenuhi kondisi tertentu //Punya Leo
@@ -301,9 +330,7 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
         ->name('pasien.pendaftaran.tipepasien');
     
     //Nyesuain sama folder viewnya
-    Route::get('/daftarpilihjadwal', function () {
-        return view('pasien.formdaftarpemeriksaan.daftarpilihjadwal');
-    })->name('pasien.daftarpilihjadwal');
+    Route::get('/daftarpilihjadwal', [DataPemeriksaanController::class, 'lanjutPendaftaranPasien'])->name('pasien.daftarpilihjadwal');
 
     Route::get('/daftartipepasien', function () {
         return view('pasien.formdaftarpemeriksaan.daftartipepasien');
@@ -386,14 +413,22 @@ Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}',
                 $rumahSakit = RumahSakit::find($rumahSakitId);
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 return $rumahSakit->jadwalPenuh($jenisPemeriksaan); });
+Route::get('/api/jadwalPenuhPetugas/{rumahSakit}/{jenis}',
+            function ($rumahSakitId, $jenisId) {
+                $rumahSakit = RumahSakit::find($rumahSakitId);
+                $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                return $rumahSakit->jadwalPenuhPetugas($jenisPemeriksaan); });
 Route::get('/api/jamTersedia/{rumahSakit}/{jenis}/{tanggal}/{dataPemeriksaan?}',
             function ($rumahSakitId, $jenisId, $tanggal, $dataPemeriksaanId = null) {
                 $rumahSakit = RumahSakit::find($rumahSakitId);
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 $dataPemeriksaan = DataPemeriksaan::find($dataPemeriksaanId);
                 return $rumahSakit->jamTersedia($jenisPemeriksaan, $tanggal, $dataPemeriksaan); });
-                
-
+Route::get('/api/jamTersediaPetugas/{rumahSakit}/{jenis}/{tanggal}',
+            function ($rumahSakitId, $jenisId, $tanggal) {
+                $rumahSakit = RumahSakit::find($rumahSakitId);
+                $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
+                return $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $tanggal); });
 Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) {
                 $rumahSakit = RumahSakit::find($rumahSakitId);
                 return $rumahSakit->namaJenisPemeriksaan(); 

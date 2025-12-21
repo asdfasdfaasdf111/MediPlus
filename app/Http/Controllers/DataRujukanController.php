@@ -53,6 +53,37 @@ class DataRujukanController extends Controller
         return redirect()->route('pasien.daftarringkasan');
     }
 
+    public function bikinDataRujukanPetugas(Request $request, DataPemeriksaan $dataPemeriksaan){
+        $request->validate([
+            'namaFaskes' => 'required|string',
+            'namaDokterPerujuk' => 'required|string',
+            'diagnosaKerja' => 'required|string',
+            'alasanRujukan' => 'required|string',
+            'permintaanPemeriksaan' => 'required|string',
+            'tanggalPemeriksaanFaskes' => 'required|date|before_or_equal:today',
+            'formulirRujukan' => 'required|mimes:pdf|max:8192',
+        ]);
+
+        $path = $request->file('formulirRujukan')->store('uploads', 'public');
+
+        $dataRujukan = DataRujukan::create([
+            'data_pasien_id' => $dataPemeriksaan->data_pasien_id,
+            'namaFaskes' => $request->namaFaskes,
+            'namaDokterPerujuk' => $request->namaDokterPerujuk,
+            'diagnosaKerja' => $request->diagnosaKerja,
+            'alasanRujukan' => $request->alasanRujukan,
+            'tanggalPemeriksaanFaskes' => $request->tanggalPemeriksaanFaskes,
+            'permintaanPemeriksaan' => $request->permintaanPemeriksaan,
+            'formulirRujukan' => $path,
+            'namaFile' => $request->file('formulirRujukan')->getClientOriginalName(),
+        ]);
+
+        $dataPemeriksaan->data_rujukan_id = $dataRujukan->id;
+        $dataPemeriksaan->save();
+        
+        return redirect()->route('petugas.daftarringkasan', $dataPemeriksaan->masterPasien);
+    }
+
     public function updateDataRujukan(Request $request, DataPemeriksaan $dataPemeriksaan, DataRujukan $dataRujukan){
         $request->validate([
             'namaFaskes' => 'required|string',

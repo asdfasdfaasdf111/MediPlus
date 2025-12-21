@@ -8,7 +8,7 @@ class CounterAntrian extends Model
 {
     protected $fillable = [
         'rumah_sakit_id',
-        'namaJenisPemeriksaan',
+        'modalitas_id',
         'tanggalAntrian',
         'nomorTerakhir',
     ];

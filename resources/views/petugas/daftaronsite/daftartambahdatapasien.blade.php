@@ -154,8 +154,8 @@
 
         {{-- Actions --}}
         <div class="d-flex justify-content-center gap-2 gap-md-3 pt-4">
-          <a href="{{ route('petugas.daftartipepasien', $masterPasien) }}" class="btn btn-outline-primary px-4 px-md-5">Batal</a>
-          <button type="submit" class="btn btn-primary px-4 px-md-5">
+          <a href="{{ route('petugas.daftartipepasien', $masterPasien) }}" class="btn btn-outline-primary rounded-pill px-4 px-md-5">Batal</a>
+          <button type="submit" class="btn btn-primary rounded-pill px-4 px-md-5">
             Simpan
           </button>
         </div>

@@ -161,11 +161,13 @@
                     <div id="rentangWaktuKedatangan" class="row row-cols-1 row-cols-md-2 g-3">
                         @if ($draftData)
                             @php
-                                $timeSlots = $draftRumahSakit->jamTersedia(
-                                    $draftJenisPemeriksaan,
-                                    $draftData->tanggalPemeriksaan,
-                                    $draftData
+                                $result = $draftRumahSakit->jamTersedia(
+                                  $draftJenisPemeriksaan,
+                                  $draftData->tanggalPemeriksaan,
+                                  $draftData
                                 );
+                                $timeSlots = $result['listJam'] ?? [];
+                                $jump = $result['jump'];
                             @endphp
 
                             @foreach ($timeSlots as $slot)

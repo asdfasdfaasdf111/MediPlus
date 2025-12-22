@@ -15,15 +15,27 @@ class PasienController extends Controller
         return view('pasien.homepage', ['rumahsakits'=> $data]);
     }
 
-    public function submitEmailPasien(Request $request){
-        if (!User::where('email', $request->email)->exists()) {
-            return back()->withErrors(['email' => 'Tidak terdapat pasien dengan email ini.'])->withInput();
-        }
+    public function submitEmailPasien(Request $request)
+    {
+        $request->validate(
+            [
+                'email' => ['required', 'email'],
+            ],
+            [
+                'email.required' => 'Email pasien wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+            ]
+        );
+
         $user = User::where('email', $request->email)->first();
-        if ($user->role !== 'pasien'){
-            return back()->withErrors(['email' => 'Tidak terdapat pasien dengan email ini.'])->withInput();
+
+        if (!$user || $user->role !== 'pasien') {
+            return back()
+                ->withErrors(['email' => 'Tidak terdapat pasien dengan email ini.'])
+                ->withInput();
         }
 
         return redirect()->route('petugas.daftarpilihjadwal', ['user' => $user->id]);
     }
+
 }

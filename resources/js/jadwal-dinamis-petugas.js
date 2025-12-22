@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
                 const jump = data.jump;
                 const listJam = data.listJam;
+                console.log("Tes");
                 listJam.forEach((slot, index) => {
                     const col = document.createElement("div");
                     col.className = "col";

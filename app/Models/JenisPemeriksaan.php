@@ -34,4 +34,10 @@ class JenisPemeriksaan extends Model
     {
         return $this->belongsTo(RumahSakit::class);
     }
+
+    public function getJump()
+    {
+        $jump = (int) ceil($this->lamaPemeriksaan / 60);
+        return $jump;
+    }
 }

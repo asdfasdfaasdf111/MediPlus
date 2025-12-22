@@ -161,31 +161,119 @@ class RumahSakit extends Model
         return $slots;
     }
 
-    //bisa dibikin lebih efisien tpi ribet
+    //ambil semua jam yang mungkin selama >= waktu sekarang
+    public function jamTersediaPetugas($jenisPemeriksaan, $tanggalPemeriksaan)
+    {
+        $listJam = [];
+        // kalo tanggal yang dipilih < hari ini, brarti uda gabisa daftar lagi
+        if (Carbon::parse($tanggalPemeriksaan)->lt(Carbon::today())) {
+            return $listJam;
+        }
+        
+        $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
+        $hariIni = $this->jadwalRumahSakit()
+                        ->where('indexJadwal', $hariIni)
+                        ->first();
+        if (!$hariIni->buka) return $listJam;
+        $jamBuka = Carbon::parse($hariIni->jamBuka);
+        $jamBuka = $jamBuka->ceilHour();
+        
+        $jamTutup = Carbon::parse($hariIni->jamTutup);
+        $jamTutup = $jamTutup->floorUnit('hour');
+
+        $jump = (int) ceil($jenisPemeriksaan->lamaPemeriksaan / 60);
+        
+        while($jamBuka < $jamTutup){
+            $tanggal = Carbon::parse($tanggalPemeriksaan);
+
+            $waktuPemeriksaan = $tanggal
+                ->copy()
+                ->setTimeFrom($jamBuka);
+            $now = Carbon::now();
+
+            $diffInHours = $now->diffInHours($waktuPemeriksaan, false);
+            if ($diffInHours < -1) {
+                $jamBuka->addHour($jump);
+                continue;
+            }
+            $listJam[] = $jamBuka->format('H:i');
+            $jamBuka->addHour($jump);
+        }
+
+        $slots = [
+            'jump' => $jump,
+            'listJam' => $listJam,
+        ];
+
+        return $slots;
+    }
+
     //buat dapetin hari apa aja yang jadwalnya uda penuh
     public function jadwalPenuh($jenisPemeriksaan)
     {
         $unavailable = [];
-        $data = $this->dataPemeriksaan()
-                    ->whereHas('jenisPemeriksaan', function ($q) use ($jenisPemeriksaan) {
-                        $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
-                    })
-                    ->orderBy('tanggalPemeriksaan', 'asc')
-                    ->get();
-        $prev = null;
-        foreach ($data as $dataPemeriksaan) {
-            //klo tanggalny ud dicek, skip aj
-            if ($prev !== null && $prev->tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan) {
+        $startDate = today();
+        $endDate   = today()->addDays(31);
+
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        foreach ($period as $date) {
+            $tanggal = $date->toDateString();
+
+            $dayIndex = $date->isoWeekday();
+
+            $jadwal = $this->jadwalRumahSakit()
+                ->firstWhere('indexJadwal', $dayIndex);
+
+            if (!$jadwal || !$jadwal->buka) {
+                $unavailable[] = $tanggal;
                 continue;
             }
-            $listJam = $this->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan);
-            if (empty($listJam)){
-                $unavailable[] = $dataPemeriksaan->tanggalPemeriksaan;
+
+            $result = $this->jamTersedia($jenisPemeriksaan, $tanggal);
+            $listJam = $result['listJam'] ?? [];
+
+            if (empty($listJam)) {
+                $unavailable[] = $tanggal;
             }
-            $prev = $dataPemeriksaan;
         }
+
         return $unavailable;
     }
+
+    //dapetin hari mana aja yang rumah sakitnya tutup
+    public function jadwalPenuhPetugas($jenisPemeriksaan)
+    {
+        $unavailable = [];
+        $startDate = today();
+        $endDate   = today()->addDays(31);
+
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        foreach ($period as $date) {
+            $tanggal = $date->toDateString();
+
+            $dayIndex = $date->isoWeekday();
+
+            $jadwal = $this->jadwalRumahSakit()
+                ->firstWhere('indexJadwal', $dayIndex);
+
+            if (!$jadwal || !$jadwal->buka) {
+                $unavailable[] = $tanggal;
+                continue;
+            }
+
+            $result = $this->jamTersediaPetugas($jenisPemeriksaan, $tanggal);
+            $listJam = $result['listJam'] ?? [];
+
+            if (empty($listJam)) {
+                $unavailable[] = $tanggal;
+            }
+        }
+
+        return $unavailable;
+    }
+
 
     public function jadwalRumahSakit()
     {
@@ -231,30 +319,32 @@ class RumahSakit extends Model
         return $this->hasMany(CounterAntrian::class);
     }
 
-    public function counterHariIni($namaJenisPemeriksaan){
+    public function counterHariIni($modalitasId){
         return $this->counterAntrian()
                     ->whereDate('tanggalAntrian', Carbon::today())
-                    ->where('namaJenisPemeriksaan', $namaJenisPemeriksaan)
+                    ->where('modalitas_id', $modalitasId)
                     ->first();
     }
 
-    public function dataDalamPemeriksaan($namaJenisPemeriksaan){
+    public function dataDalamPemeriksaan($modalitasId){
         return $this->dataPemeriksaan()
-                    ->where('statusPasien', 'Pemeriksaan Berlangsung')
-                    ->whereHas('jenisPemeriksaan', function($query) use ($namaJenisPemeriksaan) {
-                        $query->where('namaJenisPemeriksaan', $namaJenisPemeriksaan);
-                    })
-                    ->first();
+            ->where('statusPasien', 'Pemeriksaan Berlangsung')
+            ->whereHas('jenisPemeriksaan.modalitas', function ($query) use ($modalitasId) {
+                $query->where('id', $modalitasId);
+            })
+            ->first();
     }
 
-    public function dataDalamAntrian($namaJenisPemeriksaan){
+
+    public function dataDalamAntrian($modalitasId){
         return $this->dataPemeriksaan()
-                    ->where('statusPasien', 'Dalam Antrian')
-                    ->whereHas('jenisPemeriksaan', function($query) use ($namaJenisPemeriksaan) {
-                        $query->where('namaJenisPemeriksaan', $namaJenisPemeriksaan);
-                    })
-                    ->orderBy('nomorAntrian', 'asc');
+            ->where('statusPasien', 'Dalam Antrian')
+            ->whereHas('jenisPemeriksaan.modalitas', function ($query) use ($modalitasId) {
+                $query->where('id', $modalitasId);
+            })
+            ->orderBy('nomorAntrian', 'asc');
     }
+
 
 
 }

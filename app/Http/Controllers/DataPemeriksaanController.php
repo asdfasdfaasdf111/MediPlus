@@ -30,6 +30,10 @@ class DataPemeriksaanController extends Controller
                 'dokter_id' => 'Dokter ini tidak tersedia pada jadwal tersebut',
             ]);
         }
+        $petugas = auth()->user()->petugas;
+        if ($request->has('catatanPetugas')) {
+            $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
+        }
 
         if ($request->status == 'accepted'){
             $dataPemeriksaan->statusUtama = "Berlangsung";
@@ -37,103 +41,21 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusPetugas = "Menunggu Registrasi Ulang";
             $dataPemeriksaan->statusDokter = "Menunggu Registrasi Ulang";
             $dataPemeriksaan->dokter_id = $request->dokterId;
+            LogService::create('Menerima pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         else{
             $dataPemeriksaan->statusUtama = "Dibatalkan";
             $dataPemeriksaan->statusPasien = "Pendaftaran Ditolak";
             $dataPemeriksaan->statusPetugas = "Pendaftaran Ditolak";
             $dataPemeriksaan->statusDokter = "Pendaftaran Ditolak";
+            $dataPemeriksaan->cancelled_at = now();
+            LogService::create('Menolak pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         $dataPemeriksaan->save();
         return redirect()->route('petugas.homepage');
     }
 
     public function updateJadwal(Request $request, DataPemeriksaan $dataPemeriksaan, $draft){
-        
-        // PUNYA LEO -> DICOMMENT DULU KARNA PAGE PENDAFTARAN RUSAK KALO REQUIRED CATATANPETUGAS
-        // $request->validate([
-        //     'jenisPemeriksaan' => 'required|string',
-        //     'jenisPemeriksaanSpesifik' => 'required|string',
-        //     'tanggalPemeriksaan' => 'required|date',
-        //     'rentangWaktuKedatangan' => 'required|date_format:H:i',
-        //     'catatanPetugas'  => 'required|string|max:255',
-        // ],
-        // [
-        //     'catatanPetugas.required' => 'Catatan petugas wajib diisi.',
-        //     'catatanPetugas.max' => 'Catatan petugas maksimal 255 karakter.',
-        // ]);
-        
-        // if ($draft == "1" || $draft == "true") $draft = true;
-        // else $draft = false;
-
-        // $user = auth()->user();
-
-        // if ($user->role == "pasien") {
-        //     //kalo data yg mau diedit bukan punyanya, error
-        //     if ($dataPemeriksaan->masterPasien->user->id !== $user->id) {
-        //         return back()->withErrors([
-        //             'salahData' => 'Anda tidak bisa mengubah data pemeriksaan ini',
-        //         ]);
-        //     }
-        // }
-        // else if ($user->role !== "superadmin"){
-        //     //kalo yang mau diedit itu data rumah sakit lain
-        //     $rumahSakitId = optional($user->admin)->rumah_sakit_id
-        //                     ?? optional($user->petugas)->rumah_sakit_id
-        //                     ?? optional($user->dokter)->rumah_sakit_id;
-        //     if ($dataPemeriksaan->rumah_sakit_id !== $rumahSakitId) {
-        //         return back()->withErrors([
-        //             'salahData' => 'Anda tidak bisa mengubah data pemeriksaan ini',
-        //         ]);
-        //     }
-        // }
-
-        // $rumahSakit = $dataPemeriksaan->rumahSakit;
-        // $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-        //                                 ->where('id', $request->jenisPemeriksaanSpesifik)
-        //                                 ->get()
-        //                                 ->first();
-        // if (!$jenisPemeriksaan){
-        //     return back()->withErrors([
-        //         'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
-        //     ]);
-        // }
-
-        // $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
-        // $timeAvailable = false;
-        // foreach ($listJam as $jam){
-        //     if ($jam == $request->rentangWaktuKedatangan){
-        //         $timeAvailable = true;
-        //         break;
-        //     }
-        // }
-        // if (!$timeAvailable){
-        //     return back()->withErrors([
-        //         'waktu' => 'Jadwal ini tidak tersedia!',
-        //     ]);
-        // }
-
-        // if ($request->has('catatanPetugas')) {
-        //     $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
-        // }
-
-        // if (!$draft && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
-        //     $dataPemeriksaan->historyJenisPemeriksaan = $dataPemeriksaan->jenis_pemeriksaan_id;
-        //     $dataPemeriksaan->historyTanggalPemeriksaan = $dataPemeriksaan->tanggalPemeriksaan;
-        //     $dataPemeriksaan->historyJamPemeriksaan = $dataPemeriksaan->rentangWaktuKedatangan;
-        // }
-        // $dataPemeriksaan->jenis_pemeriksaan_id = $jenisPemeriksaan->id;
-        // $dataPemeriksaan->tanggalPemeriksaan = $request->tanggalPemeriksaan;
-        // $dataPemeriksaan->rentangWaktuKedatangan = $request->rentangWaktuKedatangan;
-        // $dataPemeriksaan->save();
-        
-        // if (!$draft){
-        //     return redirect()->route('petugas.pratinjaupemeriksaan', $dataPemeriksaan);
-        // }
-        // else{
-        //     return redirect()->route('pasien.daftartipepasien');
-        // }
-
         $isDraft = ($draft == "1" || $draft == "true");
         
         $validated = $request->validate([
@@ -172,7 +94,9 @@ class DataPemeriksaanController extends Controller
             ])->withInput();
         }
 
-       $listJam = $rumahSakit->jamTersedia( $jenisPemeriksaanBaru, $validated['tanggalPemeriksaan'], $dataPemeriksaan );
+        // $listJam = $rumahSakit->jamTersedia( $jenisPemeriksaanBaru, $validated['tanggalPemeriksaan'], $dataPemeriksaan );
+        $result = $rumahSakit->jamTersedia($jenisPemeriksaanBaru, $validated['tanggalPemeriksaan'], $dataPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $validated['rentangWaktuKedatangan']) {
@@ -222,7 +146,6 @@ class DataPemeriksaanController extends Controller
 
         return redirect()->route('pasien.daftartipepasien');
 
-
     }
 
     public function updateJadwalOnsite(Request $request, DataPemeriksaan $dataPemeriksaan){
@@ -246,7 +169,8 @@ class DataPemeriksaanController extends Controller
             ]);
         }
 
-        $listJam = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $result = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){
@@ -288,7 +212,8 @@ class DataPemeriksaanController extends Controller
         $rumahSakit = $dataPemeriksaan->rumahSakit;
         $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
 
-        $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){
@@ -331,7 +256,8 @@ class DataPemeriksaanController extends Controller
 
         $user = auth()->user();
 
-        $listJam = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan);
+        $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan);
+        $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
             if ($jam == $request->rentangWaktuKedatangan){
@@ -453,14 +379,13 @@ class DataPemeriksaanController extends Controller
 
         $dataPemeriksaan->data_pasien_id = $validated['pilihPasien'];
 
-        //Ini untuk isi / kosongin data pendamping sesuai switch
         if ($request->boolean('pakaiPendamping')) {
-            $dataPemeriksaan->namaPendamping     = $validated['namaPendamping'];
-            $dataPemeriksaan->nomorPendamping    = $validated['nomorPendamping'];
+            $dataPemeriksaan->namaPendamping  = $validated['namaPendamping'];
+            $dataPemeriksaan->nomorPendamping = $validated['nomorPendamping'];
             $dataPemeriksaan->hubunganPendamping = $validated['hubunganPendamping'];
         } else {
-            $dataPemeriksaan->namaPendamping     = null;
-            $dataPemeriksaan->nomorPendamping    = null;
+            $dataPemeriksaan->namaPendamping = null;
+            $dataPemeriksaan->nomorPendamping = null;
             $dataPemeriksaan->hubunganPendamping = null;
         }
 
@@ -475,33 +400,66 @@ class DataPemeriksaanController extends Controller
         return redirect()->route('pasien.daftardatarujukan');
     }
 
-    public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataPemeriksaan){
-        $masterPasien = $dataPemeriksaan->masterPasien;
+public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataPemeriksaan)
+{
+    $masterPasien = $dataPemeriksaan->masterPasien;
 
-        $dataPasien = $masterPasien->dataPasien()
-                                    ->where('id', $request->pilihPasien)
-                                    ->first();
-        
-        if (!$dataPasien){
-            return back()->withErrors([
-                'dataPasien' => 'Data Pasien ini tidak ada',
-            ]);
-        }
+    $rules = [
+        'pilihPasien'     => ['required', 'integer'],
+        'pakaiPendamping' => ['nullable', 'boolean'],
+    ];
 
-        $dataPemeriksaan->data_pasien_id = $request->pilihPasien;
-        $dataPemeriksaan->namaPendamping = $request->namaPendamping;
-        $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
-        $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
-        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
-        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
-        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;
-        $dataPemeriksaan->riwayatNoHP = $dataPasien->riwayatNoHP;
-        $dataPemeriksaan->riwayatAlergi = $dataPasien->riwayatAlergi;
-        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->riwayatGolonganDarah;
-        $dataPemeriksaan->save();
-        
-        return redirect()->route('petugas.daftardatarujukan', $masterPasien);
+    if ($request->boolean('pakaiPendamping')) {
+        $rules = array_merge($rules, [
+            'namaPendamping'     => ['required', 'string', 'max:50'],
+            'nomorPendamping'    => ['required', 'string', 'max:20'],
+            'hubunganPendamping' => ['required', 'string'],
+        ]);
     }
+
+    $messages = [
+        'pilihPasien.required' => 'Silakan pilih data pasien.',
+        'namaPendamping.required' => 'Nama pendamping wajib diisi.',
+        'nomorPendamping.required' => 'Kontak pendamping wajib diisi.',
+        'hubunganPendamping.required' => 'Hubungan dengan pasien wajib dipilih.',
+    ];
+
+    $validated = $request->validate($rules, $messages);
+
+    $dataPasien = $masterPasien->dataPasien()
+        ->where('id', $validated['pilihPasien'])
+        ->first();
+
+    if (!$dataPasien) {
+        return back()->withErrors([
+            'dataPasien' => 'Data pasien tidak ditemukan.',
+        ]);
+    }
+
+    $dataPemeriksaan->data_pasien_id = $validated['pilihPasien'];
+
+    if ($request->boolean('pakaiPendamping')) {
+        $dataPemeriksaan->namaPendamping  = $validated['namaPendamping'];
+        $dataPemeriksaan->nomorPendamping  = $validated['nomorPendamping'];
+        $dataPemeriksaan->hubunganPendamping = $validated['hubunganPendamping'];
+    } else {
+        $dataPemeriksaan->namaPendamping  = null;
+        $dataPemeriksaan->nomorPendamping  = null;
+        $dataPemeriksaan->hubunganPendamping = null;
+    }
+
+    $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->alamatDomisili;
+    $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->tanggalLahir;
+    $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->jenisKelamin;
+    $dataPemeriksaan->riwayatNoHP = $dataPasien->noHP;
+    $dataPemeriksaan->riwayatAlergi = $dataPasien->alergi;
+    $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->golonganDarah;
+
+    $dataPemeriksaan->save();
+
+    return redirect()->route('petugas.daftardatarujukan', $masterPasien);
+}
+
 
     public function finalisasiDraft(Request $request, DataPemeriksaan $dataPemeriksaan){
         $dataPemeriksaan->statusUtama = 'Pending';
@@ -519,6 +477,8 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPetugas = 'Pendaftaran Baru';
         $dataPemeriksaan->statusPasien = 'Pendaftaran Terkirim';
         $dataPemeriksaan->save();
+        $petugas = auth()->user()->petugas;
+        LogService::create('Membuat pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         
         return redirect()->route('petugas.homepage');
     }    
@@ -529,6 +489,7 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->statusPasien = "Pendaftaran Dibatalkan";
         $dataPemeriksaan->statusPetugas = "Pendaftaran Dibatalkan";
         $dataPemeriksaan->statusDokter = "Pendaftaran Dibatalkan";
+        $dataPemeriksaan->cancelled_at = now();
 
         $dataPemeriksaan->save();
         return redirect()->route('pasien.pendaftaran');
@@ -596,7 +557,7 @@ class DataPemeriksaanController extends Controller
         return view('dokter.homepage', compact('dokter', 'list'));
     }
 
-        public function registrasiUlang(Request $request, DataPemeriksaan $dataPemeriksaan) {
+   public function registrasiUlang(Request $request, DataPemeriksaan $dataPemeriksaan) {
         if ($dataPemeriksaan->statusPasien !== 'Menunggu Registrasi Ulang'){
             return back()->with('error', 'Pasien tidak dalam status Menunggu Registrasi Ulang.');
         }
@@ -641,5 +602,6 @@ class DataPemeriksaanController extends Controller
         // return redirect()->route('petugas.dashboard');
     }
 }
+
 
 

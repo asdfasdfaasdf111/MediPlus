@@ -103,21 +103,19 @@
             </div>
             <div style="padding:16px;">
               @php
-                $timeSlots = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
-              @endphp
+                $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+                $timeSlots = $result['listJam'] ?? [];
+            @endphp
 
-              <div id="rentangWaktuKedatangan"
-                   class="d-grid"
-                   style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:.9rem;">
+              <div id="rentangWaktuKedatangan" class="d-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:.9rem;">
                 
                 {{-- Copy punya petugas --}}
-                @foreach ($timeSlots as $slot)
-                  <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>
-
-                  <label class="btn btn-outline-primary" for="slot-{{ $loop->index }}" style="display:block;width:100%;text-align:center;border-radius:999px;padding:.6rem 0;">
-                    {{ Carbon::parse($slot)->format('H:i') }} – {{ Carbon::parse($slot)->addHour()->format('H:i') }}
-                  </label>
-                @endforeach
+                  @foreach ($timeSlots as $slot)
+                      <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>
+                      <label class="btn btn-outline-secondary" for="slot-{{ $loop->index }}">
+                          {{ Carbon::parse($slot)->format('H:i') }} - {{ Carbon::parse($slot)->addHour($jump)->format('H:i') }}
+                      </label>
+                  @endforeach
               </div>
 
               <div class="small text-muted mt-2">

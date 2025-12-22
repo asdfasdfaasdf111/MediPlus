@@ -60,7 +60,7 @@
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div class="d-flex align-items-center gap-2">
                       <span class="badge bg-primary">
-                        {{ $namaJenisPemeriksaan.'-'.$dataSekarang->nomorAntrian }}
+                        {{ $modalitas->namaModalitas }} - {{ $dataSekarang->nomorAntrian }}
                       </span>
                       <span class="fw-semibold">
                         {{ $dataPasienSekarang->namaLengkap ?? '-' }}
@@ -102,7 +102,9 @@
                       <li class="list-group-item px-0 d-flex align-items-center justify-content-between bg-light">
                         <div class="d-flex align-items-center gap-2">
                           <i class="bi bi-person-badge text-muted"></i>
-                          <span class="fw-semibold">{{ $namaJenisPemeriksaan }} - {{ $dataPemeriksaan->nomorAntrian }}</span>
+                          <span class="fw-semibold">
+                            <span class="fw-semibold">{{ $modalitas->namaModalitas }} - {{ $dataPemeriksaan->nomorAntrian }}</span>
+                          </span>
                         </div>
                         <small class="text-muted">
                           {{ $dataPasien->namaLengkap ?? '-' }}

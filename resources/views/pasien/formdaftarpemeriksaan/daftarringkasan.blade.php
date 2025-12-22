@@ -17,6 +17,7 @@
     $rumahSakit = $dataPemeriksaan->rumahSakit;
     $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
     $dataPasien = $dataPemeriksaan->dataPasien;
+    $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <body class="bg-light text-dark">
@@ -70,10 +71,7 @@
                   <div class="col-md-6">
                     <div class="small text-muted">Rentang Waktu Kedatangan</div>
                     <div class="fw-semibold">
-                      {{ $dataPemeriksaan->rentangWaktuKedatangan }}
-                      -
-                      {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}
-                    </div>
+                     {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString() }}
                   </div>
                 </div>
               </div>

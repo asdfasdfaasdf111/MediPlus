@@ -122,7 +122,8 @@
 
                 <div style="padding:16px;">
                   @php
-                    $timeSlots = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+                    $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+                    $timeSlots = $result['listJam'] ?? [];
                   @endphp
 
                   <div id="rentangWaktuKedatangan" class="d-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:.9rem;">

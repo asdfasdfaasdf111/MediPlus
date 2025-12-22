@@ -82,6 +82,43 @@ class DokterController extends Controller
         return redirect()->route('admin.keloladokterpage')->with('success', 'Akun dokter berhasil dibuat!');
     }
 
+    public function updateJadwal(Request $request){
+        $request->validate([
+            'jadwal.*.jamBukaJam' => 'required|between:0,23',
+            'jadwal.*.jamTutupJam' => 'required|between:0,23',
+            'jadwal.*.jamBukaMenit' => 'required|between:0,59',
+            'jadwal.*.jamTutupMenit' => 'required|between:0,59',
+        ]);
+
+        $jadwalArray = [];
+
+        foreach ($request->input('jadwal', []) as $index => $jadwal) {
+            $jamBuka  = sprintf("%02d:%02d", $jadwal['jamBukaJam'], $jadwal['jamBukaMenit']);
+            $jamTutup = sprintf("%02d:%02d", $jadwal['jamTutupJam'], $jadwal['jamTutupMenit']);
+
+            if ($jamTutup <= $jamBuka){
+                return back()->withErrors(['jadwal'.($index+1).'jamBuka' => 'Jam tutup harus lebih besar dari jam buka']);
+            }
+            $jadwalArray[$index] = [
+                'jamBuka'  => $jamBuka,
+                'jamTutup' => $jamTutup,
+                'buka' => $jadwal['buka'],
+            ];
+        }
+
+        $dokter = auth()->user()->dokter;
+
+        $jadwalRS = $dokter->jadwalDokter;
+        for ($i = 0; $i < 7; $i++){
+            $jadwalRS[$i]->jamMulai = $jadwalArray[$i + 1]['jamBuka'];
+            $jadwalRS[$i]->jamSelesai = $jadwalArray[$i + 1]['jamTutup'];
+            $jadwalRS[$i]->kerja = $jadwalArray[$i + 1]['buka'];
+            $jadwalRS[$i]->save();
+        }
+
+        return redirect(route('dokter.ubahjadwalkerja'))->with('success', 'Jadwal kerja berhasil diperbarui');
+    }
+
     public function tampilkanDokter(Request $request)
     {
         $admin = auth()->user()->admin;

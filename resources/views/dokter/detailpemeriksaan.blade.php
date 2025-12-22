@@ -199,11 +199,16 @@
                     <div class="mb-3">
                       <label class="form-label fw-semibold">Mitra Radiologi</label>
                       <input type="file"
-                             class="form-control"
-                             name="files[]"
-                             id="hasilPemeriksaan"
-                             multiple
-                             required>
+                            class="form-control @error('files') is-invalid @enderror"
+                            name="files[]"
+                            multiple>
+
+                      @error('files')
+                        <div class="invalid-feedback">
+                          {{ $message }}
+                        </div>
+                      @enderror
+
                       <div class="form-text">
                         Kamu bisa unggah lebih dari 1 file (multiple).
                       </div>
@@ -212,35 +217,34 @@
                     <div class="mb-3">
                       <label for="deskripsi" class="form-label fw-semibold">Deskripsi Hasil Analisa</label>
                       <textarea name="deskripsi"
-                                id="deskripsi"
-                                rows="6"
-                                class="form-control"
-                                placeholder="Deskripsi Hasil Analisa"></textarea>
-                    </div>
+                                  id="deskripsi"
+                                  rows="6"
+                                  class="form-control @error('deskripsi') is-invalid @enderror"
+                                  placeholder="Deskripsi Hasil Analisa">{{ old('deskripsi') }}</textarea>
 
-                    <div class="d-flex justify-content-between flex-wrap gap-2">
-                      <button type="button"
-                              class="btn btn-outline-secondary fw-semibold px-4"
-                              data-bs-toggle="modal"
-                              data-bs-target="#popupDraft">
-                        Unggah Draft
-                      </button>
-
-                      <div class="d-flex gap-3 gap-md-4">
-                        <a href="{{ route('dokter.homepage') }}"
-                           class="btn btn-outline-primary fw-semibold px-4 px-md-5 rounded-pill">
-                          Kembali
-                        </a>
-                        <button type="submit"
-                                class="btn btn-primary fw-semibold px-4 px-md-5 rounded-pill">
-                          Kirim
-                        </button>
+                        @error('deskripsi')
+                          <div class="invalid-feedback">
+                            {{ $message }}
+                          </div>
+                        @enderror
                       </div>
+                  
+                  <div class="d-flex flex-wrap gap-2 position-relative">
+                    <button type="button"
+                            class="btn btn-outline-secondary fw-semibold px-4"
+                            data-bs-toggle="modal"
+                            data-bs-target="#popupDraft">
+                      Unggah Draft
+                    </button>
+
+                    <div class="position-absolute start-50 translate-middle-x">
+                      <button type="submit"
+                              class="btn btn-primary fw-semibold px-4 px-md-5 rounded-pill">
+                        Kirim
+                      </button>
                     </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+                  </div>
+
 
             {{-- Modal draft --}}
             <div class="modal fade" id="popupDraft" tabindex="-1" aria-labelledby="popupDraftLabel" aria-hidden="true">
@@ -268,6 +272,7 @@
                       <p class="text-muted mb-0">Tidak ada draft laporan tersedia.</p>
                     @endif
                   </div>
+
 
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

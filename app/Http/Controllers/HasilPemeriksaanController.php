@@ -12,8 +12,14 @@ class HasilPemeriksaanController extends Controller
 {
     public function bikinHasilPemeriksaan(Request $request, DataPemeriksaan $dataPemeriksaan){
         $request->validate([
+            'files' => 'required|array|min:1',
             'files.*' => 'required|file',
             'deskripsi' => 'required|string',
+        ], 
+        [
+            'files.required' => 'File hasil pemeriksaan wajib diunggah.',
+            'files.min'      => 'Minimal 1 file hasil pemeriksaan harus diunggah.',
+            'deskripsi.required' => 'Deskripsi hasil analisa wajib diisi.',
         ]);
 
         $uploadedFiles = [];

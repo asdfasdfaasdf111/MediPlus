@@ -18,5 +18,6 @@
   </main>
 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+  @stack('scripts')
 </body>
 </html>

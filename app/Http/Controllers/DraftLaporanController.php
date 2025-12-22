@@ -11,12 +11,16 @@ class DraftLaporanController extends Controller
     public function index(Request $request){
         $search = $request->input('search');
 
-        $drafts = DraftLaporan::when($search, function ($query, $search){
-            $query->where('judul', 'like', "%{$search}%")
-                ->orWhere('deskripsi', 'like', "%{$search}%");
+        $drafts = DraftLaporan::when($search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('judul', 'like', "%{$search}%")
+              ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
         })
-        ->orderBy('judul')
-        ->get();
+        ->orderBy('judul', 'asc')
+        ->paginate(5)          
+        ->withQueryString();  
+
 
         return view('dokter.listdaftar', compact('drafts', 'search'));
     }
@@ -38,7 +42,7 @@ class DraftLaporanController extends Controller
             'deskripsi' => $request->deskripsi ?? $draft->deskripsi
         ]);
 
-        return redirect('/dokter/listdraft')->with('success', 'Data berhasil diupdate');
+        return redirect('/dokter/listdraft')->with('success', 'Draft berhasil diperbaru');
     }
 
     public function addNew(){
@@ -55,10 +59,12 @@ class DraftLaporanController extends Controller
             'deskripsi.required' => 'Deskripsi draft wajib diisi.',
         ]);
 
+        $dokter = auth()->user()->dokter;
+
         DraftLaporan::create([
             'judul'     => $validated['judul'],
             'deskripsi' => $validated['deskripsi'],
-            'dokter_id' => auth()->id(),
+            'dokter_id' => $dokter->id,
         ]);
 
         return redirect(route('dokter.listdaftar'))->with('success', 'Draft berhasil ditambahkan.');
@@ -67,7 +73,7 @@ class DraftLaporanController extends Controller
 
     public function deleteData(DraftLaporan $draft){
         $draft->delete();
-        return redirect()->route('dokter.listdaftar')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('dokter.listdaftar')->with('success', 'Draft berhasil dihapus');
     }
 
 }

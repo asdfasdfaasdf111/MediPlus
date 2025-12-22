@@ -28,7 +28,7 @@
     <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString() }}</div>
-    <a href="{{ route('petugas.daftarpilihjadwal', $masterPasien) }}"> Ubah Jadwal </a>
+    <a href="{{ route('petugas.daftarpilihjadwal', $masterPasien->user->id) }}"> Ubah Jadwal </a>
 </div>
 ==========================================================
 <div>

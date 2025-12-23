@@ -403,9 +403,9 @@ Route::middleware(['auth:web'])->group(function () {
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');
 
-Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}',
-            function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId);
-            return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });
+Route::get('/api/namaJenisPemeriksaan/{rumahSakit}/{kelompok}',
+            function ($rumahSakitId, $kelompok) { $rumahSakit = RumahSakit::find($rumahSakitId);
+            return $rumahSakit->namaJenisPemeriksaan($kelompok); });
 Route::get('/api/jadwalPenuh/{rumahSakit}/{jenis}',
             function ($rumahSakitId, $jenisId) {
                 $rumahSakit = RumahSakit::find($rumahSakitId);
@@ -427,7 +427,10 @@ Route::get('/api/jamTersediaPetugas/{rumahSakit}/{jenis}/{tanggal}',
                 $rumahSakit = RumahSakit::find($rumahSakitId);
                 $jenisPemeriksaan = JenisPemeriksaan::find($jenisId);
                 return $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $tanggal); });
-Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) {
-                $rumahSakit = RumahSakit::find($rumahSakitId);
-                return $rumahSakit->namaJenisPemeriksaan(); 
+// Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) {
+//                 $rumahSakit = RumahSakit::find($rumahSakitId);
+//                 return $rumahSakit->namaJenisPemeriksaan(); 
+// });
+Route::get('/api/kelompokJenisPemeriksaan/{rumahSakit}', function ($id) {
+    return RumahSakit::findOrFail($id)->namaKelompokJenisPemeriksaan();
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\JenisPemeriksaan;
+use App\Models\KelompokJenisPemeriksaan;
 use App\Models\Modalitas;
 use App\Models\RumahSakit;
 use App\Services\LogService;
@@ -40,15 +41,15 @@ class JenisPemeriksaanController extends Controller
 
         $request->validate([
             'namaJenisPemeriksaan' => 'required|string|max:100',
-            'namaPemeriksaanSpesifik' => 'required|string|max:100',
-            'kelompokJenisPemeriksaan' => 'required|string|max:100',
+            // 'namaPemeriksaanSpesifik' => 'required|string|max:100',
+            // 'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
         ]);
 
-        $jenisPemeriksaan->modalitas_id = $request->input('modalitasId');
+        $jenisPemeriksaan->kelompok_jenis_pemeriksaan_id = $request->input('kelompokJenisPemeriksaan');
         $jenisPemeriksaan->namaJenisPemeriksaan = $request->input('namaJenisPemeriksaan');
-        $jenisPemeriksaan->namaPemeriksaanSpesifik = $request->input('namaPemeriksaanSpesifik');
-        $jenisPemeriksaan->kelompokJenisPemeriksaan = $request->input('kelompokJenisPemeriksaan');
+        // $jenisPemeriksaan->namaPemeriksaanSpesifik = $request->input('namaPemeriksaanSpesifik');
+        // $jenisPemeriksaan->kelompokJenisPemeriksaan = $request->input('kelompokJenisPemeriksaan');
         $jenisPemeriksaan->pemakaianKontras = $request->input('pemakaianKontras');
         $jenisPemeriksaan->lamaPemeriksaan = $request->input('lamaPemeriksaan');
         $jenisPemeriksaan->diDampingiDokter = $request->input('diDampingiDokter');
@@ -59,7 +60,7 @@ class JenisPemeriksaanController extends Controller
         LogService::create('Mengupdate jenis pemeriksaan dengan id: '.$jenisPemeriksaan->id, $petugas->id);
         return response()->json([
             'success' => true,
-            'namaModalitas' => Modalitas::findOrFail($jenisPemeriksaan->modalitas_id)->namaModalitas
+            'namaKelompokJenisPemeriksaan' => KelompokJenisPemeriksaan::findOrFail($jenisPemeriksaan->kelompok_jenis_pemeriksaan_id)->namaKelompok
             ]);
     }
 
@@ -79,12 +80,10 @@ class JenisPemeriksaanController extends Controller
         
         $jenisPemeriksaans = $rumahSakit->jenisPemeriksaan()
         ->when($request->search, function ($query, $search) {
-            $query->whereHas('modalitas', function ($q) use ($search){
-                $q->where('namaModalitas', 'like', "%{$search}%");
+            $query->whereHas('kelompokJenisPemeriksaan', function ($q) use ($search){
+                $q->where('namaKelompok', 'like', "%{$search}%");
             })
-            ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
-            ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
-            ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
+            ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%");
         })
         ->get();
         

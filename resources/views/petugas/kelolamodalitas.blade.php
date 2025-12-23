@@ -80,11 +80,24 @@
                              value="{{ $modalitas->namaModalitas }}">
                     </td>
 
-                    <td>
+                    {{-- <td>
                       <span data-name="jenisModalitas" class="view-field">{{ $modalitas->jenisModalitas }}</span>
                       <input type="text" name="jenisModalitas"
                              class="form-control form-control-sm edit-field d-none"
                              value="{{ $modalitas->jenisModalitas }}">
+                    </td> --}}
+
+                    <td>
+                      <span data-name="kelompokJenisPemeriksaan" class="view-field">
+                        {{ $modalitas->kelompokJenisPemeriksaan->namaKelompok }}
+                      </span>
+                      <select name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none">
+                        @foreach($petugas->rumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                          <option value="{{ $kelompokJenisPemeriksaan->id }}" {{ $kelompokJenisPemeriksaan->id == $modalitas->kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                            {{ $kelompokJenisPemeriksaan->namaKelompok }}
+                          </option>
+                        @endforeach
+                      </select>
                     </td>
 
                     <td>

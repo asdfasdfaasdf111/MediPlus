@@ -26,7 +26,7 @@
 <div>
     <div>Pilih Jadwal</div>
     <div>Rumah Sakit: {{ $rumahSakit->nama }}</div>
-    <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
+    <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }}</div>
     <div>Tanggal Pemeriksaan: {{ $dataPemeriksaan->tanggalPemeriksaan }}</div>
     <div>Rentang Waktu Kedatangan: {{ $dataPemeriksaan->rentangWaktuKedatangan }} - {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString() }}</div>
     <a href="{{ route('pasien.daftarpilihjadwal') }}"> Ubah Jadwal </a>

@@ -174,7 +174,7 @@
                 @endif
 
                 <div class="col-6 text-muted">Jenis Pemeriksaan</div>
-                <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $ex->jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
+                <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }}</div>
 
                 <div class="col-6 text-muted">Tanggal Pemeriksaan</div>
                 <div class="col-6 fw-semibold">: {{ $tgl }}</div>
@@ -184,7 +184,7 @@
 
                 @if ($ex->statusPasien === 'Dalam Antrian')
                   <div class="col-6 text-muted">Nomor Antrian</div>
-                  <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->modalitas->namaModalitas }}-{{$ex->nomorAntrian}}</div>                
+                  <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->kelompokJenisPemeriksaan->namaKelompok }}-{{$ex->nomorAntrian}}</div>                
                 @endif
               </div>
             </div>

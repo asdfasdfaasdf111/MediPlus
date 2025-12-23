@@ -58,8 +58,8 @@ class DataPemeriksaanController extends Controller
 
     public function updateJadwal(Request $request, DataPemeriksaan $dataPemeriksaan, $draft){
         $request->validate([
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
@@ -92,7 +92,7 @@ class DataPemeriksaanController extends Controller
 
         $rumahSakit = $dataPemeriksaan->rumahSakit;
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
         if (!$jenisPemeriksaan){
@@ -102,6 +102,7 @@ class DataPemeriksaanController extends Controller
         }
 
         $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
+        if ($user->petugas) $result = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $request->tanggalPemeriksaan, $dataPemeriksaan);
         $listJam = $result['listJam'] ?? [];
         $timeAvailable = false;
         foreach ($listJam as $jam){
@@ -116,7 +117,7 @@ class DataPemeriksaanController extends Controller
             ]);
         }
 
-        if (!$draft && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
+        if ($user->petugas && !$draft && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
             $petugas = auth()->user()->petugas;
             $dataPemeriksaan->historyJenisPemeriksaan = $dataPemeriksaan->jenis_pemeriksaan_id;
             $dataPemeriksaan->historyTanggalPemeriksaan = $dataPemeriksaan->tanggalPemeriksaan;
@@ -128,8 +129,11 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->rentangWaktuKedatangan = $request->rentangWaktuKedatangan;
         $dataPemeriksaan->save();
         
-        if (!$draft){
+        if (!$draft && $user->petugas){
             return redirect()->route('petugas.pratinjaupemeriksaan', $dataPemeriksaan);
+        }
+        else if (!$draft){
+            return redirect()->route('pasien.pendaftaran');
         }
         else{
             return redirect()->route('pasien.daftartipepasien');
@@ -138,15 +142,15 @@ class DataPemeriksaanController extends Controller
 
     public function updateJadwalOnsite(Request $request, DataPemeriksaan $dataPemeriksaan){
         $request->validate([
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
         $rumahSakit = $dataPemeriksaan->rumahSakit;
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
         if (!$jenisPemeriksaan){
@@ -221,15 +225,15 @@ class DataPemeriksaanController extends Controller
     public function bikinDraft(Request $request){
         $request->validate([
             'rumahSakit' => 'required|string',
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
         $rumahSakit = RumahSakit::find($request->rumahSakit);
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
 
@@ -272,15 +276,15 @@ class DataPemeriksaanController extends Controller
 
     public function bikinDraftOnsite(Request $request, $masterPasienId){
         $request->validate([
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
         $rumahSakit = auth()->user()->petugas->rumahSakit;
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
         if (!$jenisPemeriksaan){
@@ -343,12 +347,12 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->namaPendamping = $request->namaPendamping;
         $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
         $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
-        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
-        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
-        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;
-        $dataPemeriksaan->riwayatNoHP = $dataPasien->riwayatNoHP;
-        $dataPemeriksaan->riwayatAlergi = $dataPasien->riwayatAlergi;
-        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->riwayatGolonganDarah;
+        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->alamatDomisili;
+        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->tanggalLahir;
+        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->jenisKelamin;
+        $dataPemeriksaan->riwayatNoHP = $dataPasien->noHP;
+        $dataPemeriksaan->riwayatAlergi = $dataPasien->alergi;
+        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->golonganDarah;
         $dataPemeriksaan->save();
         
         return redirect()->route('pasien.daftardatarujukan');
@@ -371,12 +375,12 @@ class DataPemeriksaanController extends Controller
         $dataPemeriksaan->namaPendamping = $request->namaPendamping;
         $dataPemeriksaan->nomorPendamping = $request->nomorPendamping;
         $dataPemeriksaan->hubunganPendamping = $request->hubunganPendamping;
-        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->riwayatAlamatDomisili;
-        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->riwayatTanggalLahir;
-        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->riwayatJenisKelamin;
-        $dataPemeriksaan->riwayatNoHP = $dataPasien->riwayatNoHP;
-        $dataPemeriksaan->riwayatAlergi = $dataPasien->riwayatAlergi;
-        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->riwayatGolonganDarah;
+        $dataPemeriksaan->riwayatAlamatDomisili = $dataPasien->alamatDomisili;
+        $dataPemeriksaan->riwayatTanggalLahir = $dataPasien->tanggalLahir;
+        $dataPemeriksaan->riwayatJenisKelamin = $dataPasien->jenisKelamin;
+        $dataPemeriksaan->riwayatNoHP = $dataPasien->noHP;
+        $dataPemeriksaan->riwayatAlergi = $dataPasien->alergi;
+        $dataPemeriksaan->riwayatGolonganDarah = $dataPasien->golonganDarah;
         $dataPemeriksaan->save();
         
         return redirect()->route('petugas.daftardatarujukan', $masterPasien);

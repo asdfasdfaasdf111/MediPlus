@@ -19,6 +19,7 @@
     $draftData = $masterPasien->draftPemeriksaan;
     $draftRumahSakit = $draftData?->rumahSakit;
     $draftJenisPemeriksaan = $draftData?->jenisPemeriksaan;
+    $draftKelompokJenisPemeriksaan = $draftJenisPemeriksaan?->kelompokJenisPemeriksaan;
 @endphp
 
 <body class="bg-light text-dark">
@@ -77,12 +78,12 @@
 
               {{-- Jenis & Spesifik ud bikin responsive. col-12 full, yg md bagi 2--}}
               <div class="col-12 col-md-6">
-                <label for="jenisPemeriksaan" class="form-label fw-semibold">Jenis Pemeriksaan</label>
-                <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select rounded-3" required>
+                <label for="kelompokJenisPemeriksaan" class="form-label fw-semibold">Kelompok Jenis Pemeriksaan</label>
+                <select id="kelompokJenisPemeriksaan" name="kelompokJenisPemeriksaan" class="form-select rounded-3" required>
                     @if ($draftData)
-                        @foreach($draftRumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-                            <option value="{{ $namaJenisPemeriksaan }}" {{ $namaJenisPemeriksaan == $draftJenisPemeriksaan->namaJenisPemeriksaan ? 'selected' : '' }}>
-                                {{ $namaJenisPemeriksaan }}
+                        @foreach($draftRumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                            <option value="{{ $kelompokJenisPemeriksaan->id }}" {{ $kelompokJenisPemeriksaan->id == $draftKelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                                {{ $kelompokJenisPemeriksaan->namaKelompok }}
                             </option>
                         @endforeach
                     @endif
@@ -91,15 +92,15 @@
               </div>
 
               <div class="col-12 col-md-6">
-                <label for="jenisPemeriksaanSpesifik" class="form-label fw-semibold">Pemeriksaan Spesifik</label>
-                <select id="jenisPemeriksaanSpesifik" name="jenisPemeriksaanSpesifik" class="form-select rounded-3" required>
+                <label for="jenisPemeriksaan" class="form-label fw-semibold">Jenis Pemeriksaan</label>
+                <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select rounded-3" required>
                     @if ($draftData)
                         <option value="-" disabled>
                             -
                         </option>
-                        @foreach($draftRumahSakit->jenisPemeriksaanSpesifik($draftJenisPemeriksaan->namaJenisPemeriksaan)->get() as $pemeriksaanSpesifik)
-                            <option value="{{ $pemeriksaanSpesifik->id }}" {{ $pemeriksaanSpesifik->id == $draftJenisPemeriksaan->id ? 'selected' : '' }}>
-                                {{ $pemeriksaanSpesifik->namaPemeriksaanSpesifik }}
+                        @foreach($draftRumahSakit->namaJenisPemeriksaan($draftKelompokJenisPemeriksaan->id) as $jenisPemeriksaan)
+                            <option value="{{ $jenisPemeriksaan->id }}" {{ $jenisPemeriksaan->id == $draftJenisPemeriksaan->id ? 'selected' : '' }}>
+                                {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                             </option>
                         @endforeach
                     @endif

@@ -8,13 +8,14 @@
   <link rel="stylesheet" href="{{ asset('bootstrap5/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   @vite(['resources/js/calendar.js'])
-  @vite(['resources/js/jadwal-dinamis.js'])
+  @vite(['resources/js/jadwal-dinamis-petugas.js'])
 </head>
 
 @php
   use Carbon\Carbon;
   $rumahSakit       = $dataPemeriksaan->rumahSakit;
   $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+  $kelompokJenisPemeriksaan = $jenisPemeriksaan->kelompokJenisPemeriksaan;
   $jump = $jenisPemeriksaan->getJump();
 @endphp
 
@@ -58,13 +59,13 @@
 
           <div class="row g-3" style="padding:16px 20px;">
             <div class="col-12 col-md-6">
-              <label for="jenisPemeriksaan" class="form-label" style="font-weight:600;">Jenis Pemeriksaan</label>
-              <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select" required
+              <label for="kelompokJenisPemeriksaan" class="form-label" style="font-weight:600;">Kelompok Jenis Pemeriksaan</label>
+              <select id="kelompokJenisPemeriksaan" name="kelompokJenisPemeriksaan" class="form-select" required
                       style="border-radius:12px;">
-                @foreach($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-                  <option value="{{ $namaJenisPemeriksaan }}"
-                          {{ $namaJenisPemeriksaan == $jenisPemeriksaan->namaJenisPemeriksaan ? 'selected' : '' }}>
-                    {{ $namaJenisPemeriksaan }}
+                @foreach($rumahSakit->kelompokJenisPemeriksaan as $kelompok)
+                  <option value="{{ $kelompok->id }}"
+                          {{ $kelompokJenisPemeriksaan->id == $kelompok->id ? 'selected' : '' }}>
+                    {{ $kelompok->namaKelompok }}
                   </option>
                 @endforeach
               </select>
@@ -72,14 +73,14 @@
             </div>
 
             <div class="col-12 col-md-6">
-              <label for="jenisPemeriksaanSpesifik" class="form-label" style="font-weight:600;">Pemeriksaan Spesifik</label>
-              <select id="jenisPemeriksaanSpesifik" name="jenisPemeriksaanSpesifik" class="form-select" required
+              <label for="jenisPemeriksaan" class="form-label" style="font-weight:600;">Jenis Pemeriksaan</label>
+              <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select" required
                       style="border-radius:12px;">
                 <option value="-" disabled>-</option>
-                @foreach($rumahSakit->jenisPemeriksaanSpesifik($jenisPemeriksaan->namaJenisPemeriksaan)->get() as $pemeriksaanSpesifik)
-                  <option value="{{ $pemeriksaanSpesifik->id }}"
-                          {{ $pemeriksaanSpesifik->id == $jenisPemeriksaan->id ? 'selected' : '' }}>
-                    {{ $pemeriksaanSpesifik->namaPemeriksaanSpesifik }}
+                @foreach($rumahSakit->namaJenisPemeriksaan($kelompokJenisPemeriksaan->id) as $jenis)
+                  <option value="{{ $jenisPemeriksaan->id }}"
+                          {{ $jenisPemeriksaan->id == $jenis->id ? 'selected' : '' }}>
+                    {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                   </option>
                 @endforeach
               </select>
@@ -102,7 +103,7 @@
 
                   <div style="background:#fff;border-radius:12px;">
                     <x-calendar
-                      :disabled-dates="$rumahSakit->jadwalPenuh($jenisPemeriksaan)"
+                      :disabled-dates="$rumahSakit->jadwalPenuhPetugas($jenisPemeriksaan)"
                       :default-date="$dataPemeriksaan->tanggalPemeriksaan"
                       id="tanggalPemeriksaan"
                       name="tanggalPemeriksaan"
@@ -111,7 +112,7 @@
 
                   <div class="small text-muted mt-2">
                     <i class="bi bi-info-circle me-1"></i>
-                    Pilih tanggal yang tersedia. Tanggal abu-abu menandakan jadwal penuh.
+                    Pilih tanggal yang tersedia.
                   </div>
                 </div>
               </div>
@@ -121,12 +122,12 @@
               <div class="h-100" style="background:#fff;border:1px solid #e9ecef;border-radius:12px;">
                 <div class="border-bottom d-flex align-items-center justify-content-between" style="padding:12px 16px;">
                   <label class="form-label fw-bold" style="margin:0;">Rentang Waktu Kedatangan</label>
-                  <span class="badge text-bg-light" style="border-radius:999px;">1 jam/slot</span>
+                  <span class="badge text-bg-light" id="slotInfo" style="border-radius:999px;">1 jam/slot</span>
                 </div>
 
                 <div style="padding:16px;">
                   @php
-                    $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
+                    $result = $rumahSakit->jamTersediaPetugas($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
                     $timeSlots = $result['listJam'] ?? [];
                   @endphp
 

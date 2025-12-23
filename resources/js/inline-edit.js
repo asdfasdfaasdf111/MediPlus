@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Update the text fields
                 const viewData = row.querySelectorAll(".view-field");
                 //Biar gak usah nyari namanya di javascript, langsung ambil aja yang dapet dari controller
-                if ('namaModalitas' in responseData){
-                    data['modalitasId'] = responseData.namaModalitas;
+                if ('namaKelompokJenisPemeriksaan' in responseData){
+                    data['kelompokJenisPemeriksaan'] = responseData.namaKelompokJenisPemeriksaan;
                 }
                 
                 viewData.forEach(view => {

@@ -69,9 +69,9 @@
 
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th>Modalitas</th>
+                  {{-- <th>Modalitas</th> --}}
                   <th>Nama Jenis</th>
-                  <th>Spesifik</th>
+                  {{-- <th>Spesifik</th> --}}
                   <th>Kelompok</th>
                   <th class="text-center">Kontras</th>
                   <th>Durasi</th>
@@ -83,7 +83,7 @@
               <tbody>
                 @forelse($jenisPemeriksaans as $jenisPemeriksaan)
                 <tr id="row-{{ $jenisPemeriksaan->id }}">
-                  <td>
+                  {{-- <td>
                     <span data-name="modalitasId" class="view-field">
                       {{ $jenisPemeriksaan->modalitas->namaModalitas }}
                     </span>
@@ -94,7 +94,7 @@
                         </option>
                       @endforeach
                     </select>
-                  </td>
+                  </td> --}}
 
                   <td>
                     <span data-name="namaJenisPemeriksaan" class="view-field">{{ $jenisPemeriksaan->namaJenisPemeriksaan }}</span>
@@ -102,16 +102,28 @@
                            value="{{ $jenisPemeriksaan->namaJenisPemeriksaan }}">
                   </td>
 
-                  <td>
+                  {{-- <td>
                     <span data-name="namaPemeriksaanSpesifik" class="view-field">{{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</span>
                     <input type="text" name="namaPemeriksaanSpesifik" class="form-control form-control-sm edit-field d-none"
                            value="{{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}">
-                  </td>
+                  </td> --}}
 
-                  <td>
+                  {{-- <td>
                     <span data-name="kelompokJenisPemeriksaan" class="view-field">{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}</span>
                     <input type="text" name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none"
                            value="{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}">
+                  </td> --}}
+                  <td>
+                    <span data-name="kelompokJenisPemeriksaan" class="view-field">
+                      {{ $jenisPemeriksaan->kelompokJenisPemeriksaan->namaKelompok }}
+                    </span>
+                    <select name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none">
+                      @foreach($petugas->rumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                        <option value="{{ $kelompokJenisPemeriksaan->id }}" {{ $kelompokJenisPemeriksaan->id == $jenisPemeriksaan->kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                          {{ $kelompokJenisPemeriksaan->namaKelompok }}
+                        </option>
+                      @endforeach
+                    </select>
                   </td>
 
                   <td class="text-center align-middle">

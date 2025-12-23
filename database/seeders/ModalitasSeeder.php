@@ -15,12 +15,15 @@ class ModalitasSeeder extends Seeder
     public function run(): void
     {
         $rumahSakit = RumahSakit::first();
+        $kelompokJenisPemeriksaan = $rumahSakit
+        ->kelompokJenisPemeriksaan()
+        ->first();
 
         for ($i = 0; $i < 5; $i++){
             Modalitas::create([
                 'rumah_sakit_id' => $rumahSakit->id,
                 'namaModalitas' => 'AX'.$i,
-                'jenisModalitas' => 'Siemens',
+                'kelompok_jenis_pemeriksaan_id' => $kelompokJenisPemeriksaan->id,
                 'kodeRuang' => 'R001',
             ]);
         }

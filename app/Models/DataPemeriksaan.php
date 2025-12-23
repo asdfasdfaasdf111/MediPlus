@@ -14,6 +14,7 @@ class DataPemeriksaan extends Model
         'rumah_sakit_id',
         'data_rujukan_id',
         'master_pasien_id',
+        'modalitas_id',
         'tanggalPemeriksaan',
         'rentangWaktuKedatangan',
         'namaPendamping',
@@ -49,6 +50,11 @@ class DataPemeriksaan extends Model
     public function jenisPemeriksaan()
     {
         return $this->belongsTo(JenisPemeriksaan::class);
+    }
+
+    public function modalitas()
+    {
+        return $this->belongsTo(Modalitas::class);
     }
 
     public function dataPasien()

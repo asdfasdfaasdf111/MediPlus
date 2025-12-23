@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\KelompokJenisPemeriksaan;
 use App\Models\Modalitas;
 use App\Services\LogService;
 use Illuminate\Http\Request;
@@ -34,12 +35,12 @@ class ModalitasController extends Controller
 
         $request->validate([
             'namaModalitas' => 'required|string|max:100',
-            'jenisModalitas' => 'required|string|max:100',
+            // 'jenisModalitas' => 'required|string|max:100',
             'kodeRuang' => 'required|string|max:100',
         ]);
 
         $modalitas->namaModalitas = $request->input('namaModalitas');
-        $modalitas->jenisModalitas = $request->input('jenisModalitas');
+        $modalitas->kelompok_jenis_pemeriksaan_id = $request->input('kelompokJenisPemeriksaan');
         $modalitas->kodeRuang = $request->input('kodeRuang');
         $petugas = auth()->user()->petugas;
 
@@ -48,6 +49,7 @@ class ModalitasController extends Controller
 
         return response()->json([
             'success' => true,
+            'namaKelompokJenisPemeriksaan' => KelompokJenisPemeriksaan::findOrFail($modalitas->kelompok_jenis_pemeriksaan_id)->namaKelompok
             ]);
     }
 
@@ -68,7 +70,9 @@ class ModalitasController extends Controller
         $modalitass = $rumahSakit->modalitas()
         ->when($request->search, function ($query, $search) {
             $query->where('namaModalitas', 'like', "%{$search}%")
-            ->orWhere('jenisModalitas', 'like', "%{$search}%");
+            ->orWhereHas('kelompokJenisPemeriksaan', function ($q) use ($search) {
+                $q->where('namaKelompok', 'like', "%{$search}%");
+            });
         })
         ->get();
         

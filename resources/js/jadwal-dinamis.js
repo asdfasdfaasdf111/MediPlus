@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     const rumahSakit = document.getElementById('rumahSakit');
+    const kelompokJenisPemeriksaan = document.getElementById('kelompokJenisPemeriksaan');
     const jenisPemeriksaan = document.getElementById('jenisPemeriksaan');
-    const jenisPemeriksaanSpesifik = document.getElementById('jenisPemeriksaanSpesifik');
     const tanggalPemeriksaan = document.getElementById('tanggalPemeriksaan');
     const tanggalPemeriksaanInput = document.getElementById('tanggalPemeriksaanInput');
     const rentangWaktuKedatangan = document.getElementById('rentangWaktuKedatangan');
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let rumahSakitValue = rumahSakit ? rumahSakit.value : window.rumahSakit.id;
     if (rumahSakit !== null){
         //kalo isiny kosong, brarti ga ad draft data, jadi tanggalnya di disable
-        if (jenisPemeriksaanSpesifik.value == ""){
+        if (jenisPemeriksaan.value == ""){
             tanggalPemeriksaan.calendar.set("disable", [
                 function(date){
                     return true;
@@ -23,22 +23,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
         rumahSakit.addEventListener("change", (e) => {
             rumahSakitValue = rumahSakit.value;
-            fetch(`/api/namaJenisPemeriksaan/${rumahSakitValue}`)
+            fetch(`/api/kelompokJenisPemeriksaan/${rumahSakitValue}`)
+                .then(res => res.json())
+                .then(data => {
+                    kelompokJenisPemeriksaan.innerHTML = '<option value="-" disabled selected>-</option>';
+    
+                    data.forEach(item => {
+                        const option = document.createElement("option");
+                        option.value = item.id;                
+                        option.textContent = item.namaKelompok;
+                        kelompokJenisPemeriksaan.appendChild(option);
+                    });
+                });
+
+            while (jenisPemeriksaan.firstChild) {
+                jenisPemeriksaan.removeChild(jenisPemeriksaan.firstChild);
+            }
+            
+            tanggalPemeriksaan.calendar.set("disable", [
+                function(date){
+                    return true;
+                }
+            ]);
+    
+            while (rentangWaktuKedatangan.firstChild) {
+                rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
+            }
+    
+            submitBtn.disabled = true;
+        });
+    }
+
+    if (kelompokJenisPemeriksaan !== null){
+        kelompokJenisPemeriksaan.addEventListener("change", (e) => {
+            fetch(`/api/namaJenisPemeriksaan/${rumahSakitValue}/${kelompokJenisPemeriksaan.value}`)
                 .then(res => res.json())
                 .then(data => {
                     jenisPemeriksaan.innerHTML = '<option value="-" disabled selected>-</option>';
     
                     data.forEach(item => {
                         const option = document.createElement("option");
-                        option.value = item;
-                        option.textContent = item;
+                        option.value = item.id;
+                        option.textContent = item.namaJenisPemeriksaan;
                         jenisPemeriksaan.appendChild(option);
                     });
                 });
-
-            while (jenisPemeriksaanSpesifik.firstChild) {
-                jenisPemeriksaanSpesifik.removeChild(jenisPemeriksaanSpesifik.firstChild);
-            }
             
             tanggalPemeriksaan.calendar.set("disable", [
                 function(date){
@@ -53,44 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
             submitBtn.disabled = true;
         });
     }
+    
 
     if (jenisPemeriksaan !== null){
-        jenisPemeriksaan.addEventListener("change", (e) => {
-    
-            fetch(`/api/jenisPemeriksaanSpesifik/${rumahSakitValue}/${jenisPemeriksaan.value}`)
-                .then(res => res.json())
-                .then(data => {
-                    jenisPemeriksaanSpesifik.innerHTML = '<option value="-" disabled selected>-</option>';
-    
-                    data.forEach(item => {
-                        const option = document.createElement("option");
-                        option.value = item.id;
-                        option.textContent = item.namaPemeriksaanSpesifik;
-                        jenisPemeriksaanSpesifik.appendChild(option);
-                    });
-                });
-            
-            tanggalPemeriksaan.calendar.set("disable", [
-                function(date){
-                    return true;
-                }
-            ]);
-    
-            while (rentangWaktuKedatangan.firstChild) {
-                rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
-            }
-    
-            submitBtn.disabled = true;
-        });
-    }
-    
-
-    if (jenisPemeriksaanSpesifik !== null){
         //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
-        jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
+        jenisPemeriksaan.addEventListener("change", (e) => {
             tanggalPemeriksaan.calendar.clear(false);
             
-            fetch(`/api/jadwalPenuh/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
+            fetch(`/api/jadwalPenuh/${rumahSakitValue}/${jenisPemeriksaan.value}`)
                 .then(res => res.json())
                 .then(data => {
                     tanggalPemeriksaan.calendar.set("disable", data);
@@ -112,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tanggalPemeriksaanInput.value = dateStr;
 
         const idPart = window.dataPemeriksaan?.id ? `/${window.dataPemeriksaan.id}` : "";
-        const jenisValue = jenisPemeriksaanSpesifik ? jenisPemeriksaanSpesifik.value : window.jenisPemeriksaan.id;
+        const jenisValue = jenisPemeriksaan ? jenisPemeriksaan.value : window.jenisPemeriksaan.id;
         const url = `/api/jamTersedia/${rumahSakitValue}/${jenisValue}/${dateStr}${idPart}`;
 
         fetch(url)

@@ -72,7 +72,7 @@
                   {{-- <th>Modalitas</th> --}}
                   <th>Nama Jenis</th>
                   {{-- <th>Spesifik</th> --}}
-                  <th>Kelompok</th>
+                  <th>Kelompok Jenis Pemeriksaan</th>
                   <th class="text-center">Kontras</th>
                   <th>Durasi</th>
                   <th class="text-center">Didampingi</th>

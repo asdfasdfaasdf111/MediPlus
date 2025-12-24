@@ -37,7 +37,7 @@
               @csrf
 
               {{-- Modalitas --}}
-              <div class="mb-3">
+              {{-- <div class="mb-3">
                 <label for="modalitasId" class="form-label">Modalitas</label>
                 <select name="modalitasId" id="modalitasId"
                         class="form-select @error('modalitasId') is-invalid @enderror" required>
@@ -57,7 +57,7 @@
                   @endif
                 </select>
                 @error('modalitasId') <div class="invalid-feedback">{{ $message }}</div> @enderror
-              </div>
+              </div> --}}
 
               {{-- Nama Jenis Pemeriksaan --}}
               <div class="mb-3">
@@ -69,25 +69,36 @@
                 @error('namaJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
               </div>
 
-              {{-- Nama Pemeriksaan Spesifik --}}
-              <div class="mb-3">
-                <label for="namaPemeriksaanSpesifik" class="form-label">Nama Pemeriksaan Spesifik</label>
-                <input type="text" class="form-control @error('namaPemeriksaanSpesifik') is-invalid @enderror"
-                       name="namaPemeriksaanSpesifik" id="namaPemeriksaanSpesifik"
-                       placeholder="Contoh: CT-Scan Abdomen Kontras"
-                       value="{{ old('namaPemeriksaanSpesifik') }}" required>
-                @error('namaPemeriksaanSpesifik') <div class="invalid-feedback">{{ $message }}</div> @enderror
-              </div>
-
               {{-- Kelompok Jenis Pemeriksaan --}}
               <div class="mb-3">
+                <label for="kelompokJenisPemeriksaan" class="form-label">Kelompok Jenis Pemeriksaan</label>
+                <select name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan"
+                        class="form-select @error('kelompokJenisPemeriksaan') is-invalid @enderror" required>
+                  @php
+                    $listKelompokJenisPemeriksaan = $petugas->rumahSakit->kelompokJenisPemeriksaan ?? collect();
+                  @endphp
+                  @if($listKelompokJenisPemeriksaan->isEmpty())
+                    <option value="" disabled selected>Belum ada kelompok jenis pemeriksaan di RS Anda</option>
+                  @else
+                    <option value="" disabled selected>Pilih Kelompok Jenis Pemeriksaan</option>
+                    @foreach($listKelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                      <option value="{{ $kelompokJenisPemeriksaan->id }}"
+                        {{ old('kelompokJenisPemeriksaan') == $kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                        {{ $kelompokJenisPemeriksaan->namaKelompok }}
+                      </option>
+                    @endforeach
+                  @endif
+                </select>
+                @error('kelompokJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
+              </div>
+              {{-- <div class="mb-3">
                 <label for="kelompokJenisPemeriksaan" class="form-label">Kelompok Jenis Pemeriksaan</label>
                 <input type="text" class="form-control @error('kelompokJenisPemeriksaan') is-invalid @enderror"
                        name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan"
                        placeholder="Contoh: Abdomen / Thorax / Kepala"
                        value="{{ old('kelompokJenisPemeriksaan') }}" required>
                 @error('kelompokJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
-              </div>
+              </div> --}}
 
               {{-- Memakai Kontras (switch) --}}
               <div class="mb-3">

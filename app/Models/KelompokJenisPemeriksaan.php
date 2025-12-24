@@ -8,6 +8,7 @@ class KelompokJenisPemeriksaan extends Model
 {
     protected $fillable = [
         'namaKelompok',
+        'rumah_sakit_id',
     ];
 
     public function modalitas()

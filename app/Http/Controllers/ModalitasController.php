@@ -13,14 +13,14 @@ class ModalitasController extends Controller
     public function tambahModalitas(Request $request){
         $request->validate([
             'namaModalitas' => 'required|string|max:100',
-            'jenisModalitas' => 'required|string|max:100',
+            // 'jenisModalitas' => 'required|string|max:100',
             'kodeRuang' => 'required|string|max:100',
         ]);
 
         $modalitas = Modalitas::create([
             'rumah_sakit_id' => auth()->user()->petugas->rumahSakit->id,
+            'kelompok_jenis_pemeriksaan_id' => $request->kelompokJenisPemeriksaan,
             'namaModalitas' => $request->namaModalitas,
-            'jenisModalitas' => $request->jenisModalitas,
             'kodeRuang' => $request->kodeRuang,
         ]);
 

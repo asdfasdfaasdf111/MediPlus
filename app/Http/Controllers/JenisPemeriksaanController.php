@@ -15,17 +15,18 @@ class JenisPemeriksaanController extends Controller
     public function tambahJenisPemeriksaan(Request $request){
         $request->validate([
             'namaJenisPemeriksaan' => 'required|string|max:100',
-            'namaPemeriksaanSpesifik' => 'required|string|max:100',
-            'kelompokJenisPemeriksaan' => 'required|string|max:100',
+            // 'namaPemeriksaanSpesifik' => 'required|string|max:100',
+            // 'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
         ]);
 
         $jenisPemeriksaan = JenisPemeriksaan::create([
-            'modalitas_id' => $request->modalitasId,
+            // 'modalitas_id' => $request->modalitasId,
             'rumah_sakit_id' => auth()->user()->petugas->rumahSakit->id,
+            'kelompok_jenis_pemeriksaan_id' => $request->kelompokJenisPemeriksaan,
             'namaJenisPemeriksaan' => $request->namaJenisPemeriksaan,
-            'namaPemeriksaanSpesifik' => $request->namaPemeriksaanSpesifik,
-            'kelompokJenisPemeriksaan' => $request->kelompokJenisPemeriksaan,
+            // 'namaPemeriksaanSpesifik' => $request->namaPemeriksaanSpesifik,
+            // 'kelompokJenisPemeriksaan' => $request->kelompokJenisPemeriksaan,
             'pemakaianKontras' => $request->pemakaianKontras,
             'lamaPemeriksaan' => $request->lamaPemeriksaan,
             'diDampingiDokter' => $request->diDampingiDokter,

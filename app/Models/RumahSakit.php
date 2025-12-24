@@ -342,20 +342,19 @@ class RumahSakit extends Model
         return $this->hasMany(CounterAntrian::class);
     }
 
-    public function counterHariIni($modalitasId){
+    public function counterHariIni($kelompokJenisPemeriksaanId){
         return $this->counterAntrian()
                     ->whereDate('tanggalAntrian', Carbon::today())
-                    ->where('modalitas_id', $modalitasId)
+                    ->where('kelompok_jenis_pemeriksaan_id', $kelompokJenisPemeriksaanId)
                     ->first();
     }
 
-    public function dataDalamPemeriksaan($modalitasId){
+    public function dataDalamPemeriksaan($kelompokJenisPemeriksaanId){
         return $this->dataPemeriksaan()
                     ->where('statusPasien', 'Pemeriksaan Berlangsung')
-                    ->whereHas('jenisPemeriksaan.modalitas', function ($query) use ($modalitasId) {
-                        $query->where('id', $modalitasId);
-                    })
-                    ->first();
+                    ->whereHas('jenisPemeriksaan.kelompokJenisPemeriksaan', function ($query) use ($kelompokJenisPemeriksaanId) {
+                        $query->where('id', $kelompokJenisPemeriksaanId);
+                    });
         // return $this->dataPemeriksaan()
         //             ->where('statusPasien', 'Pemeriksaan Berlangsung')
         //             ->whereHas('jenisPemeriksaan', function($query) use ($namaJenisPemeriksaan) {
@@ -364,11 +363,11 @@ class RumahSakit extends Model
         //             ->first();
     }
 
-    public function dataDalamAntrian($modalitasId){
+    public function dataDalamAntrian($kelompokJenisPemeriksaanId){
         return $this->dataPemeriksaan()
                     ->where('statusPasien', 'Dalam Antrian')
-                    ->whereHas('jenisPemeriksaan.modalitas', function ($query) use ($modalitasId) {
-                        $query->where('id', $modalitasId);
+                    ->whereHas('jenisPemeriksaan.kelompokJenisPemeriksaan', function ($query) use ($kelompokJenisPemeriksaanId) {
+                        $query->where('id', $kelompokJenisPemeriksaanId);
                     })
                     ->orderBy('nomorAntrian', 'asc');
     }

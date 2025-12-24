@@ -44,6 +44,27 @@
             </div>
 
             <div class="mb-3">
+              <label for="kelompokJenisPemeriksaan" class="form-label">Kelompok Jenis Pemeriksaan</label>
+              <select name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan"
+                      class="form-select @error('kelompokJenisPemeriksaan') is-invalid @enderror" required>
+                @php
+                  $listKelompokJenisPemeriksaan = $petugas->rumahSakit->kelompokJenisPemeriksaan ?? collect();
+                @endphp
+                @if($listKelompokJenisPemeriksaan->isEmpty())
+                  <option value="" disabled selected>Belum ada kelompok jenis pemeriksaan di RS Anda</option>
+                @else
+                  <option value="" disabled selected>Pilih Kelompok Jenis Pemeriksaan</option>
+                  @foreach($listKelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                    <option value="{{ $kelompokJenisPemeriksaan->id }}"
+                      {{ old('kelompokJenisPemeriksaan') == $kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                      {{ $kelompokJenisPemeriksaan->namaKelompok }}
+                    </option>
+                  @endforeach
+                @endif
+              </select>
+              @error('kelompokJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            </div>
+            {{-- <div class="mb-3">
             <label for="jenisModalitas" class="form-label">Jenis Modalitas</label>
             <input type="text"
                     class="form-control @error('jenisModalitas') is-invalid @enderror"
@@ -51,7 +72,7 @@
                     placeholder="Contoh: CT, MR, US, X-Ray"
                     value="{{ old('jenisModalitas') }}" required autocomplete="off">
             @error('jenisModalitas') <div class="invalid-feedback">{{ $message }}</div> @enderror
-            </div>
+            </div> --}}
 
             <div class="mb-3">
             <label for="kodeRuang" class="form-label">Kode Ruang</label>

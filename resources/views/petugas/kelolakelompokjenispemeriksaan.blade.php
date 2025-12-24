@@ -29,7 +29,7 @@
                        class="form-control"
                        name="search"
                        value="{{ request('search') }}"
-                       placeholder="Cari Modalitas">
+                       placeholder="Cari Kelompok Jenis Pemeriksaan">
                 <button class="btn btn-outline-secondary" type="submit">
                   <i class="bi bi-search"></i>
                 </button>
@@ -38,8 +38,8 @@
           </div>
 
           <div class="col-12 col-md-2 mt-2 mt-md-0">
-            <a href="{{ route('petugas.tambahmodalitaspage') }}" class="btn btn-primary w-100">
-              <i class="bi bi-plus"></i> Tambah Modalitas
+            <a href="{{ route('petugas.tambahkelompokjenispemeriksaanpage') }}" class="btn btn-primary w-100">
+              <i class="bi bi-plus"></i> Tambah Kelompok Jenis Pemeriksaan
             </a>
           </div>
         </div>
@@ -49,7 +49,7 @@
           <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
             <span></span>
             <small class="text-muted">
-              Total: {{ method_exists($modalitass,'total') ? $modalitass->total() : $modalitass->count() }}
+              Total: {{ method_exists($kelompokJenisPemeriksaans,'total') ? $kelompokJenisPemeriksaans->total() : $kelompokJenisPemeriksaans->count() }}
             </small>
           </div>
 
@@ -64,68 +64,39 @@
 
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th>Nama Modalitas</th>
-                  <th>Kelompok Jenis Pemeriksaan</th>
-                  <th>Kode Ruang</th>
+                  <th>Nama Kelompok</th>
                   <th class="text-center"></th>
                 </tr>
               </thead>
               <tbody>
-                @forelse($modalitass as $modalitas)
-                  <tr id="row-{{ $modalitas->id }}">
+                @forelse($kelompokJenisPemeriksaans as $kelompokJenisPemeriksaan)
+                  <tr id="row-{{ $kelompokJenisPemeriksaan->id }}">
                     <td>
-                      <span data-name="namaModalitas" class="view-field">{{ $modalitas->namaModalitas }}</span>
-                      <input type="text" name="namaModalitas"
+                      <span data-name="namaKelompok" class="view-field">{{ $kelompokJenisPemeriksaan->namaKelompok }}</span>
+                      <input type="text" name="namaKelompok"
                              class="form-control form-control-sm edit-field d-none"
-                             value="{{ $modalitas->namaModalitas }}">
-                    </td>
-
-                    {{-- <td>
-                      <span data-name="jenisModalitas" class="view-field">{{ $modalitas->jenisModalitas }}</span>
-                      <input type="text" name="jenisModalitas"
-                             class="form-control form-control-sm edit-field d-none"
-                             value="{{ $modalitas->jenisModalitas }}">
-                    </td> --}}
-
-                    <td>
-                      <span data-name="kelompokJenisPemeriksaan" class="view-field">
-                        {{ $modalitas->kelompokJenisPemeriksaan->namaKelompok }}
-                      </span>
-                      <select name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none">
-                        @foreach($petugas->rumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
-                          <option value="{{ $kelompokJenisPemeriksaan->id }}" {{ $kelompokJenisPemeriksaan->id == $modalitas->kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
-                            {{ $kelompokJenisPemeriksaan->namaKelompok }}
-                          </option>
-                        @endforeach
-                      </select>
-                    </td>
-
-                    <td>
-                      <span data-name="kodeRuang" class="view-field">{{ $modalitas->kodeRuang }}</span>
-                      <input type="text" name="kodeRuang"
-                             class="form-control form-control-sm edit-field d-none"
-                             value="{{ $modalitas->kodeRuang }}">
+                             value="{{ $kelompokJenisPemeriksaan->namaKelompok }}">
                     </td>
 
                     <td class="text-center">
                       <div class="d-flex justify-content-center gap-2">
                         <button type="button"
                                 class="btn btn-sm btn-primary edit-btn"
-                                data-route="{{ route('petugas.editModalitas', $modalitas->id) }}"
-                                data-id="{{ $modalitas->id }}">
+                                data-route="{{ route('petugas.editKelompokJenisPemeriksaan', $kelompokJenisPemeriksaan->id) }}"
+                                data-id="{{ $kelompokJenisPemeriksaan->id }}">
                           Edit
                         </button>
 
                         <button type="button"
                                 class="btn btn-sm btn-success save-btn d-none"
-                                data-route="{{ route('petugas.editModalitas', $modalitas->id) }}"
-                                data-id="{{ $modalitas->id }}">
+                                data-route="{{ route('petugas.editKelompokJenisPemeriksaan', $kelompokJenisPemeriksaan->id) }}"
+                                data-id="{{ $kelompokJenisPemeriksaan->id }}">
                           Simpan
                         </button>
 
-                        <form action="{{ route('petugas.hapusModalitas', $modalitas->id) }}"
+                        <form action="{{ route('petugas.hapusKelompokJenisPemeriksaan', $kelompokJenisPemeriksaan->id) }}"
                               method="POST"
-                              onsubmit="return confirm('Apakah anda yakin ingin menghapus modalitas ini? Semua data terkait akan terhapus.');"
+                              onsubmit="return confirm('Apakah anda yakin ingin menghapus kelompok jenis pemeriksaan ini? Semua data terkait akan terhapus.');"
                               class="d-inline">
                           @csrf
                           @method('DELETE')
@@ -139,8 +110,8 @@
                 @empty
                   <tr>
                     <td colspan="4" class="text-center text-muted py-5">
-                      <i class="bi bi-inboxes me-1"></i> Belum ada data modalitas.
-                      <a href="{{ route('petugas.tambahmodalitaspage') }}" class="link-primary">Tambah sekarang</a>
+                      <i class="bi bi-inboxes me-1"></i> Belum ada data kelompok jenis pemeriksaan.
+                      <a href="{{ route('petugas.tambahkelompokjenispemeriksaanpage') }}" class="link-primary">Tambah sekarang</a>
                     </td>
                   </tr>
                 @endforelse
@@ -148,9 +119,9 @@
             </table>
           </div>
 
-          @if(method_exists($modalitass,'links'))
+          @if(method_exists($kelompokJenisPemeriksaans,'links'))
             <div class="card-footer">
-              {{ $modalitass->appends(request()->query())->links() }}
+              {{ $kelompokJenisPemeriksaans->appends(request()->query())->links() }}
             </div>
           @endif
         </div>

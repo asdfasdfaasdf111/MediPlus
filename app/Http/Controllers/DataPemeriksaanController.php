@@ -460,12 +460,12 @@ class DataPemeriksaanController extends Controller
         if ($dataPemeriksaan->statusPasien !== 'Menunggu Registrasi Ulang'){
             return back()->with('error', 'Pasien tidak dalam status Menunggu Registrasi Ulang.');
         }
-        $modalitas = $dataPemeriksaan->jenisPemeriksaan->modalitas;
-        $counter = $dataPemeriksaan->rumahSakit->counterHariIni($modalitas->id);
+        $kelompokJenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan->kelompokJenisPemeriksaan;
+        $counter = $dataPemeriksaan->rumahSakit->counterHariIni($kelompokJenisPemeriksaan->id);
         if ($counter === null) {
             $counter = CounterAntrian::create([
                 'rumah_sakit_id' => $dataPemeriksaan->rumah_sakit_id,
-                'modalitas_id' => $modalitas->id,
+                'kelompok_jenis_pemeriksaan_id' => $kelompokJenisPemeriksaan->id,
                 'tanggalAntrian' => Carbon::today(),
                 'nomorTerakhir' => 0,
             ]);

@@ -199,7 +199,7 @@
                   <div class="col-6 fw-semibold">: {{ $ex->dokter->user->name }}</div>
                 @endif
 
-                <div class="col-6 text-muted">Jenis Pemeriksaan</div>
+                <div class="col-4 text-muted">Jenis Pemeriksaan</div>
                 <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }}</div>
 
                 <div class="col-4 text-muted">Tanggal Pemeriksaan</div>

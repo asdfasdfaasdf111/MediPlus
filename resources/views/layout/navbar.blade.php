@@ -21,8 +21,8 @@
       {{-- MENU mobile--}}
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 w-100 w-lg-auto">
         <li class="nav-item border-top d-lg-none">
-          <a class="nav-link text-center text-lg-start py-2 {{ request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
-             href="{{ url('/pasien/homepage') }}">
+          <a class="nav-link text-center text-lg-start py-2  {{ request()->is('/') || request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
+            href="{{ url('/pasien/homepage') }}">
             Beranda
           </a>
         </li>
@@ -47,8 +47,8 @@
 
         {{-- MENU desktop--}}
         <li class="nav-item d-none d-lg-block">
-          <a class="nav-link {{ request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
-             href="{{ url('/pasien/homepage') }}">
+          <a class="nav-link {{ request()->is('/') || request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
+            href="{{ url('/pasien/homepage') }}">
             Beranda
           </a>
         </li>
@@ -129,8 +129,8 @@
         </ul>
       @else
         <div class="ms-lg-3 mt-2 mt-lg-0 d-none d-lg-block">
-          <a href="{{ url('/login') }}" class="btn btn-primary px-4 fw-bold">
-            Masuk
+          <a href="{{ url('/login') }}" class="px-4 fw-bold text-dark">
+            Masuk/Daftar
           </a>
         </div>
       @endif

@@ -160,9 +160,19 @@
       <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
         <div class="card-body p-0">
           <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
-            <div class="small">No : <span class="fw-semibold">{{ $noReg }}</span></div>
-            <div class="small fw-semibold {{ $statusClassPasien }}">{{ $ex->statusPasien }}</div>
+            <div class="fw-semibold">
+              @if ($ex->statusPasien === 'Dalam Antrian')
+                Antrian {{ $ex->jenisPemeriksaan->modalitas->namaModalitas }}-{{ $ex->nomorAntrian }}
+              @else
+                
+              @endif
+            </div>
+
+            <div class="small fw-semibold {{ $statusClassPasien }}">
+              {{ $ex->statusPasien }}
+            </div>
           </div>
+
 
           <hr class="my-0">
 
@@ -173,25 +183,31 @@
 
             <div class="col-md-7">
               <div class="row gy-1">
-                <div class="col-6 text-muted">Nama Lengkap Pasien</div>
+
+                <div class="col-4 text-muted">Nomor Registrasi</div>
+                <div class="col-6 fw-semibold">: {{ $noReg }}</div>
+
+                <div class="col-4 text-muted">Nama Lengkap Pasien</div>
                 <div class="col-6 fw-semibold">: {{ optional($ex->dataPasien)->namaLengkap ?? '—' }}</div>
 
                 @if ($ex->statusUtama == 'Pending')
-                  <div class="col-6 text-muted">Dokter Perujuk</div>
+                  <div class="col-4 text-muted">Dokter Perujuk</div>
                   <div class="col-6 fw-semibold">: {{ $ex->dataRujukan->namaDokterPerujuk }}</div>
                 @elseif ($ex->statusUtama != 'Dibatalkan')
-                  <div class="col-6 text-muted">Dokter Radiologi</div>
+                  <div class="col-4 text-muted">Dokter Radiologi</div>
                   <div class="col-6 fw-semibold">: {{ $ex->dokter->user->name }}</div>
                 @endif
 
-                <div class="col-6 text-muted">Jenis Pemeriksaan</div>
+                <div class="col-4 text-muted">Jenis Pemeriksaan</div>
                 <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $ex->jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
 
-                <div class="col-6 text-muted">Tanggal Pemeriksaan</div>
+                <div class="col-4 text-muted">Tanggal Pemeriksaan</div>
                 <div class="col-6 fw-semibold">: {{ $tgl }}</div>
 
-                <div class="col-6 text-muted">Waktu Kedatangan</div>
-                <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour()->format('H:i') }}</div>                
+                <div class="col-4 text-muted">Waktu Kedatangan</div>
+                <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour()->format('H:i') }}</div>             
+                
+                
               </div>
             </div>
 

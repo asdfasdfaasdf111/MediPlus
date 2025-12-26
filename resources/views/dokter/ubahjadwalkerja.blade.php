@@ -35,8 +35,7 @@
             <div class="card shadow-sm">
                 <div class="card-body mt-2">
 
-                    <h5 class="fw-semibold mb-3">
-                        <i class="bi bi-calendar-week me-1"></i>
+                    <h5 class="fw-semibold mb-3" style="color: #012970;">
                         Kelola Jadwal Praktik
                     </h5>
 

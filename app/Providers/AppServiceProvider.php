@@ -34,8 +34,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with('petugas', auth()->user()->petugas);
         });
 
-        View::composer('pasien.*', function($view){
-            $view->with('masterPasien', auth()->user()->masterPasien);
+        View::composer('pasien.*', function ($view) {
+            $user = auth()->user();
+        
+            if ($user && $user->masterPasien) {
+                $view->with('masterPasien', $user->masterPasien);
+            }
         });
 
         View::composer('dokter.*', function($view){
@@ -59,3 +63,4 @@ class AppServiceProvider extends ServiceProvider
     }
     
 }
+

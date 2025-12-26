@@ -36,9 +36,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 
-Route::get('/', function () {
-    return view('authentication/login');
-});
+Route::get('/', [PasienController::class, 'homepage'])->middleware('guest.or.pasien');
 
 //VERIFICATION
 //kalo akun yang ga verified coba akses page yang perlu verification, kena redirect kesini
@@ -326,6 +324,15 @@ Route::middleware(['auth', 'verified', 'role:dokter'])->prefix('dokter')->group(
 
 });
 
+//bisa dilihat tanpa harus login, atau kalo ud login, wajib pasien
+Route::middleware('guest.or.pasien')->prefix('pasien')->group(function () {
+
+    Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
+    //FaQ page
+    Route::view('/faq', 'pasien.faq')->name('pasien.faq');
+    Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
+});
+
 Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/homepage', [PasienController::class, 'homepage'])->name('pasien.homepage');
 
@@ -373,10 +380,6 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->prefix('pasien')->group(
         ->name('pasien.datapasien.destroy');
     Route::put('/hapusPendaftaran/{dataPemeriksaan}', [DataPemeriksaanController::class, 'hapusPendaftaran'])
         ->name('pasien.hapusPendaftaran');
-
-    //FaQ page
-    Route::view('/faq', 'pasien.faq')->name('pasien.faq');
-    Route::view('/tentangkami', 'pasien.tentangkami')->name('pasien.tentangkami');
 
     Route::post('/bikindraft', [DataPemeriksaanController::class, 'bikinDraft'])->name('pasien.bikinDraft');
     Route::post('/bikinDataRujukan/{dataPemeriksaan}', [DataRujukanController::class, 'bikinDataRujukan'])->name('pasien.bikinDataRujukan');

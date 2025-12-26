@@ -14,6 +14,7 @@ class DataPemeriksaan extends Model
         'rumah_sakit_id',
         'data_rujukan_id',
         'master_pasien_id',
+        'modalitas_id',
         'tanggalPemeriksaan',
         'rentangWaktuKedatangan',
         'namaPendamping',
@@ -34,6 +35,11 @@ class DataPemeriksaan extends Model
         'riwayatAlergi',
         'riwayatGolonganDarah',
         'nomorAntrian',
+        'cancelled_at',
+    ];
+
+    protected $casts = [
+        'cancelled_at' => 'datetime',
     ];
 
     public function dokter()
@@ -44,6 +50,11 @@ class DataPemeriksaan extends Model
     public function jenisPemeriksaan()
     {
         return $this->belongsTo(JenisPemeriksaan::class);
+    }
+
+    public function modalitas()
+    {
+        return $this->belongsTo(Modalitas::class);
     }
 
     public function dataPasien()
@@ -76,7 +87,7 @@ class DataPemeriksaan extends Model
         return $this->hasMany(Notifikasi::class);
     }
 
-     //urutin dari status utama, pending dlu, berlangsung, baru selesai
+    //urutin dari status utama, pending dlu, berlangsung, baru selesai
     //kalo status utama sama, urutin dari status pasien/petugas/dokter
     public function scopeOrdered($query, $subtype = 'statusPasien')
     {
@@ -134,5 +145,27 @@ class DataPemeriksaan extends Model
         $hoursDiff = $now->diffInHours($givenTime, false);
         
         return $hoursDiff >= 12;
+    }
+
+    public function cancelPendaftaran($catatan, $statusPasien, $statusPetugas = null, $statusDokter = null){
+        if ($this->statusUtama === 'Dibatalkan') {
+            return false;
+        }
+        if (empty($statusPetugas)){
+            $statusPetugas = $statusPasien;
+        }
+        if (empty($statusDokter)){
+            $statusDokter = $statusPasien;
+        }
+
+        $this->update([
+            'statusUtama' => 'Dibatalkan',
+            'statusPasien' => $statusPasien,
+            'statusPetugas' => $statusPetugas,
+            'statusDokter' => $statusDokter,
+            'catatanPetugas' => $catatan,
+            'cancelled_at' => now(),
+        ]);
+        return true;
     }
 }

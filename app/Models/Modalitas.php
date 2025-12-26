@@ -9,8 +9,8 @@ class Modalitas extends Model
     protected $table = 'modalitass';
     protected $fillable = [
         'rumah_sakit_id',
+        'kelompok_jenis_pemeriksaan_id',
         'namaModalitas',
-        'jenisModalitas',
         'kodeRuang',
     ];
 
@@ -19,8 +19,8 @@ class Modalitas extends Model
         return $this->belongsTo(RumahSakit::class);
     }
 
-    public function jenisPemeriksaan()
+    public function kelompokJenisPemeriksaan()
     {
-        return $this->hasMany(JenisPemeriksaan::class);
+        return $this->belongsTo(KelompokJenisPemeriksaan::class);
     }
 }

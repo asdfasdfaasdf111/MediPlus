@@ -40,8 +40,10 @@ class Dokter extends Model
     {
         return $this->hasMany(DataPemeriksaan::class)
         ->where('statusUtama', '!=', 'Draft')
+        ->where('statusUtama', '!=', 'Dibatalkan') 
         ->ordered('statusDokter');
     }
+
 
     public function hasilPemeriksaan()
     {

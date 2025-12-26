@@ -415,6 +415,19 @@ Route::middleware(['auth', 'verified', 'role:pasien'])->group(function () {
 
 Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik.saran');
 
+Route::get('/api/namaJenisPemeriksaan/{rumahSakit}/{kelompok}',
+            function ($rumahSakitId, $kelompok) { $rumahSakit = RumahSakit::find($rumahSakitId);
+            return $rumahSakit->namaJenisPemeriksaan($kelompok); });
+
+
+// Route::get('/api/namaJenisPemeriksaan/{rumahSakit}', function ($rumahSakitId) { -> ini dipaling bawah, ganti jadi ini
+//                 $rumahSakit = RumahSakit::find($rumahSakitId);
+//                 return $rumahSakit->namaJenisPemeriksaan(); 
+// });
+Route::get('/api/kelompokJenisPemeriksaan/{rumahSakit}', function ($id) {
+    return RumahSakit::findOrFail($id)->namaKelompokJenisPemeriksaan();
+});
+
 Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}',
             function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId);
             return $rumahSakit->jenisPemeriksaanSpesifik($jenis)->get(); });

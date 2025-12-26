@@ -59,22 +59,43 @@ class RumahSakit extends Model
     public function jenisPemeriksaan()
     {
         return $this->hasMany(JenisPemeriksaan::class)
-                    ->orderBy('namaJenisPemeriksaan', 'asc')
-                    ->orderBy('namaPemeriksaanSpesifik', 'asc');
+                    ->orderBy('namaJenisPemeriksaan', 'asc');
     }
 
-    public function jenisPemeriksaanSpesifik($namaJenisPemeriksaan)
+    // public function jenisPemeriksaanSpesifik($namaJenisPemeriksaan)
+    // {
+    //     return $this->hasMany(JenisPemeriksaan::class)
+    //                 ->where('namaJenisPemeriksaan', $namaJenisPemeriksaan)
+    //                 ->orderBy('namaPemeriksaanSpesifik', 'asc');
+    // }
+
+    // public function namaJenisPemeriksaan()
+    // {
+    //     return $this->jenisPemeriksaan()->pluck('namaJenisPemeriksaan')->unique()->values()->toArray();;
+    // }
+
+    public function kelompokJenisPemeriksaan()
     {
-        return $this->hasMany(JenisPemeriksaan::class)
-                    ->where('namaJenisPemeriksaan', $namaJenisPemeriksaan)
-                    ->orderBy('namaPemeriksaanSpesifik', 'asc');
+        return $this->hasMany(KelompokJenisPemeriksaan::class);
     }
 
-    public function namaJenisPemeriksaan()
+    public function namaKelompokJenisPemeriksaan()
     {
-        return $this->jenisPemeriksaan()->pluck('namaJenisPemeriksaan')->unique()->values()->toArray();;
+        return $this->kelompokJenisPemeriksaan()
+            ->select('id', 'namaKelompok')
+            ->orderBy('namaKelompok')
+            ->get();
     }
 
+    public function namaJenisPemeriksaan($kelompokJenisPemeriksaanId)
+    {
+        return $this->jenisPemeriksaan()
+                ->where('kelompok_jenis_pemeriksaan_id', $kelompokJenisPemeriksaanId)
+                ->select('id', 'namaJenisPemeriksaan')
+                ->orderBy('namaJenisPemeriksaan', 'asc')
+                ->get();
+    }
+    
     // yg dataPemeriksaan itu buat kalo petugas update jadwal, 
     // jadinya kalo jam dan tanggalnya == jam dan tanggal original, pasti bisa dipilih
     // sama jenis pemeriksaannya juga harus menggunakan modalitas yg sama
@@ -97,10 +118,12 @@ class RumahSakit extends Model
         $jamTutup = Carbon::parse($hariIni->jamTutup);
         $jamTutup = $jamTutup->floorUnit('hour');
 
+        $kelompokJenisPemeriksaan = $jenisPemeriksaan->kelompokJenisPemeriksaan;
+        $jumlahAlat = $kelompokJenisPemeriksaan->modalitas->count();
         $dataHariIni = $this->dataPemeriksaan()
                                 ->where('tanggalPemeriksaan', $tanggalPemeriksaan)
                                 ->whereHas('jenisPemeriksaan', function ($q) use ($jenisPemeriksaan) {
-                                    $q->where('modalitas_id', $jenisPemeriksaan->modalitas_id);
+                                    $q->where('kelompok_jenis_pemeriksaan_id', $jenisPemeriksaan->kelompok_jenis_pemeriksaan_id);
                                 })->get();
         //untuk setiap jam, nyimpen uda berapa menit yg kepake
         $penggunaanKuota = array_fill(0, 24, 0);
@@ -147,7 +170,7 @@ class RumahSakit extends Model
             for ($i = $index; $i < min($index + $jump, 24); $i++){
                 $totalJam += $penggunaanKuota[$i];
             }
-            if ($totalJam + $jenisPemeriksaan->lamaPemeriksaan <= 60 * $jump){
+            if ($totalJam + $jenisPemeriksaan->lamaPemeriksaan <= 60 * $jump * $jumlahAlat){
                 $listJam[] = $jamBuka->format('H:i');
             }
             $jamBuka->addHour($jump);
@@ -319,32 +342,33 @@ class RumahSakit extends Model
         return $this->hasMany(CounterAntrian::class);
     }
 
-    public function counterHariIni($modalitasId){
+    public function counterHariIni($kelompokJenisPemeriksaanId){
         return $this->counterAntrian()
                     ->whereDate('tanggalAntrian', Carbon::today())
-                    ->where('modalitas_id', $modalitasId)
+                    ->where('kelompok_jenis_pemeriksaan_id', $kelompokJenisPemeriksaanId)
                     ->first();
     }
 
-    public function dataDalamPemeriksaan($modalitasId){
+    public function dataDalamPemeriksaan($kelompokJenisPemeriksaanId){
         return $this->dataPemeriksaan()
-            ->where('statusPasien', 'Pemeriksaan Berlangsung')
-            ->whereHas('jenisPemeriksaan.modalitas', function ($query) use ($modalitasId) {
-                $query->where('id', $modalitasId);
-            })
-            ->first();
+                    ->where('statusPasien', 'Pemeriksaan Berlangsung')
+                    ->whereHas('jenisPemeriksaan.kelompokJenisPemeriksaan', function ($query) use ($kelompokJenisPemeriksaanId) {
+                        $query->where('id', $kelompokJenisPemeriksaanId);
+                    });
+        // return $this->dataPemeriksaan()
+        //             ->where('statusPasien', 'Pemeriksaan Berlangsung')
+        //             ->whereHas('jenisPemeriksaan', function($query) use ($namaJenisPemeriksaan) {
+        //                 $query->where('namaJenisPemeriksaan', $namaJenisPemeriksaan);
+        //             })
+        //             ->first();
     }
 
-
-    public function dataDalamAntrian($modalitasId){
+    public function dataDalamAntrian($kelompokJenisPemeriksaanId){
         return $this->dataPemeriksaan()
-            ->where('statusPasien', 'Dalam Antrian')
-            ->whereHas('jenisPemeriksaan.modalitas', function ($query) use ($modalitasId) {
-                $query->where('id', $modalitasId);
-            })
-            ->orderBy('nomorAntrian', 'asc');
+                    ->where('statusPasien', 'Dalam Antrian')
+                    ->whereHas('jenisPemeriksaan.kelompokJenisPemeriksaan', function ($query) use ($kelompokJenisPemeriksaanId) {
+                        $query->where('id', $kelompokJenisPemeriksaanId);
+                    })
+                    ->orderBy('nomorAntrian', 'asc');
     }
-
-
-
 }

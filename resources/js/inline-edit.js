@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const button = e.currentTarget;              
-            // kalo e.target yang diambil elemen paling dalam yang diklik langsung,
-            // ubah jadi e.currentTarget biar ambil elemen btn yang dipasang event listener (<button class="edit-btn"> atau <button class="save-btn">)
             const row = button.closest("tr");
             row.querySelectorAll(".view-field").forEach(el => el.classList.add("d-none"));
             row.querySelectorAll(".edit-field").forEach(el => el.classList.remove("d-none"));
@@ -47,9 +45,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Update the text fields
                 const viewData = row.querySelectorAll(".view-field");
                 //Biar gak usah nyari namanya di javascript, langsung ambil aja yang dapet dari controller
-                if ('namaModalitas' in responseData){
-                    data['modalitasId'] = responseData.namaModalitas;
+                if ('namaKelompokJenisPemeriksaan' in responseData){
+                    data['kelompokJenisPemeriksaan'] = responseData.namaKelompokJenisPemeriksaan;
                 }
+
 
                 viewData.forEach(view => {
                     if (view.dataset.type !== "checkbox") view.textContent = data[view.dataset.name];

@@ -81,7 +81,7 @@
               <tbody>
                 @forelse($jenisPemeriksaans as $jenisPemeriksaan)
                 <tr id="row-{{ $jenisPemeriksaan->id }}">
-                  <td>
+                  {{-- <td>
                     <span data-name="modalitasId" class="view-field">
                       {{ $jenisPemeriksaan->modalitas->namaModalitas }}
                     </span>
@@ -92,7 +92,7 @@
                         </option>
                       @endforeach
                     </select>
-                  </td>
+                  </td> --}}
 
                   <td>
                     <span data-name="namaJenisPemeriksaan" class="view-field">{{ $jenisPemeriksaan->namaJenisPemeriksaan }}</span>
@@ -100,16 +100,29 @@
                            value="{{ $jenisPemeriksaan->namaJenisPemeriksaan }}">
                   </td>
 
-                  <td>
+                  {{-- <td>
                     <span data-name="namaPemeriksaanSpesifik" class="view-field">{{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</span>
                     <input type="text" name="namaPemeriksaanSpesifik" class="form-control form-control-sm edit-field d-none"
                            value="{{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}">
-                  </td>
+                  </td> --}}
 
-                  <td>
+                  {{-- <td>
                     <span data-name="kelompokJenisPemeriksaan" class="view-field">{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}</span>
                     <input type="text" name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none"
                            value="{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}">
+                  </td> --}}
+
+                  <td> 
+                    <span data-name="kelompokJenisPemeriksaan" class="view-field">
+                      {{ $jenisPemeriksaan->kelompokJenisPemeriksaan->namaKelompok }}
+                    </span>
+                    <select name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none">
+                      @foreach($petugas->rumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                        <option value="{{ $kelompokJenisPemeriksaan->id }}" {{ $kelompokJenisPemeriksaan->id == $jenisPemeriksaan->kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                          {{ $kelompokJenisPemeriksaan->namaKelompok }}
+                        </option>
+                      @endforeach
+                    </select>
                   </td>
 
                   <td class="text-center align-middle">
@@ -139,17 +152,17 @@
                   <td class="text-center">
                     <div class="d-flex justify-content-center gap-2">
                       <button type="button"
-                              class="btn btn-warning btn-sm edit-btn d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;"
+                              class="btn btn-sm btn-primary edit-btn"
                               data-route="{{ route('petugas.editJenisPemeriksaan', $jenisPemeriksaan->id) }}"
-                              data-id="{{ $jenisPemeriksaan->id }}" >
-                        <i class="bi bi-pencil"></i>
+                              data-id="{{ $jenisPemeriksaan->id }}">
+                        Edit
                       </button>
 
                       <button type="button"
-                              class="btn btn-sm btn-success save-btn d-none d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;"
+                              class="btn btn-sm btn-success save-btn d-none"
                               data-route="{{ route('petugas.editJenisPemeriksaan', $jenisPemeriksaan->id) }}"
                               data-id="{{ $jenisPemeriksaan->id }}">
-                        <i class="bi bi-check"></i>
+                        Simpan
                       </button>
 
                       <form action="{{ route('petugas.hapusJenisPemeriksaan', $jenisPemeriksaan->id) }}"
@@ -158,9 +171,8 @@
                             class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"
-                         class="btn btn-danger btn-sm d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;">
-                          <i class="bi bi-trash" ></i>
+                        <button type="submit" class="btn btn-sm btn-danger">
+                          <i class=""></i> Hapus
                         </button>
                       </form>
                     </div>

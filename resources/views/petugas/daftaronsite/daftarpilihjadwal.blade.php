@@ -14,8 +14,10 @@
 
     $masterPasien = User::findOrFail($user)->masterPasien;
     $rumahSakit = $petugas->rumahSakit;
+    // //kalo uda ad draft data, pke nilai dari draft, tpi klo engga, brarti biarin kosong aj
     $draftData = $masterPasien->draftPemeriksaan;
     $draftJenisPemeriksaan = $draftData?->jenisPemeriksaan;
+    $draftKelompokJenisPemeriksaan = $draftJenisPemeriksaan?->kelompokJenisPemeriksaan; -> tambah ini
 @endphp
 
 <script>
@@ -55,30 +57,28 @@
         {{-- Jenis Pemeriksaan --}}
         <div class="row g-3" style="padding:16px 20px;">
           <div class="col-12 col-md-6">
-            <label class="form-label" style="font-weight:600;">Jenis Pemeriksaan</label>
-            <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select" style="border-radius:12px;" required>
+            <label for="kelompokJenisPemeriksaan" style="font-weight:600;">Kelompok Jenis Pemeriksaan</label>
+            <select id="kelompokJenisPemeriksaan" name="kelompokJenisPemeriksaan" class="form-select" style="border-radius:12px;" required>
               <option value="-" disabled selected>-</option>
-              @foreach($rumahSakit->namaJenisPemeriksaan() as $namaJenisPemeriksaan)
-                <option value="{{ $namaJenisPemeriksaan }}"
-                  {{ $draftJenisPemeriksaan?->namaJenisPemeriksaan === $namaJenisPemeriksaan ? 'selected' : '' }}>
-                  {{ $namaJenisPemeriksaan }}
+              @foreach($rumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                <option value="{{ $kelompokJenisPemeriksaan->id }}" {{ $draftKelompokJenisPemeriksaan?->id === $kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                    {{ $kelompokJenisPemeriksaan->namaKelompok }}
                 </option>
               @endforeach
             </select>
             <div class="form-text">
-              Pilih kategori umum pemeriksaan.
+              Pilih kategori pemeriksaan.
             </div>
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="form-label" style="font-weight:600;">Pemeriksaan Spesifik</label>
-            <select id="jenisPemeriksaanSpesifik" name="jenisPemeriksaanSpesifik" class="form-select" style="border-radius:12px;" required>
+            <label class="form-label" style="font-weight:600;">Jenis Pemeriksaan</label>
+            <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select" style="border-radius:12px;" required>
               @if ($draftData)
                 <option value="-" disabled>-</option>
-                @foreach($rumahSakit->jenisPemeriksaanSpesifik($draftJenisPemeriksaan->namaJenisPemeriksaan)->get() as $pemeriksaanSpesifik)
-                  <option value="{{ $pemeriksaanSpesifik->id }}"
-                    {{ $pemeriksaanSpesifik->id == $draftJenisPemeriksaan->id ? 'selected' : '' }}>
-                    {{ $pemeriksaanSpesifik->namaPemeriksaanSpesifik }}
+                @foreach($rumahSakit->namaJenisPemeriksaan($draftKelompokJenisPemeriksaan->id) as $jenisPemeriksaan)
+                  <option value="{{ $jenisPemeriksaan->id }}" {{ $jenisPemeriksaan->id == $draftJenisPemeriksaan->id ? 'selected' : '' }}>
+                    {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                   </option>
                 @endforeach
               @endif
@@ -102,9 +102,17 @@
                 <input type="hidden" name="tanggalPemeriksaan" id="tanggalPemeriksaanInput" @if($draftData) value="{{ $draftData->tanggalPemeriksaan }}" @endif>
 
                 @if ($draftData)
-                  <x-calendar :default-date="$draftData->tanggalPemeriksaan" id="tanggalPemeriksaan" name="tanggalPemeriksaan" required/>
+                  <x-calendar
+                    :disabled-dates="$rumahSakit->jadwalPenuhPetugas($draftJenisPemeriksaan)"
+                    :default-date="$draftData->tanggalPemeriksaan"
+                    id="tanggalPemeriksaan"
+                    name="tanggalPemeriksaan"
+                    required/>
                 @else
-                  <x-calendar id="tanggalPemeriksaan" name="tanggalPemeriksaan" required/>
+                  <x-calendar
+                    id="tanggalPemeriksaan"
+                    name="tanggalPemeriksaan"
+                    required/>
                 @endif
 
                 <div class="small text-muted mt-2">
@@ -124,27 +132,35 @@
 
               <div style="padding:16px;">
                 <div id="rentangWaktuKedatangan" class="d-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:.9rem;">
+                        @if ($draftData)
+                            @php
+                              $result = $rumahSakit->jamTersediaPetugas(
+                                  $draftJenisPemeriksaan,
+                                  $draftData->tanggalPemeriksaan,
+                                  $draftData
+                              );
+                              $timeSlots = $result['listJam'] ?? [];
+                              $jump = $result['jump'];
+                            @endphp
 
-                  @if ($draftData)
-                    @php
-                      $result = $rumahSakit->jamTersediaPetugas(  $draftJenisPemeriksaan, $draftData->tanggalPemeriksaan, $draftData );
-                    @endphp
+                            @foreach ($timeSlots as $slot)
+                                <div class="col">
+                                  <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off"
+                                         {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($draftData->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }}
+                                        required>
 
-                    @foreach ($result['listJam'] as $slot)
-                      <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}"
-                             {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($draftData->rentangWaktuKedatangan)->format('H:i')  ? 'checked' : '' }}
-                             required>
-
-                      <label class="btn btn-outline-primary" for="slot-{{ $loop->index }}" style="border-radius:999px;padding:.6rem 0;text-align:center;">
-                        {{ Carbon::parse($slot)->format('H:i') }} – {{ Carbon::parse($slot)->addHour($result['jump'])->format('H:i') }}
-                      </label>
-                    @endforeach
-                  @endif
-
+                                  <label class="btn btn-outline-primary rounded-pill w-100 py-2 fw-semibold" for="slot-{{ $loop->index }}">
+                                      {{ Carbon::parse($slot)->format('H:i') }}
+                                      –
+                                      {{ Carbon::parse($slot)->addHour($jump)->format('H:i') }}
+                                  </label>
+                                </div>
+                            @endforeach
+                        @endif
                 </div>
 
                 <div class="small text-muted mt-2">
-                  Slot yang tidak tampil berarti tidak tersedia.
+                  Slot yang tidak tampil berarti sudah tidak tersedia pada tanggal tersebut.
                 </div>
               </div>
             </div>
@@ -154,8 +170,7 @@
 
         <div class="border-top text-center" style="padding:20px;">
           <div class="d-inline-flex gap-2">
-            <a href="{{ route('petugas.tambahpendaftaranbaru') }}"
-               class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
+            <a href="{{ route('petugas.tambahpendaftaranbaru') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
               Kembali
             </a>
             <button id="submitBtn" type="submit" class="btn btn-primary px-4 px-md-5 rounded-pill">

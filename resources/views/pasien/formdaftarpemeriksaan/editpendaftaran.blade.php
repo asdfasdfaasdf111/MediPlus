@@ -12,21 +12,22 @@
 </head>
 
 @php
-  use App\Models\RumahSakit;
-  use Carbon\Carbon;
-
-  $rumahSakit       = $dataPemeriksaan->rumahSakit;
-  $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+    use Carbon\Carbon;
+    $rumahSakit = $dataPemeriksaan->rumahSakit;
+    $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
+    $kelompokJenisPemeriksaan = $jenisPemeriksaan->kelompokJenisPemeriksaan;
+    $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <script>
-  window.rumahSakit = { 
-    id: {{ $rumahSakit->id }} 
-    };
-  window.jenisPemeriksaan = { 
-    id: {{ $jenisPemeriksaan->id }} 
-    };
+  window.rumahSakit = {
+    id: {{ $rumahSakit->id }}
+  };
+  window.dataPemeriksaan = {
+    id: {{ $dataPemeriksaan->id }}
+  };
 </script>
+
 
 <body class="bg-light text-dark" style="min-height:100vh;">
 
@@ -41,7 +42,7 @@
       </div>
     </div>
 
-    <form method="POST" action="{{ route('pasien.updateTanggal', ['dataPemeriksaan' => $dataPemeriksaan]) }}" class="shadow-sm" style="background:#fff;border:1px solid #e9ecef;border-radius:16px;">
+    <form method="POST" action="{{ route('updateJadwal', ['dataPemeriksaan' => $dataPemeriksaan, 'draft' => "false"]) }}" class="shadow-sm" style="background:#fff;border:1px solid #e9ecef;border-radius:16px;">
       @csrf
       @method('PUT')
 
@@ -55,12 +56,41 @@
             <div style="font-weight:600;">
               Rumah Sakit {{ $rumahSakit->nama }}
             </div>
-            <div class="small text-muted">
-              {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
-            </div>
           </div>
         </div>
       </div>
+
+      <div class="row g-3 px-4 py-3">
+        {{-- Kelompok --}}
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Kelompok Jenis Pemeriksaan</label>
+          <select id="kelompokJenisPemeriksaan" name="kelompokJenisPemeriksaan" class="form-select rounded-3"  required>
+            @foreach($rumahSakit->kelompokJenisPemeriksaan as $kelompok)
+              <option value="{{ $kelompok->id }}"
+                {{ $kelompok->id == $kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                {{ $kelompok->namaKelompok }}
+              </option>
+            @endforeach
+          </select>
+          <div class="form-text">Pilih kategori pemeriksaan.</div>
+        </div>
+
+        {{-- Jenis --}}
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Jenis Pemeriksaan</label>
+          <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select rounded-3" required>
+            @foreach($rumahSakit->namaJenisPemeriksaan($kelompokJenisPemeriksaan->id) as $jenis)
+              <option value="{{ $jenis->id }}"
+                {{ $jenis->id == $jenisPemeriksaan->id ? 'selected' : '' }}>
+                {{ $jenis->namaJenisPemeriksaan }}
+              </option>
+            @endforeach
+          </select>
+          <div class="form-text">Pilih tindakan sesuai rujukan.</div>
+        </div>
+
+      </div>
+
 
       {{-- Kalender & Slot Waktu --}}
       <div class="row g-3" style="padding:16px 20px;">
@@ -94,45 +124,69 @@
           </div>
         </div>
 
-        {{-- Slot waktu --}}
+        {{-- Waktu Kedatangan --}}
         <div class="col-12 col-md-6">
-          <div class="h-100" style="background:#fff;border:1px solid #e9ecef;border-radius:12px;">
-            <div class="border-bottom d-flex align-items-center justify-content-between" style="padding:12px 16px;">
-              <label class="form-label fw-bold" style="margin:0;">Rentang Waktu Kedatangan</label>
-              <span class="badge text-bg-light" style="border-radius:999px;">1 jam/slot</span>
-            </div>
-            <div style="padding:16px;">
-              @php
-                $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan);
-                $timeSlots = $result['listJam'] ?? [];
-            @endphp
+          <div class="h-100 bg-white border rounded-3">
 
-              <div id="rentangWaktuKedatangan" class="d-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:.9rem;">
-                
-                {{-- Copy punya petugas --}}
-                  @foreach ($timeSlots as $slot)
-                      <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off" {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }} required>
-                      <label class="btn btn-outline-secondary" for="slot-{{ $loop->index }}">
-                          {{ Carbon::parse($slot)->format('H:i') }} - {{ Carbon::parse($slot)->addHour($jump)->format('H:i') }}
-                      </label>
-                  @endforeach
+            <div class="border-bottom d-flex align-items-center justify-content-between px-3 py-2">
+              <label class="form-label fw-bold mb-0">
+                Rentang Waktu Kedatangan
+              </label>
+              <span id="slotInfo" class="badge text-bg-light rounded-pill">
+                1 jam/slot
+              </span>
+            </div>
+
+            <div class="p-3">
+              @php
+                $result = $rumahSakit->jamTersedia(
+                  $jenisPemeriksaan,
+                  $dataPemeriksaan->tanggalPemeriksaan,
+                  $dataPemeriksaan
+                );
+                $timeSlots = $result['listJam'] ?? [];
+                $jump = $result['jump'];
+              @endphp
+
+              {{-- Slot list --}}
+              <div id="rentangWaktuKedatangan"
+                  class="row row-cols-1 row-cols-md-2 g-3">
+
+                @forelse ($timeSlots as $slot)
+                  <div class="col">
+                    <input type="radio" class="btn-check" name="rentangWaktuKedatangan" id="slot-{{ $loop->index }}" value="{{ $slot }}" autocomplete="off"
+                          {{ Carbon::parse($slot)->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') ? 'checked' : '' }}
+                          required>
+
+                    <label class="btn btn-outline-primary rounded-pill w-100 py-2 fw-semibold" for="slot-{{ $loop->index }}">
+                      {{ Carbon::parse($slot)->format('H:i') }}
+                      –
+                      {{ Carbon::parse($slot)->addHour($jump)->format('H:i') }}
+                    </label>
+                  </div>
+                @empty
+                  <div class="col-12 text-center text-muted small py-4">
+                    <i class="bi bi-calendar-x me-1"></i>
+                    Tidak ada slot tersedia pada tanggal ini.
+                  </div>
+                @endforelse
               </div>
 
+              {{-- Helper text --}}
               <div class="small text-muted mt-2">
-                Slot yang tidak tampil berarti tidak tersedia untuk tanggal tersebut.
+                Slot yang tidak tampil berarti sudah tidak tersedia atau kuota penuh.
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="border-top text-center" style="padding:20px;">
         <div class="d-inline-flex flex-wrap justify-content-center" style="gap:.75rem;">
-          <a href="{{ route('pasien.pendaftaran') }}"
-             class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
+          <a href="{{ route('pasien.pendaftaran') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
             Kembali
           </a>
-          <button id="submitBtn" type="submit"
-                  class="btn btn-primary px-4 px-md-5 rounded-pill">
+          <button id="submitBtn" type="submit" class="btn btn-primary px-4 px-md-5 rounded-pill">
             Perbarui
           </button>
         </div>

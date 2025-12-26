@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('data_rujukan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('master_pasien_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('modalitas_id')->nullable()->constrained('modalitass')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggalPemeriksaan');
             $table->time('rentangWaktuKedatangan');
             $table->string('namaPendamping')->nullable();
@@ -39,6 +40,7 @@ return new class extends Migration
             $table->string('riwayatAlergi')->nullable();
             $table->string('riwayatGolonganDarah')->nullable();
             $table->unsignedInteger('nomorAntrian')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamps();
         });
     }
@@ -51,4 +53,3 @@ return new class extends Migration
         Schema::dropIfExists('data_pemeriksaans');
     }
 };
-

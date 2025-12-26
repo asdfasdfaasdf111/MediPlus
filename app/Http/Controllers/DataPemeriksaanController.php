@@ -58,11 +58,11 @@ class DataPemeriksaanController extends Controller
     public function updateJadwal(Request $request, DataPemeriksaan $dataPemeriksaan, $draft){
         $isDraft = ($draft == "1" || $draft == "true");
         
-        $validated = $request->validate([
-            'jenisPemeriksaan'         => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
-            'tanggalPemeriksaan'       => 'required|date',
-            'rentangWaktuKedatangan'   => 'required|date_format:H:i',
+        $validated =  $request->validate([
+            'kelompokJenisPemeriksaan' => 'required|string',
+            'jenisPemeriksaan' => 'required|string',
+            'tanggalPemeriksaan' => 'required|date',
+            'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
         $user = auth()->user();
@@ -74,9 +74,11 @@ class DataPemeriksaanController extends Controller
                 ]);
             }
         } elseif ($user->role !== "superadmin") {
-            $rumahSakitId = optional($user->admin)->rumah_sakit_id
+            $rumahSakitId =
+                optional($user->admin)->rumah_sakit_id
                 ?? optional($user->petugas)->rumah_sakit_id
                 ?? optional($user->dokter)->rumah_sakit_id;
+
             if ($dataPemeriksaan->rumah_sakit_id !== $rumahSakitId) {
                 return back()->withErrors([
                     'salahData' => 'Anda tidak bisa mengubah data pemeriksaan ini',
@@ -85,25 +87,28 @@ class DataPemeriksaanController extends Controller
         }
 
         $rumahSakit = $dataPemeriksaan->rumahSakit;
+
         $jenisPemeriksaanBaru = $rumahSakit->jenisPemeriksaan()
             ->where('id', $validated['jenisPemeriksaanSpesifik'])
             ->first();
         if (!$jenisPemeriksaanBaru) {
             return back()->withErrors([
-                'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
+                'jenisPemeriksaan' => 'Jenis Pemeriksaan tidak ditemukan',
             ])->withInput();
         }
 
         // $listJam = $rumahSakit->jamTersedia( $jenisPemeriksaanBaru, $validated['tanggalPemeriksaan'], $dataPemeriksaan );
         $result = $rumahSakit->jamTersedia($jenisPemeriksaanBaru, $validated['tanggalPemeriksaan'], $dataPemeriksaan);
-        $listJam = $result['listJam'] ?? [];
-        $timeAvailable = false;
-        foreach ($listJam as $jam){
-            if ($jam == $validated['rentangWaktuKedatangan']) {
-                $timeAvailable = true;
-                break;
-            }
+        if ($user->petugas) {
+            $result = $rumahSakit->jamTersediaPetugas(
+                $jenisPemeriksaanBaru,
+                $validated['tanggalPemeriksaan'],
+                $dataPemeriksaan
+            );
         }
+        $listJam = $result['listJam'] ?? [];
+        $timeAvailable = in_array($validated['rentangWaktuKedatangan'], $listJam);
+
         if (!$timeAvailable) {
             return back()->withErrors([
                 'waktu' => 'Jadwal ini tidak tersedia!',
@@ -112,12 +117,12 @@ class DataPemeriksaanController extends Controller
 
         $adaPerubahanJenis  = ($dataPemeriksaan->jenis_pemeriksaan_id != $jenisPemeriksaanBaru->id);
         $adaPerubahanTanggal = ($dataPemeriksaan->tanggalPemeriksaan != $validated['tanggalPemeriksaan']);
-        $adaPerubahanJam     = ($dataPemeriksaan->rentangWaktuKedatangan != $validated['rentangWaktuKedatangan']);
+        $adaPerubahanJam  = ($dataPemeriksaan->rentangWaktuKedatangan != $validated['rentangWaktuKedatangan']);
 
         $adaPerubahan = $adaPerubahanJenis || $adaPerubahanTanggal || $adaPerubahanJam;
 
         // CUMA PETUGAS yang boleh mengubah catatanPetugas
-        if (!$isDraft && $adaPerubahan && !$request->filled('catatanPetugas')) {
+        if ($user->petugas && !$isDraft && $adaPerubahan && !$request->filled('catatanPetugas')) {
             return back()->withErrors([
                 'catatanPetugas' => 'Catatan petugas wajib diisi ketika mengubah detail pemeriksaan.',
             ])->withInput();
@@ -128,20 +133,28 @@ class DataPemeriksaanController extends Controller
         }
 
         // Buat nyimpan history kalo ada perubahan dan bukan draft
-        if (!$isDraft && $adaPerubahan && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
-            $dataPemeriksaan->historyJenisPemeriksaan   = $dataPemeriksaan->jenis_pemeriksaan_id;
+        if ($user->petugas && !$isDraft && $adaPerubahan && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
+            $dataPemeriksaan->historyJenisPemeriksaan = $dataPemeriksaan->jenis_pemeriksaan_id;
             $dataPemeriksaan->historyTanggalPemeriksaan = $dataPemeriksaan->tanggalPemeriksaan;
-            $dataPemeriksaan->historyJamPemeriksaan     = $dataPemeriksaan->rentangWaktuKedatangan;
+            $dataPemeriksaan->historyJamPemeriksaan = $dataPemeriksaan->rentangWaktuKedatangan;
+
+            LogService::create(
+                'Mengubah pendaftaran dengan id: ' . $dataPemeriksaan->id, $user->petugas->id
+            );
         }
 
         // UPDATE JADWAL
-        $dataPemeriksaan->jenis_pemeriksaan_id   = $jenisPemeriksaanBaru->id;
-        $dataPemeriksaan->tanggalPemeriksaan     = $validated['tanggalPemeriksaan'];
+        $dataPemeriksaan->jenis_pemeriksaan_id = $jenisPemeriksaanBaru->id;
+        $dataPemeriksaan->tanggalPemeriksaan = $validated['tanggalPemeriksaan'];
         $dataPemeriksaan->rentangWaktuKedatangan = $validated['rentangWaktuKedatangan'];
         $dataPemeriksaan->save();
 
-        if (!$isDraft) {
+        if (!$isDraft && $user->petugas) {
             return redirect()->route('petugas.pratinjaupemeriksaan', $dataPemeriksaan);
+        }
+
+        if (!$isDraft) {
+            return redirect()->route('pasien.pendaftaran');
         }
 
         return redirect()->route('pasien.daftartipepasien');
@@ -150,17 +163,15 @@ class DataPemeriksaanController extends Controller
 
     public function updateJadwalOnsite(Request $request, DataPemeriksaan $dataPemeriksaan){
         $request->validate([
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
-        $user = auth()->user();
-
         $rumahSakit = $dataPemeriksaan->rumahSakit;
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
         if (!$jenisPemeriksaan){
@@ -237,15 +248,15 @@ class DataPemeriksaanController extends Controller
     public function bikinDraft(Request $request){
         $request->validate([
             'rumahSakit' => 'required|string',
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
         $rumahSakit = RumahSakit::find($request->rumahSakit);
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
         if (!$jenisPemeriksaan){
@@ -253,7 +264,6 @@ class DataPemeriksaanController extends Controller
                 'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
             ]);
         }
-
         $user = auth()->user();
 
         $result = $rumahSakit->jamTersedia($jenisPemeriksaan, $request->tanggalPemeriksaan);
@@ -288,15 +298,15 @@ class DataPemeriksaanController extends Controller
 
     public function bikinDraftOnsite(Request $request, $masterPasienId){
         $request->validate([
+            'kelompokJenisPemeriksaan' => 'required|string',
             'jenisPemeriksaan' => 'required|string',
-            'jenisPemeriksaanSpesifik' => 'required|string',
             'tanggalPemeriksaan' => 'required|date',
             'rentangWaktuKedatangan' => 'required|date_format:H:i',
         ]);
 
         $rumahSakit = auth()->user()->petugas->rumahSakit;
         $jenisPemeriksaan = $rumahSakit->jenisPemeriksaan()
-                                        ->where('id', $request->jenisPemeriksaanSpesifik)
+                                        ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
         if (!$jenisPemeriksaan){
@@ -405,14 +415,14 @@ public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataP
     $masterPasien = $dataPemeriksaan->masterPasien;
 
     $rules = [
-        'pilihPasien'     => ['required', 'integer'],
+        'pilihPasien' => ['required', 'integer'],
         'pakaiPendamping' => ['nullable', 'boolean'],
     ];
 
     if ($request->boolean('pakaiPendamping')) {
         $rules = array_merge($rules, [
-            'namaPendamping'     => ['required', 'string', 'max:50'],
-            'nomorPendamping'    => ['required', 'string', 'max:20'],
+            'namaPendamping' => ['required', 'string', 'max:50'],
+            'nomorPendamping'  => ['required', 'string', 'max:20'],
             'hubunganPendamping' => ['required', 'string'],
         ]);
     }

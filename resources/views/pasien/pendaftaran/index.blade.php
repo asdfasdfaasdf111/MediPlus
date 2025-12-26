@@ -162,16 +162,17 @@
           <div class="px-4 pt-3 pb-2 d-flex justify-content-between align-items-center">
             <div class="fw-semibold">
               @if ($ex->statusPasien === 'Dalam Antrian')
-                Antrian {{ $ex->jenisPemeriksaan->modalitas->namaModalitas }}-{{ $ex->nomorAntrian }}
-              @else
-                
+                Antrian 
+                {{ $ex->jenisPemeriksaan->kelompokJenisPemeriksaan->namaKelompok }}
+                -{{ $ex->nomorAntrian }}
               @endif
             </div>
 
             <div class="small fw-semibold {{ $statusClassPasien }}">
               {{ $ex->statusPasien }}
             </div>
-          </div>
+        </div>
+
 
 
           <hr class="my-0">
@@ -198,8 +199,8 @@
                   <div class="col-6 fw-semibold">: {{ $ex->dokter->user->name }}</div>
                 @endif
 
-                <div class="col-4 text-muted">Jenis Pemeriksaan</div>
-                <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $ex->jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
+                <div class="col-6 text-muted">Jenis Pemeriksaan</div>
+                <div class="col-6 fw-semibold">: {{ $ex->jenisPemeriksaan->namaJenisPemeriksaan }}</div>
 
                 <div class="col-4 text-muted">Tanggal Pemeriksaan</div>
                 <div class="col-6 fw-semibold">: {{ $tgl }}</div>

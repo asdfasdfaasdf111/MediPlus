@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     
+    const kelompokJenisPemeriksaan = document.getElementById('kelompokJenisPemeriksaan');
     const jenisPemeriksaan = document.getElementById('jenisPemeriksaan');
-    const jenisPemeriksaanSpesifik = document.getElementById('jenisPemeriksaanSpesifik');
     const tanggalPemeriksaan = document.getElementById('tanggalPemeriksaan');
     const tanggalPemeriksaanInput = document.getElementById('tanggalPemeriksaanInput');
     const rentangWaktuKedatangan = document.getElementById('rentangWaktuKedatangan');
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let rumahSakitValue = window.rumahSakit.id;
 
     //kalo isiny kosong, brarti ga ad draft data, jadi tanggalnya di disable
-    if (jenisPemeriksaanSpesifik.value == ""){
+    if (jenisPemeriksaan.value == ""){
         tanggalPemeriksaan.calendar.set("disable", [
             function(date){
                 return true;
@@ -19,19 +19,19 @@ document.addEventListener("DOMContentLoaded", () => {
         ]);
     }
 
-    if (jenisPemeriksaan !== null){
-        jenisPemeriksaan.addEventListener("change", (e) => {
+    if (kelompokJenisPemeriksaan !== null){
+        kelompokJenisPemeriksaan.addEventListener("change", (e) => {
     
-            fetch(`/api/jenisPemeriksaanSpesifik/${rumahSakitValue}/${jenisPemeriksaan.value}`)
+            fetch(`/api/namaJenisPemeriksaan/${rumahSakitValue}/${kelompokJenisPemeriksaan.value}`)
                 .then(res => res.json())
                 .then(data => {
-                    jenisPemeriksaanSpesifik.innerHTML = '<option value="-" disabled selected>-</option>';
+                    jenisPemeriksaan.innerHTML = '<option value="-" disabled selected>-</option>';
     
                     data.forEach(item => {
                         const option = document.createElement("option");
                         option.value = item.id;
-                        option.textContent = item.namaPemeriksaanSpesifik;
-                        jenisPemeriksaanSpesifik.appendChild(option);
+                        option.textContent = item.namaJenisPemeriksaan;
+                        jenisPemeriksaan.appendChild(option);
                     });
                 });
             
@@ -50,18 +50,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
 
-    if (jenisPemeriksaanSpesifik !== null){
+    if (jenisPemeriksaan !== null){
         //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
-        jenisPemeriksaanSpesifik.addEventListener("change", (e) => {
+        jenisPemeriksaan.addEventListener("change", (e) => {
             tanggalPemeriksaan.calendar.clear(false);
 
-            fetch(`/api/jadwalPenuhPetugas/${rumahSakitValue}/${jenisPemeriksaanSpesifik.value}`)
+            fetch(`/api/jadwalPenuhPetugas/${rumahSakitValue}/${jenisPemeriksaan.value}`)
                 .then(res => res.json())
                 .then(data => {
                     tanggalPemeriksaan.calendar.set("disable", data);
                 });
 
-            tanggalPemeriksaan.calendar.set("disable", []);
             while (rentangWaktuKedatangan.firstChild) {
                 rentangWaktuKedatangan.removeChild(rentangWaktuKedatangan.firstChild);
             }
@@ -78,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tanggalPemeriksaanInput.value = dateStr;
         
         const idPart = window.dataPemeriksaan?.id ? `/${window.dataPemeriksaan.id}` : "";
-        const jenisValue = jenisPemeriksaanSpesifik ? jenisPemeriksaanSpesifik.value : window.jenisPemeriksaan.id;
+        const jenisValue = jenisPemeriksaan ? jenisPemeriksaan.value : window.jenisPemeriksaan.id;
         const url = `/api/jamTersediaPetugas/${rumahSakitValue}/${jenisValue}/${dateStr}`;
         
         fetch(url)
@@ -86,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
                 const jump = data.jump;
                 const listJam = data.listJam;
-                console.log("Tes");
                 listJam.forEach((slot, index) => {
                     const col = document.createElement("div");
                     col.className = "col";

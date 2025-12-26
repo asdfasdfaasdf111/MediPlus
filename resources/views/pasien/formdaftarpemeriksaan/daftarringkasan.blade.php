@@ -57,7 +57,7 @@
                   <div class="col-md-6">
                     <div class="small text-muted">Jenis Pemeriksaan</div>
                     <div class="fw-semibold">
-                      {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
+                      {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                     </div>
                   </div>
 

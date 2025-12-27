@@ -15,6 +15,7 @@
   $dokter           = $dataPemeriksaan->dokter;
   $dataPasien       = $dataPemeriksaan->dataPasien;
   $dataRujukan      = $dataPemeriksaan->dataRujukan;
+  $pembayaran       = $dataPemeriksaan->pembayaran;
   $jump = $jenisPemeriksaan->getJump();
 
   $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString();
@@ -263,6 +264,14 @@
                   </div>
                 </div>
               </div>
+              @if ($pembayaran !== null)
+                  {{-- leo tambahin, asal tempel posisi --}}
+                <div class="mb-0">
+                  <div class="small text-muted">Harga</div>
+                  <div class="fw-semibold text-break">{{ $pembayaran->harga }}</div>
+                </div>
+              @endif
+              
             </div>
           </div>
 
@@ -290,6 +299,18 @@
                   <button type="submit" class="btn btn-primary">Registrasi Ulang</button>
               </form>
             @endif
+          @endif
+          @if ($dataPemeriksaan->statusPasien === 'Menunggu Pembayaran Offline')
+              {{-- buat pembayaran offline di rumah sakit --}}
+            <form action="{{ route('petugas.bayarOffline', $dataPemeriksaan->id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Apakah Anda yakin pasien telah menyelesaikan pembayaran secara offline?')">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-primary">
+                    Selesaikan Pembayaran
+                </button>
+            </form>
           @endif
           
         </div>

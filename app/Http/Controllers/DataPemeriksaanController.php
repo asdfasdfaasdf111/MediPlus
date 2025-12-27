@@ -37,10 +37,9 @@ class DataPemeriksaanController extends Controller
         }
 
         if ($request->status == 'accepted'){
-            $dataPemeriksaan->statusUtama = "Berlangsung";
-            $dataPemeriksaan->statusPasien = "Menunggu Registrasi Ulang";
-            $dataPemeriksaan->statusPetugas = "Menunggu Registrasi Ulang";
-            $dataPemeriksaan->statusDokter = "Menunggu Registrasi Ulang";
+            $dataPemeriksaan->statusPasien = "Menunggu Pembayaran";
+            $dataPemeriksaan->statusPetugas = "Menunggu Pembayaran";
+            $dataPemeriksaan->statusDokter = "Menunggu Pembayaran";
             $dataPemeriksaan->dokter_id = $request->dokterId;
             LogService::create('Menerima pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }

@@ -18,6 +18,7 @@ class JenisPemeriksaanController extends Controller
             // 'namaPemeriksaanSpesifik' => 'required|string|max:100',
             // 'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
+            'harga' => 'required|integer|min:1',
         ]);
 
         $jenisPemeriksaan = JenisPemeriksaan::create([
@@ -29,6 +30,7 @@ class JenisPemeriksaanController extends Controller
             // 'kelompokJenisPemeriksaan' => $request->kelompokJenisPemeriksaan,
             'pemakaianKontras' => $request->pemakaianKontras,
             'lamaPemeriksaan' => $request->lamaPemeriksaan,
+            'harga' => $request->harga,
             'diDampingiDokter' => $request->diDampingiDokter,
         ]);
         $petugas = auth()->user()->petugas;
@@ -45,6 +47,7 @@ class JenisPemeriksaanController extends Controller
             // 'namaPemeriksaanSpesifik' => 'required|string|max:100',
             // 'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
+            'harga' => 'required|integer|min:1',
         ]);
 
         $jenisPemeriksaan->kelompok_jenis_pemeriksaan_id = $request->input('kelompokJenisPemeriksaan');
@@ -53,6 +56,7 @@ class JenisPemeriksaanController extends Controller
         // $jenisPemeriksaan->kelompokJenisPemeriksaan = $request->input('kelompokJenisPemeriksaan');
         $jenisPemeriksaan->pemakaianKontras = $request->input('pemakaianKontras');
         $jenisPemeriksaan->lamaPemeriksaan = $request->input('lamaPemeriksaan');
+        $jenisPemeriksaan->harga = $request->input('harga');
         $jenisPemeriksaan->diDampingiDokter = $request->input('diDampingiDokter');
 
         $jenisPemeriksaan->save();

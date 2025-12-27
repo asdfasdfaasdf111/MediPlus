@@ -75,6 +75,7 @@
                   <th>Kelompok Jenis Pemeriksaan</th>
                   <th class="text-center">Kontras</th>
                   <th>Durasi</th>
+                  <th>Harga</th>
                   <th class="text-center">Didampingi</th>
                   <th></th>
                 </tr>
@@ -140,6 +141,14 @@
                            class="form-control form-control-sm text-center edit-field d-none"
                            value="{{ $jenisPemeriksaan->lamaPemeriksaan }}" style="max-width:70px">
                     <span> Menit</span>
+                  </td>
+
+                  <td>
+                    <span>Rp. </span>
+                    <span data-name="harga" class="view-field">{{ $jenisPemeriksaan->harga }}</span>
+                    <input type="number" name="harga" min="1"
+                           class="form-control form-control-sm text-center edit-field d-none"
+                           value="{{ $jenisPemeriksaan->harga }}" style="max-width:70px">
                   </td>
 
                   <td class="text-center align-middle">

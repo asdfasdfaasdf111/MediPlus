@@ -16,6 +16,7 @@
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
     $jump = $jenisPemeriksaan->getJump();
+    $pembayaran = $dataPemeriksaan->pembayaran;
 @endphp
 
 <div>Ringkasan Pemeriksaan</div>
@@ -147,7 +148,10 @@
             {{ $dataRujukan->namaFile }}
         </a>
     </div>
-    
+    @if ($pembayaran !== null)
+        <div class="col-6 text-muted">Biaya Pemeriksaan</div>
+        <div class="col-6 fw-semibold">: {{ $pembayaran->harga }}</div>                
+    @endif
 </div>
 
 <a href="{{ route('pasien.pendaftaran') }}"> Kembali </a>

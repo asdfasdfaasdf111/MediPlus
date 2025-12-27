@@ -98,7 +98,7 @@ class AuthenticationController extends Controller
 
         if ($currentUser && $currentUser->role === 'petugas') {
             return redirect()
-            ->route('petugas.pilihdatapasien', ['user' => $user->id])
+            ->route('petugas.daftarpilihjadwal', ['user' => $user->id])
             ->with('success', 'Registrasi berhasil! Silahkan cek email Anda untuk verifikasi akun.');
         }
 

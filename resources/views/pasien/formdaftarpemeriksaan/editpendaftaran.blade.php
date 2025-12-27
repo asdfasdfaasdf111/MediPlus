@@ -31,7 +31,10 @@
 
 <body class="bg-light text-dark" style="min-height:100vh;">
 
-  <div class="container py-4">
+  <div class="container-fluid py-3 py-md-4">
+    <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-8 d-flex flex-column">
+
 
     <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
       <div>
@@ -193,6 +196,9 @@
       </div>
     </form>
   </div>
+  </div>
+  </div>
+
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>

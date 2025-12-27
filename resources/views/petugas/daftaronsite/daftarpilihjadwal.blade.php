@@ -17,7 +17,7 @@
     // //kalo uda ad draft data, pke nilai dari draft, tpi klo engga, brarti biarin kosong aj
     $draftData = $masterPasien->draftPemeriksaan;
     $draftJenisPemeriksaan = $draftData?->jenisPemeriksaan;
-    $draftKelompokJenisPemeriksaan = $draftJenisPemeriksaan?->kelompokJenisPemeriksaan; -> tambah ini
+    $draftKelompokJenisPemeriksaan = $draftJenisPemeriksaan?->kelompokJenisPemeriksaan;
 @endphp
 
 <script>
@@ -57,7 +57,7 @@
         {{-- Jenis Pemeriksaan --}}
         <div class="row g-3" style="padding:16px 20px;">
           <div class="col-12 col-md-6">
-            <label for="kelompokJenisPemeriksaan" style="font-weight:600;">Kelompok Jenis Pemeriksaan</label>
+            <label for="kelompokJenisPemeriksaan" class="form-label fw-semibold mb-2" style="font-weight:600;">Kelompok Jenis Pemeriksaan</label>
             <select id="kelompokJenisPemeriksaan" name="kelompokJenisPemeriksaan" class="form-select" style="border-radius:12px;" required>
               <option value="-" disabled selected>-</option>
               @foreach($rumahSakit->kelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
@@ -72,7 +72,7 @@
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="form-label" style="font-weight:600;">Jenis Pemeriksaan</label>
+            <label class="form-label" class="form-label fw-semibold mb-2" style="font-weight:600;">Jenis Pemeriksaan</label>
             <select id="jenisPemeriksaan" name="jenisPemeriksaan" class="form-select" style="border-radius:12px;" required>
               @if ($draftData)
                 <option value="-" disabled>-</option>

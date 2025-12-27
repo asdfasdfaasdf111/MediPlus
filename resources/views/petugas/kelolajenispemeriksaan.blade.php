@@ -11,7 +11,7 @@
       <div class="col-md-10 p-4 bg-light">
 
         @if (session('success'))
-          <div class="alert alert-success alert-dismissible fade show mx-1 mx-md-0 mt-2" role="alert">
+          <div class="alert alert-success alert-dismissible auto-dismiss fade show mx-1 mx-md-0 mt-2" role="alert">
             <i class="bi bi-check-circle-fill me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -53,64 +53,28 @@
           </div>
 
           <div class="table-responsive">
-            <table class="table align-middle mb-0" style="table-layout: fixed;">
-              <colgroup>
-                <col style="width:10%;">  
-                <col style="width:20%;">  
-                <col style="width:20%;">  
-                <col style="width:10%;">  
-                <col style="width:15%;">  
-                <col style="width:12%;">  
-                <col style="width:10%;">  
-                <col style="width:160px;">
-              </colgroup>
+            <table class="table align-middle mb-0">
 
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th>Modalitas</th>
-                  <th>Nama Jenis</th>
-                  <th>Spesifik</th>
-                  <th>Kelompok</th>
-                  <th class="text-center">Kontras</th>
-                  <th>Durasi</th>
-                  <th class="text-center">Didampingi</th>
-                  <th></th>
+                  <th style="width:30%;" class="ps-4">Nama Jenis</th>
+                  <th style="width:20%;">Kelompok Jenis</th>
+                  <th class="text-center text-nowrap" style="width:110px;">Kontras</th>
+                  <th class="text-nowrap" style="width:170px;">Durasi</th>
+                  <th class="text-center text-nowrap" style="width:120px;">Didampingi</th>
+                  <th class="text-center" style="width:170px;"></th>
                 </tr>
               </thead>
 
               <tbody>
                 @forelse($jenisPemeriksaans as $jenisPemeriksaan)
                 <tr id="row-{{ $jenisPemeriksaan->id }}">
-                  {{-- <td>
-                    <span data-name="modalitasId" class="view-field">
-                      {{ $jenisPemeriksaan->modalitas->namaModalitas }}
-                    </span>
-                    <select name="modalitasId" class="form-control form-control-sm edit-field d-none">
-                      @foreach($petugas->rumahSakit->modalitas as $modalitas)
-                        <option value="{{ $modalitas->id }}" {{ $modalitas->id == $jenisPemeriksaan->modalitas->id ? 'selected' : '' }}>
-                          {{ $modalitas->namaModalitas }}
-                        </option>
-                      @endforeach
-                    </select>
-                  </td> --}}
 
-                  <td>
+                  <td class="ps-4">
                     <span data-name="namaJenisPemeriksaan" class="view-field">{{ $jenisPemeriksaan->namaJenisPemeriksaan }}</span>
                     <input type="text" name="namaJenisPemeriksaan" class="form-control form-control-sm edit-field d-none"
                            value="{{ $jenisPemeriksaan->namaJenisPemeriksaan }}">
                   </td>
-
-                  {{-- <td>
-                    <span data-name="namaPemeriksaanSpesifik" class="view-field">{{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</span>
-                    <input type="text" name="namaPemeriksaanSpesifik" class="form-control form-control-sm edit-field d-none"
-                           value="{{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}">
-                  </td> --}}
-
-                  {{-- <td>
-                    <span data-name="kelompokJenisPemeriksaan" class="view-field">{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}</span>
-                    <input type="text" name="kelompokJenisPemeriksaan" class="form-control form-control-sm edit-field d-none"
-                           value="{{ $jenisPemeriksaan->kelompokJenisPemeriksaan }}">
-                  </td> --}}
 
                   <td> 
                     <span data-name="kelompokJenisPemeriksaan" class="view-field">
@@ -150,33 +114,39 @@
                   </td>
 
                   <td class="text-center">
-                    <div class="d-flex justify-content-center gap-2">
-                      <button type="button"
-                              class="btn btn-sm btn-primary edit-btn"
-                              data-route="{{ route('petugas.editJenisPemeriksaan', $jenisPemeriksaan->id) }}"
-                              data-id="{{ $jenisPemeriksaan->id }}">
-                        Edit
-                      </button>
+                  <div class="d-flex justify-content-center gap-2">
+                    <button type="button"
+                            class="btn btn-warning btn-sm d-flex align-items-center justify-content-center p-0 edit-btn"
+                            style="width:40px;height:40px;border-radius:5px;"
+                            data-route="{{ route('petugas.editJenisPemeriksaan', $jenisPemeriksaan->id) }}"
+                            data-id="{{ $jenisPemeriksaan->id }}">
+                      <i class="bi bi-pencil"></i>
+                    </button>
 
-                      <button type="button"
-                              class="btn btn-sm btn-success save-btn d-none"
-                              data-route="{{ route('petugas.editJenisPemeriksaan', $jenisPemeriksaan->id) }}"
-                              data-id="{{ $jenisPemeriksaan->id }}">
-                        Simpan
-                      </button>
+                    <button type="button"
+                            class="btn btn-success btn-sm d-none d-flex align-items-center justify-content-center p-0 save-btn"
+                            style="width:40px;height:40px;border-radius:5px;"
+                            data-route="{{ route('petugas.editJenisPemeriksaan', $jenisPemeriksaan->id) }}"
+                            data-id="{{ $jenisPemeriksaan->id }}">
+                      <i class="bi bi-check"></i>
+                    </button>
 
-                      <form action="{{ route('petugas.hapusJenisPemeriksaan', $jenisPemeriksaan->id) }}"
-                            method="POST"
-                            onsubmit="return confirm('Apakah anda yakin ingin menghapus jenis pemeriksaan ini?');"
-                            class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">
-                          <i class=""></i> Hapus
-                        </button>
-                      </form>
-                    </div>
-                  </td>
+                    <form action="{{ route('petugas.hapusJenisPemeriksaan', $jenisPemeriksaan->id) }}"
+                          method="POST"
+                          onsubmit="return confirm('Apakah anda yakin ingin menghapus jenis pemeriksaan ini?');"
+                          class="d-inline">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit"
+                              class="btn btn-danger btn-sm d-flex align-items-center justify-content-center p-0"
+                              style="width:40px;height:40px;border-radius:5px;">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+
+                  </div>
+                </td>
+
                 </tr>
                 @empty
                   <tr>
@@ -203,3 +173,15 @@
 
 
 @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.alert').forEach(alertEl => {
+      setTimeout(() => {
+        bootstrap.Alert.getOrCreateInstance(alertEl).close();
+      }, 3000);
+    });
+  });
+</script>
+@endpush

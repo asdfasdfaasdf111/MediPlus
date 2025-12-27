@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
 </head>
-<body class="bg-white text-dark" style="height: 100vh; overflow: hidden;">
+<body class="bg-white text-dark" style="height: 100vh; t">
 
     @include('layout.navbar2')
 

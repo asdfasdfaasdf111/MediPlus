@@ -44,11 +44,11 @@ class DashboardPetugasController extends Controller
                     ->orWhereHas('dataRujukan', function ($q2) use ($search) {
                         $q2->where('namaDokterPerujuk', 'like', "%{$search}%");
                     })
-                    // jenis pemeriksaan + spesifik
+                    // jenis pemeriksaan
                     ->orWhereHas('jenisPemeriksaan', function ($q2) use ($search) {
-                        $q2->where('namaJenisPemeriksaan', 'like', "%{$search}%")
-                           ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%");
+                        $q2->where('namaJenisPemeriksaan', 'like', "%{$search}%");
                     })
+                    
                     // dokter radiologi
                     ->orWhereHas('dokter.user', function ($q2) use ($search) {
                         $q2->where('name', 'like', "%{$search}%");

@@ -25,9 +25,35 @@
                       </div>
 
                       <div class="mb-3">
-                        <label for="jenisModalitas" class="form-label">Jenis Modalitas</label>
-                        <input type="text" class="form-control @error('jenisModalitas') is-invalid @enderror" name="jenisModalitas" id="jenisModalitas"placeholder="CT, MR, US, X-Ray" value="{{ old('jenisModalitas') }}" autocomplete="off" >
-                        @error('jenisModalitas')
+                        <label for="kelompokJenisPemeriksaan" class="form-label">
+                          Kelompok Jenis Pemeriksaan
+                        </label>
+
+                        @php
+                          $kelompokList = $petugas->rumahSakit->kelompokJenisPemeriksaan ?? collect();
+                        @endphp
+
+                        <select name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan" class="form-select @error('kelompokJenisPemeriksaan') is-invalid @enderror" required>
+
+                          @if($kelompokList->isEmpty())
+                            <option value="" disabled selected>
+                              Belum ada kelompok jenis pemeriksaan di RS Anda
+                            </option>
+                          @else
+                            <option value="" disabled selected>
+                              Pilih Kelompok Jenis Pemeriksaan
+                            </option>
+                            @foreach($kelompokList as $kelompok)
+                              <option value="{{ $kelompok->id }}"
+                                {{ old('kelompokJenisPemeriksaan') == $kelompok->id ? 'selected' : '' }}>
+                                {{ $kelompok->namaKelompok }}
+                              </option>
+                            @endforeach
+                          @endif
+
+                        </select>
+
+                        @error('kelompokJenisPemeriksaan')
                           <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                       </div>

@@ -17,45 +17,34 @@
             <form method="POST" action="{{ route('petugas.tambahJenisPemeriksaan') }}" novalidate>
               @csrf
 
-              <div class="mb-3">
-                <label for="modalitasId" class="form-label">Modalitas</label>
-                <select name="modalitasId" id="modalitasId" class="form-select @error('modalitasId') is-invalid @enderror" required>
-                  @php
-                    $listModalitas = $petugas->rumahSakit->modalitas ?? collect();
-                  @endphp
-                  @if($listModalitas->isEmpty())
-                    <option value="" disabled selected>Belum ada modalitas di RS Anda</option>
-                  @else
-                    <option value="" disabled selected>Pilih Modalitas</option>
-                    @foreach($listModalitas as $modalitas)
-                      <option value="{{ $modalitas->id }}"
-                        {{ old('modalitasId') == $modalitas->id ? 'selected' : '' }}>
-                        {{ $modalitas->namaModalitas }}
-                      </option>
-                    @endforeach
-                  @endif
-                </select>
-                @error('modalitasId') <div class="invalid-feedback">{{ $message }}</div> @enderror
-              </div>
-
-              {{-- Autocompletenya aku matiin aja, kalo mau isi gitu ga perlu dropdown suggestion kayaknya? --}}
+              {{-- Nama Jenis Pemeriksaan --}}
               <div class="mb-3">
                 <label for="namaJenisPemeriksaan" class="form-label">Nama Jenis Pemeriksaan</label>
-                <input type="text" class="form-control @error('namaJenisPemeriksaan') is-invalid @enderror" name="namaJenisPemeriksaan" id="namaJenisPemeriksaan" placeholder="CT-Scan Abdomen, MRI Kepala" value="{{ old('namaJenisPemeriksaan') }}" autocomplete="off">
-                @error('namaJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
-              </div>
-              
-              {{-- Nama Pemeriksaan Spesifik --}}
-              <div class="mb-3">
-                <label for="namaPemeriksaanSpesifik" class="form-label">Nama Pemeriksaan Spesifik</label>
-                <input type="text" class="form-control @error('namaPemeriksaanSpesifik') is-invalid @enderror" name="namaPemeriksaanSpesifik" id="namaPemeriksaanSpesifik" placeholder="Contoh: CT-Scan Abdomen Kontras" value="{{ old('namaPemeriksaanSpesifik') }}" autocomplete="off">
-                @error('namaPemeriksaanSpesifik') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <input type="text" class="form-control @error('namaJenisPemeriksaan') is-invalid @enderror" name="namaJenisPemeriksaan" id="namaJenisPemeriksaan" placeholder="Contoh: CT-Scan Abdomen" value="{{ old('namaJenisPemeriksaan') }}" autocomplete="off">
+                @error('namaJenisPemeriksaan') 
+                  <div class="invalid-feedback">{{ $message }}</div> 
+                @enderror
               </div>
 
               {{-- Kelompok Jenis Pemeriksaan --}}
               <div class="mb-3">
                 <label for="kelompokJenisPemeriksaan" class="form-label">Kelompok Jenis Pemeriksaan</label>
-                <input type="text" class="form-control @error('kelompokJenisPemeriksaan') is-invalid @enderror" name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan" placeholder="Contoh: Abdomen / Thorax / Kepala" value="{{ old('kelompokJenisPemeriksaan') }}" autocomplete="off">
+                <select name="kelompokJenisPemeriksaan" id="kelompokJenisPemeriksaan" class="form-select @error('kelompokJenisPemeriksaan') is-invalid @enderror" required>
+                  @php
+                    $listKelompokJenisPemeriksaan = $petugas->rumahSakit->kelompokJenisPemeriksaan ?? collect();
+                  @endphp
+                  @if($listKelompokJenisPemeriksaan->isEmpty())
+                    <option value="" disabled selected>Belum ada kelompok jenis pemeriksaan di RS Anda</option>
+                  @else
+                    <option value="" disabled selected>Pilih Kelompok Jenis Pemeriksaan</option>
+                    @foreach($listKelompokJenisPemeriksaan as $kelompokJenisPemeriksaan)
+                      <option value="{{ $kelompokJenisPemeriksaan->id }}"
+                        {{ old('kelompokJenisPemeriksaan') == $kelompokJenisPemeriksaan->id ? 'selected' : '' }}>
+                        {{ $kelompokJenisPemeriksaan->namaKelompok }}
+                      </option>
+                    @endforeach
+                  @endif
+                </select>
                 @error('kelompokJenisPemeriksaan') <div class="invalid-feedback">{{ $message }}</div> @enderror
               </div>
 

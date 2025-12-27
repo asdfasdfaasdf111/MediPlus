@@ -60,7 +60,9 @@
 
         <div class="mt-3">
                 @if($totalRS === 0)
-                    <p class="">Belum ada rumah sakit yang terdaftar</p>
+                <div class="text-center">
+                    <p class="">Belum ada rumah sakit yang terdaftar.</p>
+                </div>
                 @elseif($rumahSakits->isEmpty())
                     <div class="text-center">
                         <h6>Data tidak ditemukan untuk pencarian <strong>'{{ request('search') }}'</strong></h6>

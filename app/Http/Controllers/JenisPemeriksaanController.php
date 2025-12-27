@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\JenisPemeriksaan;
+use App\Models\KelompokJenisPemeriksaan;
 use App\Models\Modalitas;
 use App\Models\RumahSakit;
 use App\Services\LogService;
@@ -14,23 +15,17 @@ class JenisPemeriksaanController extends Controller
     public function tambahJenisPemeriksaan(Request $request){
         $request->validate([
             'namaJenisPemeriksaan' => 'required|string|max:100',
-            'namaPemeriksaanSpesifik' => 'required|string|max:100',
-            'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
         ],
         [
             'namaJenisPemeriksaan.required' => 'Nama Jenis Pemeriksaan wajib diisi.',
-            'namaPemeriksaanSpesifik.required' => 'Nama Pemeriksaan Spesifik wajib diisi.',
-            'kelompokJenisPemeriksaan.required' => 'Kelompok Jenis Pemeriksaan wajib diisi.',
             'lamaPemeriksaan.required' => 'Lama Pemeriksaan wajib diisi.',
         ]);
 
         $jenisPemeriksaan = JenisPemeriksaan::create([
-            'modalitas_id' => $request->modalitasId,
             'rumah_sakit_id' => auth()->user()->petugas->rumahSakit->id,
+            'kelompok_jenis_pemeriksaan_id' => $request->kelompokJenisPemeriksaan,
             'namaJenisPemeriksaan' => $request->namaJenisPemeriksaan,
-            'namaPemeriksaanSpesifik' => $request->namaPemeriksaanSpesifik,
-            'kelompokJenisPemeriksaan' => $request->kelompokJenisPemeriksaan,
             'pemakaianKontras' => $request->pemakaianKontras,
             'lamaPemeriksaan' => $request->lamaPemeriksaan,
             'diDampingiDokter' => $request->diDampingiDokter,
@@ -47,15 +42,11 @@ class JenisPemeriksaanController extends Controller
 
         $request->validate([
             'namaJenisPemeriksaan' => 'required|string|max:100',
-            'namaPemeriksaanSpesifik' => 'required|string|max:100',
-            'kelompokJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
         ]);
 
-        $jenisPemeriksaan->modalitas_id = $request->input('modalitasId');
+        $jenisPemeriksaan->kelompok_jenis_pemeriksaan_id = $request->input('kelompokJenisPemeriksaan');
         $jenisPemeriksaan->namaJenisPemeriksaan = $request->input('namaJenisPemeriksaan');
-        $jenisPemeriksaan->namaPemeriksaanSpesifik = $request->input('namaPemeriksaanSpesifik');
-        $jenisPemeriksaan->kelompokJenisPemeriksaan = $request->input('kelompokJenisPemeriksaan');
         $jenisPemeriksaan->pemakaianKontras = $request->input('pemakaianKontras');
         $jenisPemeriksaan->lamaPemeriksaan = $request->input('lamaPemeriksaan');
         $jenisPemeriksaan->diDampingiDokter = $request->input('diDampingiDokter');
@@ -66,7 +57,7 @@ class JenisPemeriksaanController extends Controller
         LogService::create('Mengupdate jenis pemeriksaan dengan id: '.$jenisPemeriksaan->id, $petugas->id);
         return response()->json([
             'success' => true,
-            'namaModalitas' => Modalitas::findOrFail($jenisPemeriksaan->modalitas_id)->namaModalitas
+            'namaKelompokJenisPemeriksaan' => KelompokJenisPemeriksaan::findOrFail($jenisPemeriksaan->kelompok_jenis_pemeriksaan_id)->namaKelompok
             ]);
     }
 
@@ -88,48 +79,35 @@ class JenisPemeriksaanController extends Controller
         $search = trim($request->search ?? '');
 
         $query = $rumahSakit->jenisPemeriksaan()
-            ->select('jenis_pemeriksaans.*') //biar ngga n+1 query
-            ->join('modalitass', 'modalitass.id', '=', 'jenis_pemeriksaans.modalitas_id')
-            ->with('modalitas');
-            
+            ->with('kelompokJenisPemeriksaan');
 
         if ($search !== '') {
-                $searchLower = strtolower($search);
+            $query->where(function ($q) use ($search) {
 
-                $query->where(function ($q) use ($search, $searchLower) {
-                    $q->whereHas('modalitas', function ($mq) use ($search) {
-                        $mq->where('namaModalitas', 'like', "%{$search}%");
+                $q->whereHas('kelompokJenisPemeriksaan', function ($kq) use ($search) {
+                    $kq->where('namaKelompok', 'like', "%{$search}%");
                 })
-                ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
-                ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
-                ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
+
+                ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%");
+
                 if (is_numeric($search)) {
-                    $q->orWhere('lamaPemeriksaan', $search);
+                    $q->orWhere('lamaPemeriksaan', (int) $search);
                 }
-                if (in_array($searchLower, ['Ya', 'ya'])) {
+
+                if (strtolower($search) === 'ya') {
                     $q->orWhere('pemakaianKontras', true)
                     ->orWhere('diDampingiDokter', true);
-                } elseif (in_array($searchLower, ['Tidak', 'tidak'])) {
+                }
+
+                if (strtolower($search) === 'tidak') {
                     $q->orWhere('pemakaianKontras', false)
                     ->orWhere('diDampingiDokter', false);
                 }
             });
         }
-        
+
         $jenisPemeriksaans = $query
-        // $rumahSakit->jenisPemeriksaan()
-        //     ->with('modalitas')
-        //     ->when($request->search, function ($query, $search) {
-        //         $query->whereHas('modalitas', function ($q) use ($search){
-        //             $q->where('namaModalitas', 'like', "%{$search}%");
-        //         })
-        //         ->orWhere('namaJenisPemeriksaan', 'like', "%{$search}%")
-        //         ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%")
-        //         ->orWhere('kelompokJenisPemeriksaan', 'like', "%{$search}%");
-        //     })
-            ->reorder() //buat reset semua order by
-            ->orderBy('modalitass.namaModalitas', 'asc')   // harus pakai nama tabel
-            ->orderBy('namaJenisPemeriksaan', 'asc') 
+            ->orderBy('namaJenisPemeriksaan', 'asc')
             ->paginate(10)
             ->withQueryString();
 
@@ -138,4 +116,5 @@ class JenisPemeriksaanController extends Controller
             'jenisPemeriksaans' => $jenisPemeriksaans,
         ]);
     }
+
 }

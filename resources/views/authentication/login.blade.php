@@ -25,7 +25,7 @@
           <p class="mb-4 text-muted">Silahkan masuk ke dalam akun Anda.</p>
 
           @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+            <div class="alert alert-success alert-dismissible fade show mb-3 auto-dismiss" role="alert">
               <i class="bi bi-check-circle-fill me-2"></i>
               {{ session('success') }}
               <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -33,19 +33,20 @@
           @endif
 
           @if ($errors->has('login'))
-            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show mb-3 auto-dismiss" role="alert">
               {{ $errors->first('login') }}
               <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
           @endif
 
           @if ($errors->has('email_not_verified'))
-            <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+            <div class="alert alert-warning alert-dismissible fade show mb-3 auto-dismiss" role="alert">
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
               {{ $errors->first('email_not_verified') }}
               <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
           @endif
+
           
           <form action="{{ route('login') }}" method="POST">
             @csrf
@@ -93,5 +94,19 @@
   </div>
 
   <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alerts = document.querySelectorAll('.auto-dismiss');
+
+    alerts.forEach(function (alert) {
+      setTimeout(function () {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, 3000); // 3 detik
+    });
+  });
+</script>
+
 </body>
 </html>

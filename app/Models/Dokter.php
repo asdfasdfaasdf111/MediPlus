@@ -71,15 +71,27 @@ class Dokter extends Model
         if (strtotime($time) < strtotime($hariIni->jamMulai) || strtotime($time) + $duration > strtotime($hariIni->jamSelesai)) return false;
 
         $dataPemeriksaans = $this->dataPemeriksaan()
-                                ->where('rentangWaktuKedatangan', $time)
                                 ->where('tanggalPemeriksaan', $tanggalPemeriksaan)->get();
-        $totalTime = 0;
-        foreach($dataPemeriksaans as $data){
-            $jenisPemeriksaan = $data->jenisPemeriksaan;
+        $penggunaanKuota = array_fill(0, 24, 0);
+        foreach ($dataPemeriksaans as $data) {
             if (!$jenisPemeriksaan->diDampingiDokter) continue;
-            $totalTime += $jenisPemeriksaan->lamaPemeriksaan;
+            $index = Carbon::parse($data->rentangWaktuKedatangan)->hour;
+            $dur = $data->jenisPemeriksaan->lamaPemeriksaan;
+            while($dur > 0){
+                $penggunaanKuota[$index] += min($dur, 60);
+                $dur -= 60;
+                $index++;
+            }
         }
-        if ($totalTime + $duration <= 60) return true;
+        $jump = $jenisPemeriksaan->getJump();
+        $index = Carbon::parse($time)->hour;
+        $totalJam = 0;
+        for ($i = $index; $i < min($index + $jump, 24); $i++){
+            $totalJam += $penggunaanKuota[$i];
+        }
+        if ($totalJam + $duration <= 60 * $jump){
+            return true;
+        }
         return false;
     }
 }

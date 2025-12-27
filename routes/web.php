@@ -19,6 +19,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\DashboardPetugasController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HasilPemeriksaanController;
+use App\Http\Controllers\KelompokJenisPemeriksaanController;
 use App\Livewire\AntrianController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
@@ -191,6 +192,8 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     
     Route::get('/kelolajenispemeriksaan', [JenisPemeriksaanController::class, 'tampilkanJenisPemeriksaan'])->name('petugas.kelolajenispemeriksaan');
     Route::get('/kelolamodalitas', [ModalitasController::class, 'tampilkanModalitas'])->name('petugas.kelolamodalitas');
+    Route::get('/kelolakelompokjenispemeriksaan', [KelompokJenisPemeriksaanController::class, 'tampilkanKelompokJenisPemeriksaan'])->name('petugas.kelolakelompokjenispemeriksaan');
+
 
     Route::get('/tambahjenispemeriksaanpage', function () {
         return view('petugas.tambahjenispemeriksaanpage');
@@ -199,6 +202,10 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::get('/tambahmodalitaspage', function () {
         return view('petugas.tambahmodalitaspage');
     })->name('petugas.tambahmodalitaspage');
+
+    Route::get('/tambahkelompokjenispemeriksaanpage', function () {
+        return view('petugas.tambahkelompokjenispemeriksaanpage');
+    })->name('petugas.tambahkelompokjenispemeriksaanpage');
 
     Route::get('/detailpemeriksaan/{dataPemeriksaan}', function (DataPemeriksaan $dataPemeriksaan) {
         return view('petugas.detailpemeriksaan', compact('dataPemeriksaan'));
@@ -221,6 +228,10 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
     Route::post('/tambahModalitas', [ModalitasController::class, 'tambahModalitas'])->name('petugas.tambahModalitas');
     Route::put('/editModalitas/{id}', [ModalitasController::class, 'editModalitas'])->name('petugas.editModalitas');
     Route::delete('/hapusModalitas/{id}', [ModalitasController::class, 'hapusModalitas'])->name('petugas.hapusModalitas');
+
+    Route::post('/tambahKelompokJenisPemeriksaan', [KelompokJenisPemeriksaanController::class, 'tambahKelompokJenisPemeriksaan'])->name('petugas.tambahKelompokJenisPemeriksaan');
+    Route::put('/editKelompokJenisPemeriksaan/{id}', [KelompokJenisPemeriksaanController::class, 'editKelompokJenisPemeriksaan'])->name('petugas.editKelompokJenisPemeriksaan');
+    Route::delete('/hapusKelompokJenisPemeriksaan/{id}', [KelompokJenisPemeriksaanController::class, 'hapusKelompokJenisPemeriksaan'])->name('petugas.hapusKelompokJenisPemeriksaan');
 
     Route::get('/api/jenisPemeriksaanSpesifik/{rumahSakit}/{jenis}',
                 function ($rumahSakitId, $jenis) { $rumahSakit = RumahSakit::find($rumahSakitId);
@@ -260,6 +271,7 @@ Route::middleware(['auth', 'verified', 'role:petugas'])->prefix('petugas')->grou
         return view('petugas.daftaronsite.daftartambahdatapasien', compact('masterPasien'));
     })->name('petugas.daftartambahdatapasien');
 
+    // Route::get('/daftardatarujukan/{masterPasien}', [DataRujukanController::class, 'create'])->name('petugas.daftardatarujukan');
     Route::get('/daftardatarujukan/{masterPasien}', function (MasterPasien $masterPasien) {
         return view('petugas.daftaronsite.daftardatarujukan', compact('masterPasien'));
     })->name('petugas.daftardatarujukan');

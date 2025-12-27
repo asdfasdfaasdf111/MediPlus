@@ -11,7 +11,7 @@
       <div class="col-md-10 p-4 bg-light">
 
         @if (session('success'))
-          <div class="alert alert-success alert-dismissible fade show mx-1 mx-md-0 mt-2" role="alert">
+          <div class="alert alert-success alert-dismissible fade show auto-dismiss mx-1 mx-md-0 mt-2" role="alert">
             <i class="bi bi-check-circle-fill me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -52,26 +52,26 @@
           </div>
 
          <div class="table-responsive">
-            <table class="table align-middle mb-0"  style="table-layout: fixed;">
+            <table class="table align-middle mb-0">
               <colgroup>
                 <col style="width:30%;">  
-                <col style="width:36%;">   
-                <col style="width:31%;">  
-                <col style="width:160px;">
+                <col style="width:30%;">   
+                <col style="width:30%;">  
+                <col style="width:170px;">
               </colgroup>
 
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th>Nama Modalitas</th>
-                  <th>Jenis Modalitas</th>
+                  <th class="ps-4">Nama Modalitas</th>
+                  <th>Kelompok Jenis Pemeriksaan</th>
                   <th>Kode Ruang</th>
-                  <th class="text-center"></th>
+                  <th class="text-center" style="width:170px;"></th>
                 </tr>
               </thead>
               <tbody>
                 @forelse($modalitass as $modalitas)
                   <tr id="row-{{ $modalitas->id }}">
-                    <td>
+                    <td class="ps-4">
                       <span data-name="namaModalitas" class="view-field">{{ $modalitas->namaModalitas }}</span>
                       <input type="text" name="namaModalitas"
                              class="form-control form-control-sm edit-field d-none"
@@ -159,3 +159,15 @@
   </div>
 
 @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.alert').forEach(alertEl => {
+      setTimeout(() => {
+        bootstrap.Alert.getOrCreateInstance(alertEl).close();
+      }, 3000);
+    });
+  });
+</script>
+@endpush

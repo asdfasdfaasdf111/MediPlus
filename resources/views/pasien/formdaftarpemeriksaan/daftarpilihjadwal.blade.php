@@ -52,6 +52,7 @@
                 @method('PUT')
             @endif
 
+            {{-- Ini kan header --}}
             <div class="border-bottom px-4 py-3">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-hospital fs-5 text-primary"></i>
@@ -114,11 +115,9 @@
                 <div class="form-text">Pilih tindakan spesifik sesuai rujukan.</div>
               </div>
             </div>
-        </div>
 
             {{-- Kalender & Waktu --}}
             <div class="row g-3 px-4 pb-3">
-
               <div class="col-12 col-md-6">
                 <div class="h-100 bg-white border rounded-3">
                   <div class="border-bottom px-3 py-2">
@@ -149,13 +148,17 @@
                       Pilih tanggal yang tersedia. Tanggal abu-abu menandakan jadwal penuh.
                     </div>
                   </div>
-                </div>
               </div>
+            </div>
 
               {{-- Waktu --}}
               <div class="col-12 col-md-6">
                 <div class="h-100 bg-white border rounded-3">
-                  <div class="border-bottom d-flex align-items-center justify-content-between px-3 py-2"> <label class="form-label fw-bold mb-0">Rentang Waktu Kedatangan</label> <span class="badge text-bg-light rounded-pill">1 jam/slot</span>
+                  <div class="border-bottom d-flex align-items-center justify-content-between px-3 py-2"> 
+                    <label class="form-label fw-bold mb-0">
+                      Rentang Waktu Kedatangan
+                    </label> 
+                    <span class="badge text-bg-light rounded-pill">1 jam/slot</span>
                   </div>
 
                   <div class="p-3">
@@ -195,6 +198,7 @@
               </div>
             </div>
 
+
             <div class="border-top text-center px-4 py-3">
               <div class="d-inline-flex gap-2">
                 <a href="{{ route('pasien.pendaftaran') }}" class="btn btn-outline-primary px-4 px-md-5 rounded-pill">
@@ -203,7 +207,7 @@
                 <button id="submitBtn" type="submit" class="btn btn-primary px-4 px-md-5 rounded-pill">
                     Berikutnya
                 </button>
-              </div>
+            </div>
             </div>
         </form>
       </div>

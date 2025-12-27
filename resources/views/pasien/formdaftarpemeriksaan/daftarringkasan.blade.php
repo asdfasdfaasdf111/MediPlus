@@ -36,6 +36,7 @@
         <div class="row g-3">
 
           <div class="col-12">
+            <div class="col-12 mb-4">
             <div class="card shadow-sm">
               <div class="card-header d-flex justify-content-between align-items-center fw-semibold">
                 <div>
@@ -77,9 +78,10 @@
               </div>
             </div>
           </div>
+          </div>
 
 
-          <div class="col-12">
+          <div class="col-12 mb-4">
             <div class="card shadow-sm">
               <div class="card-header d-flex justify-content-between align-items-center fw-semibold">
                 <div>
@@ -132,7 +134,7 @@
           </div>
 
 
-          <div class="col-12">
+          <div class="col-12 mb-4">
             <div class="card shadow-sm">
               <div class="card-header fw-semibold">
                 <i class="bi bi-person-vcard me-2"></i> Formulir Data Diri
@@ -214,7 +216,7 @@
           </div>
 
 
-          <div class="col-12">
+          <div class="col-12 mb-4">
             <div class="card shadow-sm">
               <div class="card-header d-flex justify-content-between align-items-center fw-semibold">
                 <div>
@@ -292,7 +294,6 @@
                 </button>
             </div>
         </form>
-
       </div>
     </div>
   </div>

@@ -24,11 +24,18 @@ class PetugasController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:8',
             'foto'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ],
         [
                 'name.required'  => 'Nama lengkap wajib diisi.',
+                'name.max' => 'Nama lengkap maksimal 100 karakter.',
+
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar.',
+
                 'password.required' => 'Password wajib diisi.',
                 'password.confirmed'  => 'Password dan konfirmasi password tidak sesuai.',
                 'password.min'  => 'Password minimal 8 karakter.',
@@ -57,13 +64,10 @@ class PetugasController extends Controller
             'user_id'=> $user->id,
             'admin_id' => $admin->id,
             'rumah_sakit_id' => $admin->rumahSakit->id,
-            // Petugas ga pernah minta no hp tapi di databaseny masih ad no hp, kasih default biar ga error, nanti di databasenya hapus kalo ga kepake
             'noHP' => '08123456789',
             'foto' => $pathFoto,
         ]);
 
-        // dikomen dulu soalnya belum perlu, cuma mau tes bikin akunnya bisa atau engga, ga perlu beneran kirim email ke gmailnya
-        // $user->sendEmailVerificationNotification();
         return redirect()->route('admin.kelolapetugaspage')->with('success', 'Akun petugas berhasil dibuat!');
     }
 

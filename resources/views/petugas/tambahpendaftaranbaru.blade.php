@@ -13,11 +13,30 @@
     <div class="col-md-10 p-4 bg-light">
       <div class="card shadow-sm">
 
-        <h4 class="text-center mb-4 pt-5" style="color:#173B7A;">
+        <h4 class="text-center mb-2 pt-5" style="color:#173B7A;">
           Daftar Onsite Pasien
         </h4>
+        <p class="text-center text-muted mb-4">
+          Digunakan oleh petugas untuk mendaftarkan pasien yang datang langsung ke rumah sakit.
+        </p>
+
 
         <div class="card-body px-5">
+
+          <div class="alert alert-info d-flex align-items-start gap-3 mb-4">
+            <i class="bi bi-info-circle-fill mt-1"></i>
+            <div>
+              <div class="fw-semibold">Petunjuk Pengisian</div>
+              <div class="small">
+                Masukkan email pasien untuk melanjutkan proses pendaftaran.
+                <ul class="mb-0 ps-3">
+                  <li>Jika email sudah terdaftar, data pasien akan dimuat otomatis.</li>
+                  <li>Jika belum terdaftar, silakan buat akun baru.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
 
           <form action="{{ route('petugas.submitemailpasien') }}" method="POST" novalidate>
             @csrf

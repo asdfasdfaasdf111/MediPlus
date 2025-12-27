@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('counter_antrians', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rumah_sakit_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('modalitas_id')->constrained('modalitass')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('kelompok_jenis_pemeriksaan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggalAntrian');
             $table->unsignedInteger('nomorTerakhir');
             $table->timestamps();

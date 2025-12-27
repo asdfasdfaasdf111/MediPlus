@@ -16,7 +16,8 @@
     $dataPasien = $dataPemeriksaan->dataPasien;
     $dataRujukan = $dataPemeriksaan->dataRujukan;
     $hasilPemeriksaan = $dataPemeriksaan->hasilPemeriksaan;
-    $draftLaporan     = $dokter->draftLaporan;
+    $draftLaporan = $dokter->draftLaporan;
+    $jump = $jenisPemeriksaan->getJump();
 @endphp
 
 <body class="bg-white text-dark">
@@ -67,7 +68,7 @@
                     <div class="fw-semibold">
                       {{ $dataPemeriksaan->rentangWaktuKedatangan }}
                       -
-                      {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString() }}
+                      {{ Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->toTimeString() }}
                     </div>
                   </div>
 

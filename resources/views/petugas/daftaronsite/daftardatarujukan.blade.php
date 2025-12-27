@@ -21,8 +21,7 @@
     <div class="col-md-10 p-4 bg-light min-vh-100">
 
       {{-- FORM --}}
-      <form method="POST"
-            action="{{ $draftRujukan ? route('petugas.updateDataRujukan', ['dataPemeriksaan' => $draftData, 'dataRujukan' => $draftRujukan]) : route('petugas.bikinDataRujukan', $draftData) }}" enctype="multipart/form-data" class="bg-white border rounded-4 shadow-sm">
+      <form method="POST" action="{{ $draftRujukan ? route('petugas.updateDataRujukan', ['dataPemeriksaan' => $draftData, 'dataRujukan' => $draftRujukan]) : route('petugas.bikinDataRujukan', $draftData) }}" enctype="multipart/form-data" class="bg-white border rounded-4 shadow-sm" novalidate>
         @csrf
         @if ($draftRujukan)
             @method('PUT')
@@ -99,7 +98,7 @@
 
               <div class="col-12">
                 <label class="form-label fw-semibold">Formulir Rujukan (PDF)</label>
-                <input type="file" name="formulirRujukan" accept="application/pdf"  class="form-control @error('formulirRujukan') is-invalid @enderror" @if(!$draftRujukan) required @endif>
+                <input type="file" name="formulirRujukan" accept="application/pdf"  class="form-control @error('formulirRujukan') is-invalid @enderror" @if(!$draftRujukan)  @endif>
 
                 @error('formulirRujukan')
                   <div class="invalid-feedback">{{ $message }}</div>

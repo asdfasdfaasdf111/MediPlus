@@ -68,3 +68,4 @@ class KelompokJenisPemeriksaanController extends Controller
         return view('petugas.kelolakelompokjenispemeriksaan', compact('kelompokJenisPemeriksaans'));
     }
 }
+

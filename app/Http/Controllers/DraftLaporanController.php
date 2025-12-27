@@ -34,7 +34,13 @@ class DraftLaporanController extends Controller
 
         $request->validate([
             'judul' => 'nullable|string|max:100',
-            'deskripsi' => 'nullable|string'
+            'deskripsi' => 'nullable|string|max:160'
+        ],
+        [
+            'judul.required'     => 'Judul draft wajib diisi.',
+            'deskripsi.required' => 'Deskripsi draft wajib diisi.',
+            'judul.max'         => 'Judul draft maksimal 100 karakter.',
+            'deskripsi.max'     => 'Deskripsi draft maksimal 160 karakter.',
         ]);
 
         $draft->update([
@@ -53,10 +59,12 @@ class DraftLaporanController extends Controller
     {
         $validated = $request->validate([
             'judul'     => 'required|string|max:100',
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'required|string|max:160',
         ], [
             'judul.required'     => 'Judul draft wajib diisi.',
             'deskripsi.required' => 'Deskripsi draft wajib diisi.',
+            'judul.max'         => 'Judul draft maksimal 100 karakter.',
+            'deskripsi.max'     => 'Deskripsi draft maksimal 160 karakter.',
         ]);
 
         $dokter = auth()->user()->dokter;

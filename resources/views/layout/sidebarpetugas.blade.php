@@ -2,7 +2,7 @@
     <ul class="nav flex-column">
         <li class="nav-item mb-2">
             <a href="{{ route('petugas.homepage') }}"
-               class="nav-link {{ request()->routeIs(['petugas.tambahpendaftaranbaru', 'petugas.homepage','petugas.pratinjaupemeriksaan', 'petugas.detailpemeriksaan', 'petugas.editpendaftaran']) ? 'text-primary fw-bold' : 'text-dark' }}">
+               class="nav-link {{ request()->routeIs(['petugas.tambahpendaftaranbaru', 'petugas.homepage','petugas.pratinjaupemeriksaan', 'petugas.detailpemeriksaan', 'petugas.editpendaftaran', 'petugas.daftarpilihjadwal', 'petugas.daftartipepasien']) ? 'text-primary fw-bold' : 'text-dark' }}">
                 <i class="bi bi-speedometer2 me-2"></i> Homepage
             </a>
         </li>
@@ -18,6 +18,13 @@
             <a href="{{ route('petugas.kelolamodalitas') }}"
                class="nav-link {{ request()->routeIs('petugas.kelolamodalitas','petugas.tambahmodalitaspage') ? 'text-primary fw-bold' : 'text-dark' }}">
                 <i class="bi bi-hdd-rack me-2"></i> Modalitas
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="{{ route('petugas.kelolakelompokjenispemeriksaan') }}"
+               class="nav-link {{ request()->routeIs('petugas.kelolakelompokjenispemeriksaan','petugas.tambahkelompokjenispemeriksaanpage') ? 'text-primary fw-bold' : 'text-dark' }}">
+                <i class="bi bi-collection me-2"></i> Kelompok Jenis
             </a>
         </li>
 

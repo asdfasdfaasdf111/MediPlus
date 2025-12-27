@@ -26,12 +26,19 @@ class DokterController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
             'spesialis' => 'required|string|max:100',
             'password' => 'required|confirmed|min:8',
             'foto'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ],
         [
             'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 100 karakter.',
+
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            
             'spesialis.required'  => 'Spesialis wajib diisi.',
             'password.required'  => 'Password wajib diisi.',
             'password.confirmed' => 'Password dan konfirmasi password tidak sesuai.',

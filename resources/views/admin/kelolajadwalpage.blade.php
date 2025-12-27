@@ -50,13 +50,13 @@
 
     {{-- Notifikasi --}}
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show auto-dismiss" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show auto-dismiss" role="alert">
             {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -182,6 +182,18 @@
 
     </div>    
 </div>
+
 <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.auto-dismiss').forEach(function (alert) {
+      setTimeout(function () {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, 3000); // 3 detik
+    });
+  });
+</script>
 </body>
 

@@ -89,7 +89,7 @@ class DataPemeriksaanController extends Controller
         $rumahSakit = $dataPemeriksaan->rumahSakit;
 
         $jenisPemeriksaanBaru = $rumahSakit->jenisPemeriksaan()
-            ->where('id', $validated['jenisPemeriksaanSpesifik'])
+            ->where('id', $validated['jenisPemeriksaan'])
             ->first();
         if (!$jenisPemeriksaanBaru) {
             return back()->withErrors([
@@ -547,10 +547,9 @@ public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataP
                     ->orWhereHas('dataRujukan', function ($q) use ($search) {
                         $q->where('namaDokterPerujuk', 'like', "%{$search}%");
                     })
-                    // Jenis pemeriksaan + spesifik
+                    // Jenis pemeriksaan 
                     ->orWhereHas('jenisPemeriksaan', function ($q) use ($search) {
-                        $q->where('namaJenisPemeriksaan', 'like', "%{$search}%")
-                        ->orWhere('namaPemeriksaanSpesifik', 'like', "%{$search}%");
+                        $q->where('namaJenisPemeriksaan', 'like', "%{$search}%");
                     })
                     // Dokter radiologi 
                     ->orWhereHas('dokter.user', function ($q) use ($search) {
@@ -571,12 +570,12 @@ public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataP
         if ($dataPemeriksaan->statusPasien !== 'Menunggu Registrasi Ulang'){
             return back()->with('error', 'Pasien tidak dalam status Menunggu Registrasi Ulang.');
         }
-        $modalitas = $dataPemeriksaan->jenisPemeriksaan->modalitas;
-        $counter = $dataPemeriksaan->rumahSakit->counterHariIni($modalitas->id);
+        $kelompokJenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan->kelompokJenisPemeriksaan;
+        $counter = $dataPemeriksaan->rumahSakit->counterHariIni($kelompokJenisPemeriksaan->id);
         if ($counter === null) {
             $counter = CounterAntrian::create([
                 'rumah_sakit_id' => $dataPemeriksaan->rumah_sakit_id,
-                'modalitas_id' => $modalitas->id,
+                'kelompok_jenis_pemeriksaan_id' => $kelompokJenisPemeriksaan->id,
                 'tanggalAntrian' => Carbon::today(),
                 'nomorTerakhir' => 0,
             ]);
@@ -591,25 +590,6 @@ public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataP
         LogService::create('Meregistrasi ulang pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
 
         return redirect()->route('petugas.homepage');
-        // $counter = $dataPemeriksaan->jenisPemeriksaan->counterHariIni;
-        // if ($counter === null) {
-        //     $counter = CounterAntrian::create([
-        //         'rumah_sakit_id' => $dataPemeriksaan->rumah_sakit_id,
-        //         'namaJenisPemeriksaan' => $dataPemeriksaan->jenisPemeriksaan->namaJenisPemeriksaan,
-        //         'tanggalAntrian' => Carbon::today(),
-        //         'nomorTerakhir' => 0,
-        //     ]);
-        // }
-        // $counter->nomorTerakhir++;
-        // $counter->save();
-        
-        // $dataPemeriksaan->nomorAntrian = $counter->nomorTerakhir;
-        // $dataPemeriksaan->statusPasien = $dataPemeriksaan->statusPetugas = $dataPemeriksaan->statusDokter = 'Dalam Antrian';
-        // $dataPemeriksaan->save();
-        // $petugas = auth()->user()->petugas;
-        // LogService::create('Meregistrasi ulang pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
-
-        // return redirect()->route('petugas.dashboard');
     }
 }
 

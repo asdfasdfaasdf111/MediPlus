@@ -78,7 +78,7 @@ class DokterController extends Controller
             $jamBuka  = sprintf("%02d:%02d", $jadwal['jamBukaJam'], $jadwal['jamBukaMenit']);
             $jamTutup = sprintf("%02d:%02d", $jadwal['jamTutupJam'], $jadwal['jamTutupMenit']);
 
-            if ($jamTutup <= $jamBuka){
+            if ($jamTutup <= $jamBuka && ($jadwal['jamTutupJam'] != 0 || $jadwal['jamTutupMenit'] != 0)){
                 return back()->withErrors(['jadwal'.($index+1).'jamBuka' => 'Jam tutup harus lebih besar dari jam buka']);
             }
             $jadwalArray[$index] = [

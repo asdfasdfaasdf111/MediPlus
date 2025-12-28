@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('pemakaianKontras');
             $table->integer('lamaPemeriksaan');
             $table->boolean('diDampingiDokter');
-            $table->double('harga');
+            $table->integer('harga');
             $table->timestamps();
         });
     }

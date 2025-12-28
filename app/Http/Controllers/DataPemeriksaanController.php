@@ -10,6 +10,7 @@ use App\Models\Dokter;
 use App\Models\MasterPasien;
 use App\Models\RumahSakit;
 use App\Models\User;
+use App\Notifications\PendaftaranDiterima;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
@@ -41,6 +42,8 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusPetugas = "Menunggu Pembayaran";
             $dataPemeriksaan->statusDokter = "Menunggu Pembayaran";
             $dataPemeriksaan->dokter_id = $request->dokterId;
+            $userPasien = $dataPemeriksaan->masterPasien->user;
+            $userPasien->notify(new PendaftaranDiterima($dataPemeriksaan));
             LogService::create('Menerima pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         else{
@@ -268,6 +271,7 @@ class DataPemeriksaanController extends Controller
             'statusDokter' => 'Draft Pasien',
             'statusPetugas' => 'Draft Pasien',
             'statusPasien' => 'Draft Pasien',
+            'pengingatTerkirim' => false,
         ]);
         
         return redirect()->route('pasien.daftartipepasien');
@@ -304,6 +308,7 @@ class DataPemeriksaanController extends Controller
             'statusDokter' => 'Draft Petugas',
             'statusPetugas' => 'Draft Petugas',
             'statusPasien' => 'Draft Petugas',
+            'pengingatTerkirim' => false,
         ]);
         
         return redirect()->route('petugas.daftartipepasien', ['masterPasien' => $masterPasien->id]);

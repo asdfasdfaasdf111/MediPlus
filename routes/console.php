@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 Schedule::command('app:auto-cancel-pendaftaran')
     ->everyMinute()
     ->withoutOverlapping();
+
+Schedule::command('app:pengingat-pemeriksaan')
+    ->everyMinute()
+    ->withoutOverlapping();

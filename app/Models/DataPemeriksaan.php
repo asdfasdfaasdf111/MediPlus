@@ -36,6 +36,7 @@ class DataPemeriksaan extends Model
         'riwayatGolonganDarah',
         'nomorAntrian',
         'cancelled_at',
+        'pengingatTerkirim',
     ];
 
     protected $casts = [
@@ -107,7 +108,7 @@ class DataPemeriksaan extends Model
                 $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Menunggu Pembayaran Offline','Menunggu Pembayaran','Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
+                $statusUser = "'Menunggu Laporan','Dalam Antrian','Pemeriksaan Berlangsung', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             default:
                 $statusUser = "'default'";

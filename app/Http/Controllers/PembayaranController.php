@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\DataPemeriksaan;
 use App\Models\Pembayaran;
+use App\Notifications\PembayaranBerhasil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -205,6 +206,8 @@ class PembayaranController extends Controller
             $dataPemeriksaan->statusPasien = 'Menunggu Registrasi Ulang';
             $dataPemeriksaan->statusPetugas = 'Menunggu Registrasi Ulang';
             $dataPemeriksaan->statusDokter = 'Menunggu Registrasi Ulang';
+            $userPasien = $dataPemeriksaan->masterPasien->user;
+            $userPasien->notify(new PembayaranBerhasil($dataPemeriksaan));
         }
         else if ($normalizedStatus === 'deny'){
             $dataPemeriksaan->statusUtama = 'Dibatalkan';
@@ -230,6 +233,8 @@ class PembayaranController extends Controller
         $dataPemeriksaan->statusPasien = 'Menunggu Registrasi Ulang';
         $dataPemeriksaan->statusPetugas = 'Menunggu Registrasi Ulang';
         $dataPemeriksaan->statusDokter = 'Menunggu Registrasi Ulang';
+        $userPasien = $dataPemeriksaan->masterPasien->user;
+        $userPasien->notify(new PembayaranBerhasil($dataPemeriksaan));
         $dataPemeriksaan->save();
 
         return redirect()->route('petugas.detailpemeriksaan', $dataPemeriksaan);

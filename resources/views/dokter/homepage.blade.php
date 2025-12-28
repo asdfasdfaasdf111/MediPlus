@@ -77,7 +77,8 @@
                 'pemeriksaan berlangsung' => 'PEMERIKSAAN BERLANGSUNG',
                 'menunggu laporan'        => 'MENUNGGU LAPORAN',
                 'laporan terkirim'        => 'LAPORAN TERKIRIM',
-                'selesai'                 => 'SELESAI'
+                'selesai'                 => 'SELESAI',
+                default => strtoupper($dataPemeriksaan->statusDokter),
             };
 
             $statusClass = match ($dataPemeriksaan->statusUtama){

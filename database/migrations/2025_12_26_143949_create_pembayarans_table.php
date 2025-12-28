@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('metodePembayaran');
             $table->string('mediaPembayaran')->nullable();
             $table->string('status');
-            $table->double('harga');
+            $table->integer('harga');
             $table->string('namaJenisPemeriksaan');
             $table->string('namaPasien');
             $table->string('emailPasien');

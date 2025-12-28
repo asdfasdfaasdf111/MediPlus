@@ -40,6 +40,7 @@ class DataPemeriksaanSeeder extends Seeder
             'riwayatNoHP' => $dataPasien->noHP,
             'riwayatAlergi' => $dataPasien->alergi,
             'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+            'pengingatTerkirim' => false,
         ]);
         DataPemeriksaan::create([
             'dokter_id' => $dokter->id,
@@ -60,6 +61,7 @@ class DataPemeriksaanSeeder extends Seeder
             'riwayatNoHP' => $dataPasien->noHP,
             'riwayatAlergi' => $dataPasien->alergi,
             'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+            'pengingatTerkirim' => false,
         ]);
         //bikin queue rusak jdi dicomment dlu, klo rajin ntr w bikin yg ga ngerusak data
         // DataPemeriksaan::create([
@@ -81,6 +83,7 @@ class DataPemeriksaanSeeder extends Seeder
         //     'riwayatNoHP' => $dataPasien->noHP,
         //     'riwayatAlergi' => $dataPasien->alergi,
         //     'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+        //      'pengingatTerkirim' => false,
         // ]);
         // DataPemeriksaan::create([
         //     'dokter_id' => $dokter->id,
@@ -101,6 +104,7 @@ class DataPemeriksaanSeeder extends Seeder
         //     'riwayatNoHP' => $dataPasien->noHP,
         //     'riwayatAlergi' => $dataPasien->alergi,
         //     'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+        //      'pengingatTerkirim' => false,
         // ]);
         // DataPemeriksaan::create([
         //     'dokter_id' => $dokter->id,
@@ -121,6 +125,7 @@ class DataPemeriksaanSeeder extends Seeder
         //     'riwayatNoHP' => $dataPasien->noHP,
         //     'riwayatAlergi' => $dataPasien->alergi,
         //     'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+        //      'pengingatTerkirim' => false,
         // ]);
         // DataPemeriksaan::create([
         //     'dokter_id' => $dokter->id,
@@ -141,6 +146,7 @@ class DataPemeriksaanSeeder extends Seeder
         //     'riwayatNoHP' => $dataPasien->noHP,
         //     'riwayatAlergi' => $dataPasien->alergi,
         //     'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+        //      'pengingatTerkirim' => false,
         // ]);
 
         DataPemeriksaan::create([
@@ -162,10 +168,11 @@ class DataPemeriksaanSeeder extends Seeder
             'riwayatNoHP' => $dataPasien->noHP,
             'riwayatAlergi' => $dataPasien->alergi,
             'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+            'pengingatTerkirim' => false,
         ]);
 
         //cuma buat cek jadwalnya ud aman atau engga, hapus aj ntr
-        for ($i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 1; $i++){
             DataPemeriksaan::create([
                 'dokter_id' => $dokter->id,
                 'jenis_pemeriksaan_id' => $rumahSakit->jenisPemeriksaan()->skip($i)->first()->id,
@@ -185,6 +192,7 @@ class DataPemeriksaanSeeder extends Seeder
                 'riwayatNoHP' => $dataPasien->noHP,
                 'riwayatAlergi' => $dataPasien->alergi,
                 'riwayatGolonganDarah' => $dataPasien->golonganDarah,
+                'pengingatTerkirim' => false,
             ]);
         }
     }

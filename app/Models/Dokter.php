@@ -38,8 +38,8 @@ class Dokter extends Model
     public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class)
-        ->where('statusUtama', '!=', 'Draft')
-        ->where('statusUtama', '!=', 'Dibatalkan')
+        ->where('statusUtama', 'Berlangsung')
+        ->orWhere('statusUtama', 'Selesai')
         ->ordered('statusDokter');
     }
 
@@ -66,8 +66,20 @@ class Dokter extends Model
 
         //kalo hari ini ga kerja, atau jadwalnya diluar jam kerja si dokter, berarti dia ga available
         if (!$hariIni->kerja) return false;
-        if (strtotime($time) < strtotime($hariIni->jamMulai) || strtotime($time) + $duration > strtotime($hariIni->jamSelesai)) return false;
+        $start = strtotime($hariIni->jamMulai);
+        $end   = strtotime($hariIni->jamSelesai);
 
+        // klo 00:00 anggap 24:00
+        if (date('H:i', $end) === '00:00') {
+            $end = strtotime('+1 day', $end);
+        }
+
+        $timeStart = strtotime($time);
+        $timeEnd   = $timeStart + $duration;
+
+        if ($timeStart < $start || $timeEnd > $end) {
+            return false;
+        }
         $dataPemeriksaans = $this->dataPemeriksaan()
                                 ->where('tanggalPemeriksaan', $tanggalPemeriksaan)->get();
         $penggunaanKuota = array_fill(0, 24, 0);

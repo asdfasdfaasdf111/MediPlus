@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //ambil jadwal di bulan itu, lalu update jadwal di bulan itu, mana aja yang available
         jenisPemeriksaan.addEventListener("change", (e) => {
             tanggalPemeriksaan.calendar.clear(false);
-
+            
             fetch(`/api/jadwalPenuhPetugas/${rumahSakitValue}/${jenisPemeriksaan.value}`)
                 .then(res => res.json())
                 .then(data => {

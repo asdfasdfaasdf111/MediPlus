@@ -1,0 +1,43 @@
+/* HOMEPAGE PASIEN*/
+
+
+/* HERO SECTION */
+
+/* Ini buat Desktop */
+.hero-img {
+  height: 70vh;      
+  object-fit: cover;
+}
+
+/* Ini buat Mobile */
+@media (max-width: 576px) {
+  .hero-img {
+    height: 45vh;
+  }
+}
+
+/* STEP TANPA ANTRI */
+
+/* DESKTOP */
+.step-icon {
+  width: 120px;
+  height: 120px;
+  font-size: 2.5rem;
+}
+
+/* MOBILE */
+@media (max-width: 576px) {
+  .step-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+  }
+
+  .step-item h5 {
+    font-size: 1rem;
+  }
+
+  .step-item p {
+    font-size: 0.9rem;
+  }
+}

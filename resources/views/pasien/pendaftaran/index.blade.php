@@ -108,22 +108,25 @@
     @endif --}}
   </div>
 
-  <ul class="nav nav-tabs border-0 mb-3">
-    @foreach ([
-      'semua'      => 'Semua',
-      'pending'    => 'Pending',
-      'berlangsung'=> 'Berlangsung',
-      'selesai'    => 'Selesai',
-      'dibatalkan' => 'Dibatalkan',
-    ] as $key => $label)
-      <li class="nav-item">
-        <a class="nav-link {{ $aktif === $key ? 'active' : '' }}"
-          href="{{ request()->fullUrlWithQuery(['status' => $key]) }}">
-          {{ $label }}
-        </a>
-      </li>
-    @endforeach
-  </ul>
+  {{-- <div class="overflow-x-auto"> itu Wrapper biar bisa discroll di mobile --}}
+  <div class="overflow-x-auto">
+    <ul class="nav nav-tabs flex-nowrap border-0 mb-3">
+      @foreach ([
+        'semua'      => 'Semua',
+        'pending'    => 'Pending',
+        'berlangsung'=> 'Berlangsung',
+        'selesai'    => 'Selesai',
+        'dibatalkan' => 'Dibatalkan',
+      ] as $key => $label)
+        <li class="nav-item">
+          <a class="nav-link {{ $aktif === $key ? 'active' : '' }}"
+            href="{{ request()->fullUrlWithQuery(['status' => $key]) }}">
+            {{ $label }}
+          </a>
+        </li>
+      @endforeach
+    </ul>
+  </div>
 
   @if(!$hasExam)
     {{-- EMPTY STATE: tambah Bootstrap Icon + padding diperkecil --}}

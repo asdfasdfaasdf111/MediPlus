@@ -9,15 +9,9 @@
         </div>
         <p class="small text-muted">Mudah, Cepat, dan Tanpa Antri.</p>
 
-        <p class="mb-1"><i class="bi bi-telephone me-2"></i>(+62)812-3456-7890</p>
+        {{-- <p class="mb-1"><i class="bi bi-telephone me-2"></i>(+62)812-3456-7890</p> --}}
         <p class="mb-3"><i class="bi bi-envelope me-2"></i>Mediplus987@gmail.com</p>
 
-        <div class="d-flex gap-3">
-          <a href="#" class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-dark fs-5"><i class="bi bi-twitter-x"></i></a>
-          <a href="#" class="text-dark fs-5"><i class="bi bi-telegram"></i></a>
-        </div>
       </div>
 
       {{-- Menu --}}

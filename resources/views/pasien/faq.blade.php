@@ -5,7 +5,6 @@
 @section('content')
 <div class="container py-4">
 
-  {{-- Header --}}
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
     <div>
       <h2 class="fw-bold mb-1" style="color:#0A3A7A;" >FAQ Pemeriksaan Radiologi</h2>
@@ -43,9 +42,12 @@
           </div>
           <div id="c1" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Pilih <strong>jenis pemeriksaan</strong>, <strong>lokasi/rumah sakit</strong>, <strong>tanggal &amp; rentang waktu</strong>,
-              isi <strong>data diri</strong> dan <strong>informasi klinis</strong> (alergi, kehamilan/menyusui, implan), unggah
-              <strong>surat rujukan</strong> bila diminta, lalu konfirmasi. Bukti pendaftaran dikirim ke email/portal pasien.
+              Pendaftaran pemeriksaan diawali dengan menambahkan <strong>data diri pasien</strong>.
+              Selanjutnya, lakukan <strong>pendaftaran pemeriksaan</strong> dengan memilih
+              <strong>rumah sakit mitra</strong>, <strong>jenis pemeriksaan</strong>, serta
+              <strong>jadwal pemeriksaan</strong>.
+              Setelah itu, lengkapi <strong>data rujukan dokter</strong>,
+              kemudian lakukan konfirmasi data pendaftaran.
             </div>
           </div>
         </div>
@@ -60,7 +62,7 @@
           </div>
         <div id="c2" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              <strong>Kartu identitas</strong>, <strong>surat rujukan</strong> (bila ada), daftar <strong>obat &amp; alergi</strong>,
+              <strong>Kartu identitas</strong>, <strong>surat rujukan</strong> , daftar <strong>obat &amp; alergi</strong>,
               riwayat reaksi <strong>bahan kontras</strong>, kondisi khusus (mis. <strong>hamil/menyusui</strong>), dan info
               <strong>implan/perangkat logam</strong>.
             </div>
@@ -77,8 +79,10 @@
           </div>
           <div id="c3" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              <strong>Bergantung jenis pemeriksaan.</strong> CT/CT-kontras sering memerlukan <strong>puasa beberapa jam</strong>.
-              MRI biasanya melepas <strong>benda/logam</strong> (perhiasan, pakaian ber-zip) dan menghindari riasan tertentu.
+              Persiapan pemeriksaan <strong>bergantung pada jenis pemeriksaan radiologi</strong> yang dilakukan.
+              Beberapa pemeriksaan seperti <strong>CT Scan dengan kontras</strong> umumnya memerlukan
+              <strong>puasa selama beberapa jam</strong> sebelum tindakan.
+              Pada pemeriksaan <strong>MRI</strong>, pasien diwajibkan <strong>melepaskan seluruh benda logam</strong> dan mengenakan pakaian yang sesuai demi keselamatan dan kualitas hasil pemeriksaan.
             </div>
           </div>
         </div>
@@ -93,8 +97,10 @@
           </div>
           <div id="c4" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Banyak implan modern bersifat <em>MRI-conditional</em> sehingga dapat dipindai dengan protokol khusus.
-              Cantumkan <strong>detail perangkat</strong> saat pendaftaran untuk dinilai keamanannya.
+              Keamanan pemeriksaan <strong>MRI pada pasien dengan alat atau implan logam</strong>
+              bergantung pada jenis dan spesifikasi perangkat yang digunakan.
+              Untuk kondisi khusus atau apabila terdapat keraguan, pasien disarankan <strong>menghubungi rumah sakit tujuan melalui kontak yang tersedia</strong> untuk memperoleh
+              informasi dan konfirmasi lebih lanjut sebelum pemeriksaan.
             </div>
           </div>
         </div>
@@ -109,8 +115,11 @@
           </div>
           <div id="c5" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Pada kehamilan, <strong>USG</strong> dan <strong>MRI tanpa kontras</strong> biasanya menjadi pilihan; X-ray/CT dipertimbangkan bila
-              <strong>manfaat klinis jelas</strong>. Saat menyusui, keputusan penggunaan kontras mengikuti pedoman klinis dokter.
+                Keamanan pemeriksaan radiologi pada <strong>ibu hamil atau menyusui</strong>
+                bergantung pada jenis pemeriksaan yang dilakukan. Pada kehamilan, pemeriksaan <strong>USG</strong> dan
+                <strong>MRI tanpa kontras</strong> umumnya dianggap aman. Pemeriksaan yang menggunakan <strong>radiasi</strong>, seperti X-ray atau CT Scan,
+                hanya dilakukan apabila <strong>manfaat klinis dinilai lebih besar</strong> dibandingkan risikonya. Pada ibu menyusui, penggunaan zat kontras akan disesuaikan dengan
+                <strong>pertimbangan dan rekomendasi dokter</strong>.
             </div>
           </div>
         </div>
@@ -125,8 +134,10 @@
           </div>
           <div id="c6" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Kontras membantu <strong>memperjelas struktur</strong> agar diagnosis lebih akurat. Efek umum biasanya sementara
-              (mis. rasa hangat, mual ringan). Reaksi alergi <strong>jarang</strong>. Keputusan pemakaian berdasarkan <strong>manfaat–risiko</strong>.
+              Pada beberapa pemeriksaan radiologi, dokter dapat menggunakan <strong>bahan kontras</strong> untuk membantu <strong>memperjelas struktur organ atau jaringan</strong> sehingga hasil pemeriksaan lebih akurat.
+              Sebagian besar pasien hanya mengalami <strong>efek samping ringan dan sementara</strong>, seperti rasa hangat atau mual ringan.
+              Reaksi alergi berat <strong>sangat jarang terjadi</strong>.
+              Keputusan penggunaan bahan kontras selalu didasarkan pada <strong>pertimbangan manfaat dan risiko</strong> oleh dokter sesuai kondisi pasien.
             </div>
           </div>
         </div>
@@ -141,8 +152,9 @@
           </div>
           <div id="c7" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Cantumkan semua riwayat alergi/asma/reaksi kontras saat mendaftar. Dokter dapat mempertimbangkan <strong>premedikasi</strong>
-              atau <strong>alternatif</strong> sesuai kebutuhan.
+              Apabila pasien memiliki <strong>riwayat alergi, asma, atau pernah mengalami reaksi terhadap bahan kontras</strong>, informasi tersebut wajib <strong>dicantumkan secara lengkap saat proses pendaftaran</strong>.
+              Data ini akan menjadi bahan pertimbangan petugas medis sebelum pemeriksaan dilakukan.
+              Bila diperlukan, pemeriksaan dapat disesuaikan dengan <strong>protokol khusus atau alternatif yang lebih aman</strong> sesuai kondisi pasien.
             </div>
           </div>
         </div>
@@ -152,13 +164,14 @@
           <div class="faq-title px-4 py-3">
             <button class="accordion-button p-0 bg-transparent shadow-none collapsed w-100 text-start"
                     type="button" data-bs-toggle="collapse" data-bs-target="#c8">
-              <span class="fw-semibold">8) Saya memiliki gangguan ginjal/diabetes. Apakah aman mendapatkan kontras?</span>
+              <span class="fw-semibold">8) Saya memiliki kondisi medis tertentu (misalnya gangguan ginjal atau diabetes). Apakah aman mendapatkan bahan kontras?</span>
             </button>
           </div>
           <div id="c8" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Penggunaan kontras—terutama iodinated—mempertimbangkan <strong>fungsi ginjal (eGFR)</strong> dan kebutuhan klinis,
-              mengikuti pedoman yang berlaku.
+              Penggunaan <strong>bahan kontras</strong> pada pasien dengan <strong>kondisi medis tertentu</strong>, seperti gangguan fungsi ginjal atau diabetes,
+              memerlukan <strong>pertimbangan khusus</strong>.
+              Informasi mengenai kondisi kesehatan tersebut wajib <strong>dicantumkan saat proses pendaftaran</strong> agar pemeriksaan dapat disesuaikan dengan <strong>protokol yang aman</strong> sesuai pedoman yang berlaku.
             </div>
           </div>
         </div>
@@ -173,8 +186,11 @@
           </div>
           <div id="c9" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              <strong>CT</strong> umumnya beberapa menit (lebih lama bila perlu minum/infus kontras).
-              <strong>MRI</strong> rata-rata 15–45 menit; mesin bising dan Anda perlu berbaring diam. Staf memantau &amp; berkomunikasi selama prosedur.
+              Lama proses pemeriksaan radiologi <strong>bervariasi sesuai jenis pemeriksaan</strong>.
+              Pemeriksaan seperti <strong>X-ray, USG, dan mammografi</strong> umumnya berlangsung sekitar <strong>5–15 menit</strong>.
+              <strong>CT Scan</strong> biasanya memerlukan waktu sekitar <strong>10–20 menit</strong>, dan dapat lebih lama apabila menggunakan bahan kontras.
+              <strong>MRI</strong> memerlukan waktu yang lebih panjang, yaitu sekitar <strong>20–45 menit</strong>, dan mengharuskan pasien berbaring diam selama pemeriksaan.
+              Selama prosedur, pasien akan dipantau oleh petugas medis dan dapat berkomunikasi apabila diperlukan.
             </div>
           </div>
         </div>
@@ -189,9 +205,13 @@
           </div>
           <div id="c10" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
             <div class="accordion-body px-4 py-3">
-              Radiolog menyusun <strong>laporan</strong>. Pada sistem ini, <strong>dokter mengunggah laporan</strong> ke
-              <strong>website radiologi</strong> dan pasien dapat <strong>membuka/mengunduh</strong> laporan serta citra sesuai kebijakan fasilitas.
-            </div>
+              Setelah pemeriksaan selesai, <strong>citra radiologi akan dianalisis oleh dokter radiologi</strong>.
+              Hasil analisis kemudian disusun dalam bentuk <strong>laporan pemeriksaan</strong>.
+              Pada sistem ini, hasil pemeriksaan akan <strong>diunggah ke aplikasi/website radiologi</strong>
+              sehingga pasien dapat <strong>mengakses dan mengunduh laporan, citra, atau ringkasan hasil</strong>
+              sesuai dengan kebijakan fasilitas.
+              Pasien disarankan untuk <strong>memantau status pemeriksaan secara berkala melalui aplikasi</strong>.
+          </div>
           </div>
         </div>
 

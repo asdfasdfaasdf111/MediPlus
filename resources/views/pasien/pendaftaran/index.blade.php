@@ -9,15 +9,14 @@
     $hasPasien = isset($dataPasiens) && !$dataPasiens->isEmpty();
   @endphp
 
-  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
       <h4 class="fw-bold mb-0" style="color:#173B7A;">List Data Pasien</h4>
-      <div class="text-muted small mt-1">Untuk mendaftar pemeriksaan, tambahkan data pasien.</div>
     </div>
 
     @if($hasPasien)
       <a href="{{ route('pasien.datapasien.create') }}"
-         class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
+        class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
         <i class="bi bi-plus-lg"></i>
         <span>Data Pasien</span>
       </a>

@@ -33,7 +33,7 @@
 
           <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
-              <h3 class="fw-bold mb-0">Tambah Data Pasien</h3>
+              <h3 class="fw-bold mb-0" style="color:#173B7A;">Tambah Data Pasien</h3>
               <small class="text-muted">
                 Isi data pasien yang akan didaftarkan.
               </small>

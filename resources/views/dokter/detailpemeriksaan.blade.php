@@ -201,8 +201,7 @@
                       <label class="form-label fw-semibold">Mitra Radiologi</label>
                       <input type="file"
                             class="form-control @error('files') is-invalid @enderror"
-                            name="files[]"
-                            multiple>
+                            name="files[]" id="hasilPemeriksaan" multiple required>
 
                       @error('files')
                         <div class="invalid-feedback">
@@ -210,8 +209,10 @@
                         </div>
                       @enderror
 
-                      <div class="form-text">
-                        Kamu bisa unggah lebih dari 1 file (multiple).
+                      <div id="file-list" class="mt-2 small text-primary fw-bold"></div>
+
+                      <div class="form-text mt-1 text-muted">
+                          <i class="bi bi-info-circle me-1"></i> Anda bisa memilih lebih dari 1 file (dalam 1 kali unggah).
                       </div>
                     </div>
 

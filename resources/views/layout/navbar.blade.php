@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="height: 80px;">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm position-relative" style="height: 80px;">
   <div class="container h-100 d-flex align-items-center">
 
     {{-- LOGO / BRAND --}}
@@ -16,10 +16,10 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="pasienNavbar">
+    <div class="collapse navbar-collapse bg-white" id="pasienNavbar">
 
       {{-- MENU mobile--}}
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 w-100 w-lg-auto">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 w-100 w-lg-auto px-3 px-lg-0">
         <li class="nav-item border-top d-lg-none">
           <a class="nav-link text-center text-lg-start py-2  {{ request()->is('/') || request()->is('pasien/homepage') ? 'active fw-bold text-primary' : '' }}"
             href="{{ url('/pasien/homepage') }}">

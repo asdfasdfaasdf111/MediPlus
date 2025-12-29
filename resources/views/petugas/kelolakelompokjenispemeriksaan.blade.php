@@ -55,17 +55,12 @@
         </div>
 
         <div class="table-responsive">
-          <table class="table align-middle mb-0">
-            <colgroup>
-                <col>
-                <col style="width:160px;">
-            </colgroup>
-
+          <table class="table align-middle mb-0 table-fixed">
 
             <thead class="table-light">
                 <tr class="align-middle">
-                    <th class="ps-4">Nama Kelompok</th>
-                    <th class="text-center" style="width:160px;"></th>
+                    <th class="ps-4" style="width: 85%;">Nama Kelompok</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
 
@@ -82,9 +77,8 @@
                     <input type="text" name="namaKelompok" class="form-control form-control-sm edit-field d-none" value="{{ $kelompokJenisPemeriksaan->namaKelompok }}">
                   </td>
 
-                  <td class="text-center">
+                  <td class="justify-content-end">
                     <div class="d-flex justify-content-center gap-2">
-
                       <button type="button"
                               class="btn btn-warning btn-sm d-flex align-items-center justify-content-center p-0 edit-btn"
                               style="width:40px;height:40px;border-radius:5px;"

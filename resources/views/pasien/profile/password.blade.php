@@ -78,7 +78,7 @@
           <div class="card-footer bg-white border-0 py-3">
             <div class="d-flex justify-content-center gap-3">
               <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary px-5 rounded-pill">Kembali</a>
-              <button type="submit" class="btn btn-primary px-5 rounded-pill">Simpan Password</button>
+              <button type="submit" class="btn btn-primary px-5 rounded-pill">Perbarui</button>
             </div>
           </div>
         </form>

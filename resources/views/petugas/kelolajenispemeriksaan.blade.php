@@ -53,16 +53,15 @@
           </div>
 
           <div class="table-responsive">
-            <table class="table align-middle mb-0">
-
+            <table class="table align-middle mb-0 table-fixed">
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th style="width:30%;" class="ps-4">Nama Jenis</th>
-                  <th style="width:20%;">Kelompok Jenis</th>
-                  <th class="text-center text-nowrap" style="width:110px;">Kontras</th>
-                  <th class="text-nowrap" style="width:170px;">Durasi</th>
-                  <th class="text-center text-nowrap" style="width:120px;">Didampingi</th>
-                  <th class="text-center" style="width:170px;"></th>
+                  <th class="ps-4" style="width:30%;">Nama Jenis</th>
+                  <th style="width: 15%;">Kelompok Jenis</th>
+                  <th style="width: 15%;">Kontras</th>
+                  <th style="width: 15%;">Durasi</th>
+                  <th style="width: 10%;">Didampingi</th>
+                  <th class="text-center">Aksi</th>
                 </tr>
               </thead>
 
@@ -89,7 +88,7 @@
                     </select>
                   </td>
 
-                  <td class="text-center align-middle">
+                  <td>
                     <span data-type="checkbox" data-name="pemakaianKontras" class="view-field ">
                       {{ $jenisPemeriksaan->pemakaianKontras ? 'Ya' : 'Tidak' }}
                     </span>
@@ -105,7 +104,7 @@
                     <span> Menit</span>
                   </td>
 
-                  <td class="text-center align-middle">
+                  <td>
                     <span data-type="checkbox" data-name="diDampingiDokter" class="view-field">
                       {{ $jenisPemeriksaan->diDampingiDokter ? 'Ya' : 'Tidak' }}
                     </span>
@@ -113,8 +112,8 @@
                            {{ $jenisPemeriksaan->diDampingiDokter ? 'checked' : '' }}>
                   </td>
 
-                  <td class="text-center">
-                  <div class="d-flex justify-content-center gap-2">
+                  <td class="justify-content-end">
+                    <div class="d-flex justify-content-center gap-2">
                     <button type="button"
                             class="btn btn-warning btn-sm d-flex align-items-center justify-content-center p-0 edit-btn"
                             style="width:40px;height:40px;border-radius:5px;"

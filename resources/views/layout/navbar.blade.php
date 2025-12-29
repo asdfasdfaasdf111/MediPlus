@@ -124,7 +124,7 @@
             <a class="nav-link dropdown-toggle fw-bold text-dark d-flex align-items-center"
                href="#" id="userDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle me-2" style="font-size: 1.2rem;"></i>
+              {{-- <i class="bi bi-person-circle me-2" style="font-size: 1.2rem;"></i> --}}
               Hi, {{ Auth::user()->name }}
             </a>
 

@@ -52,20 +52,15 @@
           </div>
 
          <div class="table-responsive">
-            <table class="table align-middle mb-0">
-              <colgroup>
-                <col style="width:30%;">  
-                <col style="width:30%;">   
-                <col style="width:30%;">  
-                <col style="width:170px;">
-              </colgroup>
-
+            <table class="table align-middle mb-0 table-fixed">
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th class="ps-4">Nama Modalitas</th>
-                  <th>Kelompok Jenis Pemeriksaan</th>
-                  <th>Kode Ruang</th>
-                  <th class="text-center" style="width:170px;"></th>
+                  <th class="ps-4" style="width: 38%;">Nama Modalitas</th>
+                  <th style="width: 30%;">Kelompok Jenis Pemeriksaan</th>
+                  <th style="width: 17%;">Kode Ruang</th>
+                  <th class="text-center">Aksi</th>
+
+
                 </tr>
               </thead>
               <tbody>
@@ -105,8 +100,8 @@
                              value="{{ $modalitas->kodeRuang }}">
                     </td>
 
-                    <td class="text-center">
-                      <div class="d-flex justify-content-center gap-2">
+                    <td class="justify-content-end">
+                    <div class="d-flex justify-content-center gap-2">
                         <button type="button"
                                 class="btn btn-warning btn-sm edit-btn d-flex align-items-center justify-content-center p-0" style="width: 40px; height: 40px; border-radius: 5px;"
                                 data-route="{{ route('petugas.editModalitas', $modalitas->id) }}"

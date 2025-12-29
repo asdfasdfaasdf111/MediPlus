@@ -30,6 +30,7 @@ class JenisPemeriksaanSeeder extends Seeder
                 'pemakaianKontras' => false,
                 'lamaPemeriksaan' => ($i + 1) * 10,
                 'diDampingiDokter' => true,
+                'harga' => 1000000.0,
             ]);
         }
         

@@ -101,6 +101,11 @@ class AuthenticationController extends Controller
             ->route('petugas.daftarpilihjadwal', ['user' => $user->id])
             ->with('success', 'Registrasi berhasil! Silahkan cek email Anda untuk verifikasi akun.');
         }
+
+        //izin ubah biar ada alert user cek email verifikasi
+        return redirect()
+            ->route('login')
+            ->with('success', 'Registrasi berhasil! Silahkan cek email Anda untuk verifikasi akun.');
     }
 
     public function logout(){

@@ -87,6 +87,12 @@ class DataPemeriksaan extends Model
         return $this->hasMany(Notifikasi::class);
     }
 
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class);
+    }
+
+
     //urutin dari status utama, pending dlu, berlangsung, baru selesai
     //kalo status utama sama, urutin dari status pasien/petugas/dokter
     public function scopeOrdered($query, $subtype = 'statusPasien')
@@ -96,13 +102,13 @@ class DataPemeriksaan extends Model
 
         switch ($subtype) {
             case 'statusPasien':
-                $statusUser = "'Pendaftaran Terkirim','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Hasil', 'Hasil Tersedia', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Pendaftaran Terkirim','Menunggu Pembayaran','Menunggu Pembayaran Offline','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Hasil', 'Hasil Tersedia', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             case 'statusPetugas':
-                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Menunggu Pembayaran Offline','Menunggu Pembayaran','Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan'";
+                $statusUser = "'Menunggu Laporan','Dalam Antrian','Pemeriksaan Berlangsung', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             default:
                 $statusUser = "'default'";
@@ -114,28 +120,13 @@ class DataPemeriksaan extends Model
                     ->orderBy('rentangWaktuKedatangan');
     }
 
-        public function tanggalHuman(): ?string
-    {
-        return $this->tanggalPemeriksaan
-            ? Carbon::parse($this->tanggalPemeriksaan)->translatedFormat('d F Y')
-            : null;
-    }
-
-    public function waktuKedatanganHuman(): ?string
-    {
-        // kolom kamu bertipe TIME tunggal; tampilkan H : i
-        return $this->rentangWaktuKedatangan
-            ? Carbon::parse($this->rentangWaktuKedatangan)->format('H : i')
-            : null;
-    }
-
     public function scopeBerlangsung($q)
     {
         return $q->whereNotIn('statusUtama', ['selesai','batal']);
     }
 
     public function bisaDiedit(){
-        if ($this->statusUtama != "Pending") return false;
+        if ($this->statusUtama != "Pending" || $this->statusPasien != 'Pendaftaran Terkirim') return false;
         $datetime = $this->tanggalPemeriksaan . ' ' . $this->rentangWaktuKedatangan;
 
         $givenTime = Carbon::parse($datetime);

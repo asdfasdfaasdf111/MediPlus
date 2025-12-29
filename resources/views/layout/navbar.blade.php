@@ -147,9 +147,9 @@
           </li>
         </ul>
       @else
-        <div class="ms-lg-3 mt-2 mt-lg-0 d-none d-lg-block">
-          <a href="{{ url('/login') }}" class="btn btn-primary px-4 fw-bold">
-            Masuk
+        <div class="ms-lg-3 mt-2 mt-lg-0 d-none d-lg-block" >
+          <a href="{{ url('/login') }}" >
+            Masuk/Register
           </a>
         </div>
       @endif

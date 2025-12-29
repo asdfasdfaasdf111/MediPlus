@@ -11,6 +11,8 @@
     $dokter           = $dataPemeriksaan->dokter;
     $dataPasien       = $dataPemeriksaan->dataPasien;
     $dataRujukan      = $dataPemeriksaan->dataRujukan;
+    $jump             = $jenisPemeriksaan->getJump();
+    $pembayaran       = $dataPemeriksaan->pembayaran;
 @endphp
 
 <body class="bg-light text-dark">
@@ -366,7 +368,17 @@
             </div>
           </div>
 
+          @if ($pembayaran !== null)
+            <div class="row mb-3">
+              <div class="col-6 text-muted">Biaya Pemeriksaan</div>
+              <div class="col-6 fw-semibold">
+                : Rp {{ number_format($pembayaran->harga, 0, ',', '.') }}
+              </div>
+            </div>
+          @endif
+
         </div> {{-- end row g-3 --}}
+
 
         {{-- BUTTON KEMBALI --}}
         <div class="mt-4 d-flex justify-content-center">

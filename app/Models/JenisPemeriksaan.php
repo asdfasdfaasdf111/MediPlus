@@ -13,7 +13,8 @@ class JenisPemeriksaan extends Model
         'namaJenisPemeriksaan',
         'pemakaianKontras',
         'lamaPemeriksaan',
-        'diDampingiDokter'
+        'diDampingiDokter',
+        'harga',
     ];
 
     public function dataPemeriksaan()

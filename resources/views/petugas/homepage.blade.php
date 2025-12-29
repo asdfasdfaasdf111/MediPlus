@@ -72,6 +72,7 @@
             $tgl = $dp->tanggalPemeriksaan ? Carbon::parse($dp->tanggalPemeriksaan)->translatedFormat('d F Y') : '-';
             $jamMulai = $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->format('H : i') : '-';
             $jamAkhir = $dp->rentangWaktuKedatangan ? Carbon::parse($dp->rentangWaktuKedatangan)->addHour()->format('H : i') : '-';
+            $pembayaran = $dp->pembayaran;
 
             $statusPetugasRaw   = $dp->statusPetugas ?? null;
             $statusPetugasLower = strtolower($statusPetugasRaw ?? '');
@@ -153,11 +154,19 @@
                     <div class="col-5 fw-semibold">
                       : {{ $jamMulai }} - {{ $jamAkhir }}
                     </div>
+
+                    {{-- ini titip dulu -> BARU DITAMBAH. MIKIRINNYA NANTIAN --}}
+                    @if ($pembayaran !== null)
+                      <div class="col-5 text-muted">Biaya Pemeriksaan</div>
+                      <div class="col-5 fw-semibold">
+                        : {{ $pembayaran->harga }}
+                      </div>
+                    @endif
                   </div>
                 </div>
 
                 <div class="col-md-2 d-flex flex-column align-items-center gap-2">
-                  @if ($isPending)
+                  @if ($dp->statusPasien === 'Pendaftaran Terkirim')
                     <a href="{{ route('petugas.pratinjaupemeriksaan', $dp) }}" class="btn btn-success w-100" >
                       PRATINJAU
                     </a>

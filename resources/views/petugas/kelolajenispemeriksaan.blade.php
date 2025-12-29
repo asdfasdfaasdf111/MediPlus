@@ -56,10 +56,11 @@
             <table class="table align-middle mb-0 table-fixed">
               <thead class="table-light">
                 <tr class="align-middle">
-                  <th class="ps-4" style="width:30%;">Nama Jenis</th>
+                  <th class="ps-4" style="width:25%;">Nama Jenis</th>
                   <th style="width: 15%;">Kelompok Jenis</th>
-                  <th style="width: 15%;">Kontras</th>
-                  <th style="width: 15%;">Durasi</th>
+                  <th style="width: 11%;">Kontras</th>
+                  <th style="width: 12%;">Durasi</th>
+                  <th style="width: 12%;">Harga</th>
                   <th style="width: 10%;">Didampingi</th>
                   <th class="text-center">Aksi</th>
                 </tr>
@@ -101,7 +102,15 @@
                     <input type="number" name="lamaPemeriksaan" min="1"
                            class="form-control form-control-sm text-center edit-field d-none"
                            value="{{ $jenisPemeriksaan->lamaPemeriksaan }}" style="max-width:70px">
-                    <span> Menit</span>
+                    <span>Menit</span>
+                  </td>
+
+                  <td>
+                    <span data-name="harga" class="view-field">{{ $jenisPemeriksaan->harga }}</span>
+                    <input type="number" name="harga" min="1"
+                           class="form-control form-control-sm text-center edit-field d-none"
+                           value="{{ $jenisPemeriksaan->harga }}" style="max-width:100px">
+                    {{-- <span>Harga</span> --}}
                   </td>
 
                   <td>

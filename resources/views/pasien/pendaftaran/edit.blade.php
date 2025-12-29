@@ -7,7 +7,7 @@
     <div class="col-12 col-lg-8 col-xl-7">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h4 class="fw-bold mb-0">Edit Data Pasien</h4> - 
+          <h4 class="fw-bold mb-0" style="color:#173B7A;">Perbarui Data Pasien</h4> - 
           <small class="text-muted">{{ $pasien->namaLengkap }}</small>
         </div>
         <a href="{{ route('pasien.pendaftaran') }}" class="btn btn-outline-secondary btn-sm">

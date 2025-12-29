@@ -74,6 +74,20 @@
                 </div>
               </div>
 
+              {{-- Harga --}}
+              <div class="mb-3">
+                <label for="harga" class="form-label">Harga Pemeriksaan</label>
+                <div class="input-group" style="max-width: 260px;">
+                  <span class="input-group-text">Rp. </span>
+                  <input type="number" min="1" step="1"
+                         class="form-control text-center @error('harga') is-invalid @enderror"
+                         name="harga" id="harga"
+                         placeholder="Harga" value="{{ old('harga') }}" required>
+                  @error('harga') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+
               {{-- Didampingi Dokter (switch) --}}
               <div class="mb-4">
                 <label class="form-label d-block">Perlu Didampingi Dokter</label>

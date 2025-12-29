@@ -16,10 +16,12 @@ class JenisPemeriksaanController extends Controller
         $request->validate([
             'namaJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
+            'harga' => 'required|integer|min:1',
         ],
         [
             'namaJenisPemeriksaan.required' => 'Nama Jenis Pemeriksaan wajib diisi.',
             'lamaPemeriksaan.required' => 'Lama Pemeriksaan wajib diisi.',
+            'harga.required' => 'Harga wajib diisi.',
         ]);
 
         $jenisPemeriksaan = JenisPemeriksaan::create([
@@ -28,6 +30,7 @@ class JenisPemeriksaanController extends Controller
             'namaJenisPemeriksaan' => $request->namaJenisPemeriksaan,
             'pemakaianKontras' => $request->pemakaianKontras,
             'lamaPemeriksaan' => $request->lamaPemeriksaan,
+            'harga' => $request->harga,
             'diDampingiDokter' => $request->diDampingiDokter,
         ]);
         $petugas = auth()->user()->petugas;
@@ -43,12 +46,14 @@ class JenisPemeriksaanController extends Controller
         $request->validate([
             'namaJenisPemeriksaan' => 'required|string|max:100',
             'lamaPemeriksaan' => 'required|integer|min:1',
+            'harga' => 'required|integer|min:1',
         ]);
 
         $jenisPemeriksaan->kelompok_jenis_pemeriksaan_id = $request->input('kelompokJenisPemeriksaan');
         $jenisPemeriksaan->namaJenisPemeriksaan = $request->input('namaJenisPemeriksaan');
         $jenisPemeriksaan->pemakaianKontras = $request->input('pemakaianKontras');
         $jenisPemeriksaan->lamaPemeriksaan = $request->input('lamaPemeriksaan');
+        $jenisPemeriksaan->harga = $request->input('harga');
         $jenisPemeriksaan->diDampingiDokter = $request->input('diDampingiDokter');
 
         $jenisPemeriksaan->save();

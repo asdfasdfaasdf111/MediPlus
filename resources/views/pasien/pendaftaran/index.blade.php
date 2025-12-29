@@ -61,21 +61,24 @@
                 </div>
               </div>
 
-              <div class="d-flex mt-auto justify-content-end gap-2">
-                @if (Route::has('pasien.datapasien.edit'))
-                  <a href="{{ route('pasien.datapasien.edit', $p) }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-pencil me-1"></i>Edit
-                  </a>
-                @endif
-                @if (Route::has('pasien.datapasien.destroy'))
-                  <form action="{{ route('pasien.datapasien.destroy', $p) }}" method="POST"
-                        onsubmit="return confirm('Hapus data pasien &quot;{{ $p->namaLengkap }}&quot;? Tindakan ini tidak bisa dibatalkan.');">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                      <i class="bi bi-trash me-1"></i>Hapus
-                    </button>
-                  </form>
-                @endif
+              <div class="d-flex mt-auto justify-content-end align-items-center gap-2">
+                  @if (Route::has('pasien.datapasien.edit'))
+                      <a href="{{ route('pasien.datapasien.edit', $p) }}" 
+                        class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center">
+                          <i class="bi bi-pencil me-1"></i>Edit
+                      </a>
+                  @endif
+
+                  @if (Route::has('pasien.datapasien.destroy'))
+                      {{-- Tambahkan class m-0 agar tidak ada margin bawaan dari form --}}
+                      <form action="{{ route('pasien.datapasien.destroy', $p) }}" method="POST" class="m-0"
+                            onsubmit="return confirm('Hapus data pasien &quot;{{ $p->namaLengkap }}&quot;?');">
+                          @csrf @method('DELETE')
+                          <button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center">
+                              <i class="bi bi-trash me-1"></i>Hapus
+                          </button>
+                      </form>
+                  @endif
               </div>
             </div>
           </div>
@@ -157,6 +160,8 @@
         $tgl   = $ex->tanggalPemeriksaan ? \Carbon\Carbon::parse($ex->tanggalPemeriksaan)->translatedFormat('d F Y') : '—';
         $jam   = $ex->rentangWaktuKedatangan ? \Carbon\Carbon::parse($ex->rentangWaktuKedatangan)->format('H:i') : '—';
         $noReg = 'REG-' . str_pad($ex->id, 6, '0', STR_PAD_LEFT);
+        $jump = $ex->jenisPemeriksaan->getJump();
+        $pembayaran = $ex->pembayaran;
       @endphp
 
       <div class="card border-0 shadow-sm mb-3" style="background:#F5F8FF;">
@@ -210,7 +215,10 @@
                 <div class="col-4 text-muted">Waktu Kedatangan</div>
                 <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour()->format('H:i') }}</div>             
                 
-                
+                @if ($pembayaran !== null)
+                  <div class="col-6 text-muted">Harga Pemeriksaan</div>
+                  <div class="col-6 fw-semibold">: {{ $pembayaran->harga }}</div>                
+                @endif
               </div>
             </div>
 
@@ -248,6 +256,16 @@
                 <i class="bi bi-pencil-square me-1"></i> LIHAT HASIL
               </a>
             @endif
+
+            {{-- TITIP DULU --}}
+            @if ($ex->statusUtama === 'Pending' && $ex->statusPasien === 'Menunggu Pembayaran')
+              <button
+                  class="btn btn-sm btn-primary"
+                  onclick="handlePayment({{ $ex->id }}, {{ $ex->jenisPemeriksaan->harga }})"
+              >
+                  <i class="bi bi-pencil-square me-1"></i> SELESAIKAN PEMBAYARAN
+              </button>
+            @endif
             
           </div>
         </div>
@@ -266,3 +284,91 @@
 </div>
 @endsection
 
+
+<div class="modal fade" id="paymentModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <h5 class="mb-3">
+        Total Pembayaran:
+        <span class="fw-bold text-primary" id="paymentPrice"></span>
+      </h5>
+      <div class="modal-header">
+        <h5 class="modal-title">Pilih Metode Pembayaran</h5>
+      </div>
+      <div class="modal-body text-center">
+        <button class="btn btn-success w-100 mb-2" onclick="choosePayment('online')">
+            Bayar Sekarang (Online)
+        </button>
+        <button class="btn btn-secondary w-100" onclick="choosePayment('offline')">
+            Bayar di Rumah Sakit
+        </button>
+        <small class="text-muted">
+          Jika ingin pembayaran dengan <strong>BPJS</strong>, mohon pilih pembayaran di Rumah Sakit.
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function handlePayment(id, price) {
+      fetch(`/pasien/pembayaran/check/${id}`)
+          .then(res => res.json())
+          .then(data => {
+              if (data.status === 'belumPilih') {
+                  showPaymentModal(id, price);
+              }
+
+              if (data.status === 'online') {
+                  window.location.href = data.checkout_link;
+              }
+  
+              if (data.status === 'offline') {
+                  alert('Silakan lakukan pembayaran di rumah sakit.');
+              }
+  
+          });
+  }
+</script>
+
+<script>
+  let currentDataId = null;
+  let currentPrice = 0;
+
+  function showPaymentModal(id, price) {
+      currentDataId = id;
+      currentPrice = price;
+
+      document.getElementById('paymentPrice').innerText =
+          'Rp ' + price.toLocaleString('id-ID');
+
+      new bootstrap.Modal(document.getElementById('paymentModal')).show();
+  }
+  
+  function choosePayment(method) {
+      fetch('/pasien/pembayaran/create', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({
+              dataPemeriksaanId: currentDataId,
+              metodePembayaran: method
+          })
+        })
+      .then(res => res.json())
+      .then(data => {
+          if (data.status === 'error'){
+            alert(data.message);
+            return;
+          }
+          if (method === 'online') {
+              window.location.href = data.redirect_url;
+          } else {
+              location.reload();
+          }
+      });
+  }
+  </script>

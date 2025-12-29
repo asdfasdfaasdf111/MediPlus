@@ -15,6 +15,8 @@
   $dokter           = $dataPemeriksaan->dokter;
   $dataPasien       = $dataPemeriksaan->dataPasien;
   $dataRujukan      = $dataPemeriksaan->dataRujukan;
+  $pembayaran       = $dataPemeriksaan->pembayaran;
+  $jump = $jenisPemeriksaan->getJump();
 
   $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->toTimeString();
 
@@ -247,13 +249,47 @@
 
                     <div class="mb-0">
                       <div class="small text-muted">Formulir Rujukan</div>
-                      <div class="fw-semibold text-break">{{ $dataRujukan->formulirRujukan }}</div>
+                      <a class="fw-semibold text-break" href="{{ asset('storage/' . $dataRujukan->formulirRujukan) }}" target="_blank">
+                          {{ $dataRujukan->namaFile }}
+                      </a>
                     </div>
+
+                    
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {{-- Informasi Pembayaran -> TITIP DULU JANGAN DI COMMIT--}}
+          @if ($pembayaran !== null)
+            <div class="col-12">
+              <div class="card shadow-sm">
+                <div class="card-header fw-semibold">
+                  <i class="bi bi-cash-stack me-2"></i> Informasi Pembayaran
+                </div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="small text-muted">Harga Pemeriksaan</div>
+                      <div class="fw-semibold">
+                        Rp {{ number_format($pembayaran->harga, 0, ',', '.') }}
+                      </div>
+                    </div>
+
+                    {{-- kalau nanti ada --}}
+                    {{-- 
+                    <div class="col-md-6">
+                      <div class="small text-muted">Status Pembayaran</div>
+                      <span class="badge bg-success">Lunas</span>
+                    </div>
+                    --}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          @endif
+
 
         </div> 
 

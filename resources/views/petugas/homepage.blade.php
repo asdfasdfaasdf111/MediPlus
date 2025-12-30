@@ -159,7 +159,7 @@
                     @if ($pembayaran !== null)
                       <div class="col-5 text-muted">Biaya Pemeriksaan</div>
                       <div class="col-5 fw-semibold">
-                        : {{ $pembayaran->harga }}
+                        : Rp {{ number_format($pembayaran->harga, 0, ',', '.') }}
                       </div>
                     @endif
                   </div>

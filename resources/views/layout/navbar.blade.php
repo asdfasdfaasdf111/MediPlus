@@ -128,17 +128,17 @@
               Hi, {{ Auth::user()->name }}
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-0 overflow-hidden" aria-labelledby="userDropdown">
               <li>
-                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                <a class="dropdown-item py-2 mt-1" href="{{ route('profile.edit') }}">
                   <i class="bi bi-pencil-square me-2"></i> Edit Profil
                 </a>
               </li>
-              <li><hr class="dropdown-divider"></li>
+              <li><hr class="dropdown-divider m-0"></li>
               <li>
-                <form action="{{ route('logout') }}" method="POST">
+                <form action="{{ route('logout') }}" method="POST" class="m-0">
                   @csrf
-                  <button type="submit" class="dropdown-item">
+                  <button type="submit" class="dropdown-item py-2 mb-1 text-danger d-flex align-items-center">
                     <i class="bi bi-box-arrow-right me-2"></i> Keluar
                   </button>
                 </form>

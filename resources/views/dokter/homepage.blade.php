@@ -67,11 +67,12 @@
             $jamAkhir = $dataPemeriksaan->rentangWaktuKedatangan ? Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour()->format('H:i') : '-';
 
             $labelKanan = match (strtolower($dataPemeriksaan->statusDokter ?? '')){
-                'dalam antrian'            => 'DALAM ANTRIAN',
+                'dalam antrian'           => 'DALAM ANTRIAN',
                 'pemeriksaan berlangsung' => 'PEMERIKSAAN BERLANGSUNG',
-                'menunggu laporan'         => 'MENUNGGU LAPORAN',
-                'laporan terkirim'         => 'LAPORAN TERKIRIM',
-                'selesai'                  => 'SELESAI'
+                'menunggu laporan'        => 'MENUNGGU LAPORAN',
+                'laporan terkirim'        => 'LAPORAN TERKIRIM',
+                'selesai'                 => 'SELESAI',
+                default => strtoupper($dataPemeriksaan->statusDokter),
             };
 
             $statusClass = match ($dataPemeriksaan->statusUtama){
@@ -114,7 +115,7 @@
 
                             <div class="col-6 text-muted">Jenis Pemeriksaan</div>
                             <div class="col-6 fw-semibold">
-                                : {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
+                                : {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                             </div>
 
                             <div class="col-6 text-muted">Tanggal Pemeriksaan</div>

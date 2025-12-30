@@ -1,28 +1,30 @@
 @extends('layout.app')
 
 @section('content')
-<div class="container py-4">
 
-  {{-- Nambah Data Pasien --}}
+<div class="container py-4 py-md-5">
   @php
     use Carbon\Carbon;
     $hasPasien = isset($dataPasiens) && !$dataPasiens->isEmpty();
   @endphp
 
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <div>
-      <h4 class="fw-bold mb-0" style="color:#173B7A;">List Data Pasien</h4>
+  <section class="mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h4 class="fw-bold mb-0" style="color:#173B7A;">List Data Pasien</h4>
+      </div>
+
+      @if($hasPasien)
+        <a href="{{ route('pasien.datapasien.create') }}"
+          class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
+          <i class="bi bi-plus-lg"></i>
+          <span>Data Pasien</span>
+        </a>
+      @endif
     </div>
+  </section>
 
-    @if($hasPasien)
-      <a href="{{ route('pasien.datapasien.create') }}"
-        class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 px-3">
-        <i class="bi bi-plus-lg"></i>
-        <span>Data Pasien</span>
-      </a>
-    @endif
-  </div>
-
+  <section>
   @if(!$hasPasien)
     {{-- EMPTY STATE: dibuat lebih ringkas (padding diperkecil) --}}
     <div class="card border-0 shadow-sm">
@@ -86,8 +88,10 @@
       @endforeach
     </div>
   @endif
+  </section>
 
 
+  <section>
   {{-- UNTUK TAB PEMERIKSAAN --}}
   <hr class="my-4">
 
@@ -217,7 +221,8 @@
                 
                 @if ($pembayaran !== null)
                   <div class="col-4 text-muted">Harga Pemeriksaan</div>
-                  <div class="col-6 fw-semibold">: {{ $pembayaran->harga }}</div>                
+                  <div class="col-6 fw-semibold">: Rp {{ number_format($pembayaran->harga, 0, ',', '.') }}</div>  
+                                
                 @endif
               </div>
             </div>
@@ -280,6 +285,8 @@
     @endif
 
   @endif
+
+</section>
 
 </div>
 @endsection

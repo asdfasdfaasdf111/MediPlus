@@ -10,6 +10,7 @@ use App\Models\Dokter;
 use App\Models\MasterPasien;
 use App\Models\RumahSakit;
 use App\Models\User;
+use App\Notifications\PendaftaranDiterima;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
@@ -41,6 +42,8 @@ class DataPemeriksaanController extends Controller
             $dataPemeriksaan->statusPetugas = "Menunggu Pembayaran";
             $dataPemeriksaan->statusDokter = "Menunggu Pembayaran";
             $dataPemeriksaan->dokter_id = $request->dokterId;
+            $userPasien = $dataPemeriksaan->masterPasien->user;
+            $userPasien->notify(new PendaftaranDiterima($dataPemeriksaan));
             LogService::create('Menerima pendaftaran dengan id: '.$dataPemeriksaan->id, $petugas->id);
         }
         else{
@@ -259,6 +262,7 @@ class DataPemeriksaanController extends Controller
                                         ->where('id', $request->jenisPemeriksaan)
                                         ->get()
                                         ->first();
+
         if (!$jenisPemeriksaan){
             return back()->withErrors([
                 'jenisPemeriksaan' => 'Jenis Pemeriksaan ini tidak ada',
@@ -291,6 +295,7 @@ class DataPemeriksaanController extends Controller
             'statusDokter' => 'Draft Pasien',
             'statusPetugas' => 'Draft Pasien',
             'statusPasien' => 'Draft Pasien',
+            'pengingatTerkirim' => false,
         ]);
         
         return redirect()->route('pasien.daftartipepasien');
@@ -327,6 +332,7 @@ class DataPemeriksaanController extends Controller
             'statusDokter' => 'Draft Petugas',
             'statusPetugas' => 'Draft Petugas',
             'statusPasien' => 'Draft Petugas',
+            'pengingatTerkirim' => false,
         ]);
         
         return redirect()->route('petugas.daftartipepasien', ['masterPasien' => $masterPasien->id]);
@@ -524,15 +530,22 @@ public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataP
         $status = $request->input('status', 'semua');
         $search = $request->input('search');
 
+        // dd($status);
+
         $query = $dokter->dataPemeriksaan()
                 ->with(['dataPasien', 'dataRujukan', 'jenisPemeriksaan', 'dokter.user'])
                 //with ini buat ngehindarin N+1 problem (lazy loading), jadi better ambil data relasiannya langsung
                 ->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
 
-        //Logic yang di blade dihapus karna udah dihandle di controller, biar ga double
-        if ($status !== 'semua' && in_array($status, ['berlangsung', 'selesai'])) {
-                $query->whereRaw('LOWER(statusUtama) = ?', [strtolower($status)]);
+        $statusMap = [
+            'berlangsung' => 'Berlangsung',
+            'selesai' => 'Selesai',
+        ];
+
+        if ($status !== 'semua' && isset($statusMap[$status])) {
+            $query->where('statusUtama', $statusMap[$status]);
         }
+
 
         if ($search) {
             $search = trim($search);

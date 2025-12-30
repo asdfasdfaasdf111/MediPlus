@@ -102,21 +102,39 @@ class RumahSakit extends Model
     public function jamTersedia($jenisPemeriksaan, $tanggalPemeriksaan, $dataPemeriksaan = null)
     {
         $listJam = [];
+        $jump = $jenisPemeriksaan->getJump();
+
+        $slots = [
+            'jump' => $jump,
+            'listJam' => $listJam,
+        ];
+        
         // kalo tanggal yang dipilih < hari ini, brarti uda gabisa daftar lagi
         if (Carbon::parse($tanggalPemeriksaan)->lt(Carbon::today())) {
-            return $listJam;
+            return $slots;
         } 
         
         $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
         $hariIni = $this->jadwalRumahSakit()
                         ->where('indexJadwal', $hariIni)
                         ->first();
-        if (!$hariIni->buka) return $listJam;
+        if (!$hariIni->buka) {
+            $slots['listJam'] = $listJam;
+            return $slots;
+        }
         $jamBuka = Carbon::parse($hariIni->jamBuka);
         $jamBuka = $jamBuka->ceilHour();
+        $start = $jamBuka->hour;
 
         $jamTutup = Carbon::parse($hariIni->jamTutup);
-        $jamTutup = $jamTutup->floorUnit('hour');
+        $end = 0;
+        if ($jamTutup->hour === 0 && $jamTutup->minute === 0) {
+            $end = 24;
+        }
+        else{
+            $jamTutup = $jamTutup->floorUnit('hour');
+            $end = $jamTutup->hour;
+        }
 
         $kelompokJenisPemeriksaan = $jenisPemeriksaan->kelompokJenisPemeriksaan;
         $jumlahAlat = $kelompokJenisPemeriksaan->modalitas->count();
@@ -138,11 +156,10 @@ class RumahSakit extends Model
             }
         }
 
-        $jump = $jenisPemeriksaan->getJump();
 
-        while($jamBuka < $jamTutup){
+        while($start < $end){
             //kalo sisa waktunya udah ga cukup, brarti ga usah tunjukin jamnya
-            if ($jamBuka->copy()->addHour($jump)->gt($jamTutup)){
+            if ($start + $jump > $end){
                 break;
             }
             $tanggal = Carbon::parse($tanggalPemeriksaan);
@@ -156,12 +173,14 @@ class RumahSakit extends Model
             // kalo <= 12 jam dari sekarang, uda ga bisa daftar di jam ini
             if ($diffInHours <= 12) {
                 $jamBuka->addHour($jump);
+                $start += $jump;
                 continue;
             }
             //kalo jamnya itu sama dengan yang diedit sekarang, uda fix bisa(jadi kaya ga ganti jam gitu)
             if ($dataPemeriksaan != null && $tanggalPemeriksaan == $dataPemeriksaan->tanggalPemeriksaan && $jamBuka->format('H:i') == Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->format('H:i') && $dataPemeriksaan->jenisPemeriksaan->modalitasId == $jenisPemeriksaan->modalitasId){
                 $listJam[] = $jamBuka->format('H:i');
                 $jamBuka->addHour($jump);
+                $start += $jump;
                 continue;
             }
             
@@ -174,6 +193,7 @@ class RumahSakit extends Model
                 $listJam[] = $jamBuka->format('H:i');
             }
             $jamBuka->addHour($jump);
+            $start += $jump;
         }
 
         $slots = [
@@ -187,46 +207,65 @@ class RumahSakit extends Model
     //ambil semua jam yang mungkin selama >= waktu sekarang
     public function jamTersediaPetugas($jenisPemeriksaan, $tanggalPemeriksaan)
     {
+        $jump = $jenisPemeriksaan->getJump();
         $listJam = [];
+        $slots = [
+            'jump' => $jump,
+            'listJam' => $listJam,
+        ];
         // kalo tanggal yang dipilih < hari ini, brarti uda gabisa daftar lagi
         if (Carbon::parse($tanggalPemeriksaan)->lt(Carbon::today())) {
-            return $listJam;
+            return $slots;
         }
         
         $hariIni = Carbon::parse($tanggalPemeriksaan)->isoWeekday();
         $hariIni = $this->jadwalRumahSakit()
-                        ->where('indexJadwal', $hariIni)
-                        ->first();
-        if (!$hariIni->buka) return $listJam;
+                    ->where('indexJadwal', $hariIni)
+                    ->first();
+        if (!$hariIni->buka) {
+            $slots['listJam'] = $listJam;
+            return $slots;
+        }
         $jamBuka = Carbon::parse($hariIni->jamBuka);
         $jamBuka = $jamBuka->ceilHour();
+        $start = $jamBuka->hour;
         
         $jamTutup = Carbon::parse($hariIni->jamTutup);
-        $jamTutup = $jamTutup->floorUnit('hour');
-
-        $jump = (int) ceil($jenisPemeriksaan->lamaPemeriksaan / 60);
+        $end = 0;
+        if ($jamTutup->hour === 0 && $jamTutup->minute === 0) {
+            $end = 24;
+        }
+        else{
+            $jamTutup = $jamTutup->floorUnit('hour');
+            $end = $jamTutup->hour;
+        }
         
-        while($jamBuka < $jamTutup){
+        
+        while($start < $end){
+            
+            if ($start + $jump > $end){
+                break;
+            }
+            
             $tanggal = Carbon::parse($tanggalPemeriksaan);
 
             $waktuPemeriksaan = $tanggal
                 ->copy()
                 ->setTimeFrom($jamBuka);
-            $now = Carbon::now();
-
+                $now = Carbon::now();
+                
             $diffInHours = $now->diffInHours($waktuPemeriksaan, false);
             if ($diffInHours < -1) {
+                $start += $jump;
                 $jamBuka->addHour($jump);
                 continue;
             }
             $listJam[] = $jamBuka->format('H:i');
             $jamBuka->addHour($jump);
+            $start += $jump;
         }
-
-        $slots = [
-            'jump' => $jump,
-            'listJam' => $listJam,
-        ];
+        
+        $slots['listJam'] = $listJam;
 
         return $slots;
     }

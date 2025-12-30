@@ -48,7 +48,14 @@
         <div class="col-md-10 p-4 bg-light">
             <div class="bg-white shadow-sm rounded p-4">
                     <div class="table-responsive">
-                        <table class="table table-bordered align-middle">
+                        <table class="table table-bordered align-middle table-fixed">
+                            <colgroup>
+                                <col style="width:15%">
+                                <col style="width:10%">
+                                <col style="width:25%">
+                                <col style="width:50%">
+                            </colgroup>
+
                             <thead class="table-light">
                                 <tr>
                                     <th>Tanggal</th>
@@ -58,7 +65,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($admin->rumahsakit->log as $log)
+                                @foreach ($logs as $log)
                                     <tr>
                                         <td>{{ $log->tanggal }}</td>
                                         <td>{{ $log->jam }}</td>
@@ -69,7 +76,17 @@
                             </tbody>
                         </table>
                     </div>
+
+                    @if($logs->hasPages())
+                        <div class="mt-3 d-flex justify-content-end">
+                            {{ $logs->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
+
+        
+
+
 <script src="{{ asset('bootstrap5/js/bootstrap.bundle.min.js') }}"></script>
 </body>

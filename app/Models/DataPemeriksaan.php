@@ -36,6 +36,7 @@ class DataPemeriksaan extends Model
         'riwayatGolonganDarah',
         'nomorAntrian',
         'cancelled_at',
+        'pengingatTerkirim',
     ];
 
     protected $casts = [

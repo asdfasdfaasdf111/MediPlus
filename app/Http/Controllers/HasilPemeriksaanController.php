@@ -6,20 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\DataPemeriksaan;
 use App\Models\HasilPemeriksaan;
 use App\Models\JenisPemeriksaan;
+use App\Notifications\HasilLaporanDiterima;
 use Illuminate\Http\Request;
 
 class HasilPemeriksaanController extends Controller
 {
     public function bikinHasilPemeriksaan(Request $request, DataPemeriksaan $dataPemeriksaan){
         $request->validate([
-            'files' => 'required|array|min:1',
             'files.*' => 'required|file',
             'deskripsi' => 'required|string',
-        ], 
-        [
-            'files.required' => 'File hasil pemeriksaan wajib diunggah.',
-            'files.min'      => 'Minimal 1 file hasil pemeriksaan harus diunggah.',
-            'deskripsi.required' => 'Deskripsi hasil analisa wajib diisi.',
         ]);
 
         $uploadedFiles = [];
@@ -43,6 +38,9 @@ class HasilPemeriksaanController extends Controller
         $dataPemeriksaan->statusPetugas = 'Laporan Terkirim';
         $dataPemeriksaan->statusDokter = 'Laporan Terkirim';
         $dataPemeriksaan->save();
+
+        $userPasien = $dataPemeriksaan->masterPasien->user;
+        $userPasien->notify(new HasilLaporanDiterima($dataPemeriksaan));
 
         return redirect()->route('dokter.homepage')->with('success', 'Laporan Berhasil Ditambahkan!');
     }

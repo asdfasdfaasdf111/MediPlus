@@ -368,14 +368,35 @@
             </div>
           </div>
 
+          {{-- Informasi Pembayaran -> TITIP DULU JANGAN DI COMMIT--}}
           @if ($pembayaran !== null)
-            <div class="row mb-3">
-              <div class="col-6 text-muted">Biaya Pemeriksaan</div>
-              <div class="col-6 fw-semibold">
-                : Rp {{ number_format($pembayaran->harga, 0, ',', '.') }}
+            <div class="col-12">
+              <div class="card shadow-sm">
+                <div class="card-header fw-semibold">
+                  <i class="bi bi-cash-stack me-2"></i> Informasi Pembayaran
+                </div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="small text-muted">Harga Pemeriksaan</div>
+                      <div class="fw-semibold">
+                        Rp {{ number_format($pembayaran->harga, 0, ',', '.') }}
+                      </div>
+                    </div>
+
+                    {{-- kalau nanti ada --}}
+                    {{-- 
+                    <div class="col-md-6">
+                      <div class="small text-muted">Status Pembayaran</div>
+                      <span class="badge bg-success">Lunas</span>
+                    </div>
+                    --}}
+                  </div>
+                </div>
               </div>
             </div>
           @endif
+
 
         </div> {{-- end row g-3 --}}
 

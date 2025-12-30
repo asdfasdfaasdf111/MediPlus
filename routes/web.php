@@ -21,6 +21,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\HasilPemeriksaanController;
 use App\Http\Controllers\KelompokJenisPemeriksaanController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\LogAktivitasController;
 use App\Livewire\AntrianController;
 use App\Models\DataPemeriksaan;
 use App\Models\JenisPemeriksaan;
@@ -164,9 +165,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         ->name('admin.updateJadwal');
 
 
-    Route::get('/logaktivitaspage', function () {
-        return view('admin.logaktivitaspage');
-    })->name('admin.logaktivitaspage');
+    Route::get('/logaktivitaspage', [LogAktivitasController::class, 'index'])->name('admin.logaktivitaspage');
+
 
     Route::get('/tambahakundokterpage', function () {
         return view('admin.tambahakundokterpage');

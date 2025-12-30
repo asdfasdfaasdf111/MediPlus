@@ -316,6 +316,18 @@
               </form>
             @endif
           @endif
+          @if ($dataPemeriksaan->statusPasien === 'Menunggu Pembayaran Offline')
+              {{-- buat pembayaran offline di rumah sakit --}}
+            <form action="{{ route('petugas.bayarOffline', $dataPemeriksaan->id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Apakah Anda yakin pasien telah menyelesaikan pembayaran secara offline?')">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="btn btn-primary px-4 px-md-5 rounded-pill">
+                    Selesaikan Pembayaran
+                </button>
+            </form>
+          @endif
           
         </div>
 

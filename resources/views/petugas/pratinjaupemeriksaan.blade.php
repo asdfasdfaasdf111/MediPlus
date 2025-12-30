@@ -269,7 +269,7 @@
                                 value="{{ $dokter->id }}"
                                 @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) disabled @endif
                               >
-                                {{ $dokter->user->name }}
+                                {{ $dokter->user->name }} - {{ $dokter->spesialis }}
                                 @if(!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan))
                                   (Tidak Tersedia)
                                 @endif

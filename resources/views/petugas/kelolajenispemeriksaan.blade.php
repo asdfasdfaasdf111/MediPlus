@@ -58,9 +58,9 @@
                 <tr class="align-middle">
                   <th class="ps-4" style="width:25%;">Nama Jenis</th>
                   <th style="width: 15%;">Kelompok Jenis</th>
-                  <th style="width: 11%;">Kontras</th>
+                  <th style="width: 10%;">Kontras</th>
                   <th style="width: 12%;">Durasi</th>
-                  <th style="width: 12%;">Harga</th>
+                  <th style="width: 13%;">Harga</th>
                   <th style="width: 10%;">Didampingi</th>
                   <th class="text-center">Aksi</th>
                 </tr>
@@ -106,7 +106,7 @@
                   </td>
 
                   <td>
-                    <span data-name="harga" class="view-field">{{ $jenisPemeriksaan->harga }}</span>
+                    <span data-name="harga" class="view-field">Rp. {{ $jenisPemeriksaan->harga }}</span>
                     <input type="number" name="harga" min="1"
                            class="form-control form-control-sm text-center edit-field d-none"
                            value="{{ $jenisPemeriksaan->harga }}" style="max-width:100px">

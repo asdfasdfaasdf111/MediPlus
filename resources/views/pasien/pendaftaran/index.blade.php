@@ -216,7 +216,7 @@
                 <div class="col-6 fw-semibold">: {{ $jam }} - {{ Carbon::parse($jam)->addHour()->format('H:i') }}</div>             
                 
                 @if ($pembayaran !== null)
-                  <div class="col-6 text-muted">Harga Pemeriksaan</div>
+                  <div class="col-4 text-muted">Harga Pemeriksaan</div>
                   <div class="col-6 fw-semibold">: {{ $pembayaran->harga }}</div>                
                 @endif
               </div>
@@ -285,30 +285,70 @@
 @endsection
 
 
-<div class="modal fade" id="paymentModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <h5 class="mb-3">
-        Total Pembayaran:
-        <span class="fw-bold text-primary" id="paymentPrice"></span>
-      </h5>
-      <div class="modal-header">
-        <h5 class="modal-title">Pilih Metode Pembayaran</h5>
-      </div>
-      <div class="modal-body text-center">
-        <button class="btn btn-success w-100 mb-2" onclick="choosePayment('online')">
-            Bayar Sekarang (Online)
-        </button>
-        <button class="btn btn-secondary w-100" onclick="choosePayment('offline')">
-            Bayar di Rumah Sakit
-        </button>
-        <small class="text-muted">
-          Jika ingin pembayaran dengan <strong>BPJS</strong>, mohon pilih pembayaran di Rumah Sakit.
-        </small>
-      </div>
+{{-- PEMBAYARAN REVISI --}}
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="paymentModalLabel" style="color: #0A3A7A;">Konfirmasi Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body pt-4">
+                <div class="text-center mb-4 p-3 rounded-3" style="background-color: #f8faff;">
+                    <p class="text-muted mb-1 small text-uppercase fw-semibold">Total yang harus dibayar</p>
+                    <h3 class="fw-bold text-primary mb-0" id="paymentPrice">Rp 0</h3>
+                </div>
+
+                <p class="text-center mb-4 text-muted small px-3">
+                    Silakan pilih metode pembayaran untuk melanjutkan pendaftaran.
+                </p>
+
+                <div class="d-grid gap-3">
+                    {{-- Buat Online --}}
+                    <button type="button" class="btn btn-outline-primary py-3 px-4 text-start d-flex align-items-center justify-content-between shadow-sm hover-elevate" onclick="choosePayment('online')">
+                        <div>
+                            <div class="fw-bold">Bayar Sekarang (Online)</div>
+                            <small class="text-muted">Transfer Bank, E-Wallet, atau VA</small>
+                        </div>
+                        <i class="bi bi-credit-card fs-4"></i>
+                    </button>
+
+                    {{-- Buat Offline --}}
+                    <button type="button" class="btn btn-outline-secondary py-3 px-4 text-start d-flex align-items-center justify-content-between shadow-sm hover-elevate" onclick="choosePayment('offline')">
+                        <div>
+                            <div class="fw-bold">Bayar di Rumah Sakit</div>
+                            <small class="text-muted">Tunai, Debit, Asuransi Kesehatan, atau BPJS</small>
+                        </div>
+                        <i class="bi bi-hospital fs-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 pb-4 justify-content-center">
+                <div class="bg-light p-2 rounded-2 d-flex align-items-start gap-2 mx-3">
+                    <i class="bi bi-info-circle text-primary mt-1"></i>
+                    <small class="text-muted" style="font-size: 0.75rem;">
+                        Khusus pengguna <strong>Asuransi</strong> dan <strong>BPJS</strong>, wajib memilih opsi <strong>"Bayar di Rumah Sakit"</strong> untuk verifikasi berkas saat kedatangan.
+                    </small>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
+<style>
+    /* Sedikit sentuhan interaktif tanpa merusak bootstrap */
+    .hover-elevate {
+        transition: all 0.2s ease;
+    }
+    .hover-elevate:hover {
+        transform: translateY(-2px);
+        background-color: #f0f4f8;
+        border-color: #0d6efd;
+    }
+</style>
 
 
 <script>

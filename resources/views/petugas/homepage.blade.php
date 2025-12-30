@@ -181,9 +181,11 @@
               <hr class="my-0">
 
               <div class="px-4 py-2 d-flex justify-content-end">
-                <button class="btn btn-sm btn-light border" disabled>
-                  <i class="bi bi-paperclip me-1"></i> Lampiran
-                </button>
+                <a href="{{ asset('storage/' . $rujukan->formulirRujukan) }}" 
+                  target="_blank"
+                  class="btn btn-sm btn-light border">
+                   <i class="bi bi-paperclip me-1"></i> Lampiran
+                </a>
               </div>
             </div>
           </div>

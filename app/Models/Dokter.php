@@ -39,8 +39,11 @@ class Dokter extends Model
     public function dataPemeriksaan()
     {
         return $this->hasMany(DataPemeriksaan::class)
-        ->where('statusUtama', 'Berlangsung')
-        ->orWhere('statusUtama', 'Selesai')
+        ->whereIn('statusUtama', ['Berlangsung', 'Selesai'])
+        // ->whereNotIn('statusDokter', [
+        //     'Menunggu Registrasi Ulang',
+        //     'Menunggu Pembayaran Offline',
+        // ])
         ->ordered('statusDokter');
     }
 

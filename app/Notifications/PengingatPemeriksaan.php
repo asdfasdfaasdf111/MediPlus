@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
-class PengingatPemeriksaan extends Notification
+class PengingatPemeriksaan extends Notification implements ShouldQueue
 {
     use Queueable;
 

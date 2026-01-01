@@ -140,11 +140,8 @@
                       </div>
                     @endif
                     <div class="col-5 text-muted">Jenis Pemeriksaan</div>
-                    <div class="col-6 fw-semibold">
-                      : {{ $jenis->namaJenisPemeriksaan ?? '-' }}
-                      {!! isset($jenis->namaPemeriksaanSpesifik)
-                            ? ' - ' . e($jenis->namaPemeriksaanSpesifik)
-                            : '' !!}
+                      <div class="col-6 fw-semibold">
+                        : {{ $jenisPemeriksaan->namaJenisPemeriksaan ?? '-' }}
                     </div>
                     <div class="col-5 text-muted">Tanggal Pemeriksaan</div>
                     <div class="col-5 fw-semibold">

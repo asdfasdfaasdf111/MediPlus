@@ -102,7 +102,7 @@
                   </div>
 
                   <div>
-                    <div class="small text-muted">Hubungan dengan Pasien</div>
+                    <div class="small text-muted">Pasien Merupakan</div>
                     <div class="fw-semibold">
                       {{ $dataPemeriksaan->hubunganPendamping }}
                     </div>
@@ -129,6 +129,17 @@
                       @endif
                     </div>
                   </div>
+
+                   <div>
+                      <div class="small text-muted">Pendamping Merupakan</div>
+                          <div class="fw-semibold">
+                            @if (!empty($dataPemeriksaan->hubunganPendamping))
+                              {{ $dataPemeriksaan->hubunganPendamping }}
+                            @else
+                              -
+                            @endif
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

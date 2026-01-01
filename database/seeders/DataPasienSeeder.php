@@ -32,16 +32,16 @@ class DataPasienSeeder extends Seeder
 
         DataPasien::create([
             'master_pasien_id' => $masterpasien->id,
-            'namaLengkap' => 'Titi Kusuma',
-            'alamatDomisili' => 'Jalan K. H. Syahdan, No. 456, Jakarta Barat',
-            'tanggalLahir' => '2004-04-19',
-            'noIdentitas' => '01234567891011',
+            'namaLengkap' => 'Johnny Frans',
+            'alamatDomisili' => 'Jl. Palapa III D No.12',
+            'tanggalLahir' => '1954-03-05',
+            'noIdentitas' => '6171030554660006',
             'jenisIdentitas' => 'KTP',
-            'jenisKelamin' => 'Perempuan',
-            'noHP' => '08123456789',
+            'jenisKelamin' => 'Laki-laki',
+            'noHP' => '0811578788',
             'alergi' => 'Udang',
-            'golonganDarah' => 'O',
-            'hubunganKeluarga' => 'Diri Sendiri',
+            'golonganDarah' => 'A',
+            'hubunganKeluarga' => 'Orang Tua',
         ]);
     }
 }

@@ -18,12 +18,12 @@ class DataRujukanSeeder extends Seeder
         $dataPasien = DataPasien::first();
         DataRujukan::create([
             'data_pasien_id' => $dataPasien->id,
-            'namaFaskes' => 'Faskes A',
-            'namaDokterPerujuk' => 'Dokter A',
-            'diagnosaKerja' => 'Bro Sakit',
-            'alasanRujukan' => 'Perlu scan',
+            'namaFaskes' => 'RSUD Soedarso',
+            'namaDokterPerujuk' => 'dr. Andi Pratama, Sp.N',
+            'diagnosaKerja' => 'Stroke iskemik akibat sumbatan pembuluh darah otak',
+            'alasanRujukan' => 'Evaluasi lesi otak dan konfirmasi lokasi sumbatan',
             'tanggalPemeriksaanFaskes' => now()->toDateString(),
-            'permintaanPemeriksaan' => 'CT-Scan',
+            'permintaanPemeriksaan' => 'CT-Scan Kepala Non Kontras',
             'formulirRujukan' => 'file/rujukan/rujukanA',
             'namaFile' => 'rujukanA',
         ]);

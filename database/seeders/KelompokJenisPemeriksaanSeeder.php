@@ -18,9 +18,9 @@ class KelompokJenisPemeriksaanSeeder extends Seeder
 
         $dataNama = [
             'CT Scan',
-            'Mamografi',
             'MRI',
-            'X-Ray'];
+            'USG',
+            'Rontgen'];
 
         for ($i = 0; $i < 4; $i++){
             KelompokJenisPemeriksaan::create([

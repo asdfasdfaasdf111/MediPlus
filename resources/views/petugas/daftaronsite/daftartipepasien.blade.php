@@ -138,7 +138,7 @@
 
 <div class="col-12 col-md-6">
   <label for="hubunganPendamping" class="form-label fw-semibold">
-    Hubungan dengan Pasien
+    Pasien Merupakan
   </label>
 
   <select id="hubunganPendamping"

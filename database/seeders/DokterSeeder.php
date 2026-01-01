@@ -62,7 +62,7 @@ class DokterSeeder extends Seeder
                 'user_id'=>$user->id,
                 'admin_id'=>$admin->id,
                 'rumah_sakit_id'=>$rumahsakit->id,
-                'spesialis'=>'USG',
+                'spesialis'=>'Radiologi (Sp.Rad)',
                 'noHP'=>'081234567890'
             ]);
 

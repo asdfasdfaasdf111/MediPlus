@@ -237,16 +237,17 @@
           </div>
 
           <hr class="my-0">
-          <div class="px-4 py-2 d-flex justify-content-end gap-2">
+          <div class="px-4 py-2 d-flex justify-content-end align-items-center gap-2">
             @if ($ex->bisaDiedit())
-              <a href="{{ route('pasien.editpendaftaran', $ex) }}" class="btn btn-sm btn-warning">
+              <a href="{{ route('pasien.editpendaftaran', $ex) }}" class="btn btn-sm btn-warning d-inline-flex align-items-center">
                 <i class="bi bi-pencil-square me-1"></i> EDIT
               </a>
+
               <form action="{{ route('pasien.hapusPendaftaran', $ex) }}" method="POST"
-                    onsubmit="return confirm('Hapus pendaftaran ini?');">
+                    onsubmit="return confirm('Hapus pendaftaran ini?');" class="m-0">
                 @csrf
                 @method('PUT')
-                <button type="submit" class="btn btn-sm btn-danger">
+                <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center">
                   <i class="bi bi-trash me-1"></i> HAPUS
                 </button>
               </form>

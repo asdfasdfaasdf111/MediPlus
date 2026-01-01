@@ -115,7 +115,7 @@
               </div>
 
               <div class="col-12 col-md-6">
-                <label for="hubunganPendamping" class="form-label fw-semibold">Hubungan dengan Pasien</label>
+                <label for="hubunganPendamping" class="form-label fw-semibold">Pasien Merupakan</label>
                 <select id="hubunganPendamping" name="hubunganPendamping" class="form-select rounded-3 js-pendamping-field @error('hubunganPendamping') is-invalid @enderror"  @if(!$punyaPendamping) disabled @endif>
                     <option value="">Pilih Hubungan</option>
                     @foreach (['Orang Tua', 'Saudara', 'Pasangan', 'Anak', 'Lainnya'] as $option)

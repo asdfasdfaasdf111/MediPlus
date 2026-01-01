@@ -55,9 +55,7 @@
                   <div class="col-md-6">
                     <div class="small text-muted">Jenis Pemeriksaan</div>
                     <div class="fw-semibold">
-                      {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
-                      @if(!empty($jenisPemeriksaan->namaPemeriksaanSpesifik)) - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
-                      @endif
+                       {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                     </div>
                   </div>
 
@@ -93,7 +91,7 @@
               <div class="card-body">
                 <div class="vstack gap-3">
                   <div>
-                    <div class="small text-muted">Hubungan dengan Pasien</div>
+                    <div class="small text-muted">Pasien Merupakan</div>
                     <div class="fw-semibold">{{ $dataPasien->hubunganKeluarga }}</div>
                   </div>
 

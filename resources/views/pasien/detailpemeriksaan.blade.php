@@ -52,13 +52,13 @@
                           <div class="col-md-6">
                             <div class="small text-muted">Data Sebelum</div>
                             <div class="fw-semibold">
-                              {{ $jenisLama->namaJenisPemeriksaan }} - {{ $jenisLama->namaPemeriksaanSpesifik }}
+                              {{ $jenisLama->namaJenisPemeriksaan }} 
                             </div>
                           </div>
                           <div class="col-md-6">
                             <div class="small text-muted">Data Setelah</div>
                             <div class="fw-semibold">
-                              {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
+                              {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                             </div>
                           </div>
                         </div>
@@ -139,7 +139,7 @@
                   <div class="col-md-6">
                     <div class="small text-muted">Jenis Pemeriksaan</div>
                     <div class="fw-semibold">
-                      {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
+                      {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
                     </div>
                   </div>
 
@@ -189,6 +189,19 @@
                     <div class="fw-semibold">...</div>
                   </div>
                   --}}
+                  <div>
+                    <div class="small text-muted">Nama Pasien</div>
+                    <div class="fw-semibold">
+                      {{ $dataPasien->namaLengkap }}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="small text-muted">Pasien Merupakan</div>
+                    <div class="fw-semibold">
+                      {{ $dataPasien->hubunganKeluarga }}
+                    </div>
+                  </div>
 
                   <div>
                     <div class="small text-muted">Nama Pendamping</div>
@@ -206,6 +219,17 @@
                     <div class="fw-semibold">
                       @if (!empty($dataPemeriksaan->nomorPendamping))
                         {{ $dataPemeriksaan->nomorPendamping }}
+                      @else
+                        -
+                      @endif
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="small text-muted">Pendamping Merupakan</div>
+                    <div class="fw-semibold">
+                      @if (!empty($dataPemeriksaan->hubunganPendamping))
+                        {{ $dataPemeriksaan->hubunganPendamping }}
                       @else
                         -
                       @endif

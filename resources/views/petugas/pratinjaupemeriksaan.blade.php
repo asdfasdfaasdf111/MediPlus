@@ -55,9 +55,6 @@
                     <div class="small text-muted">Jenis Pemeriksaan</div>
                     <div class="fw-semibold">
                       {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
-                      @if(!empty($jenisPemeriksaan->namaPemeriksaanSpesifik))
-                        - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}
-                      @endif
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -82,34 +79,45 @@
                     <i class="bi bi-people me-2"></i> Tipe Pasien
                     </div>
                     <div class="card-body">
-                    <div class="vstack gap-3">
-                        <div>
-                        <div class="small text-muted">Hubungan dengan Pasien</div>
-                        <div class="fw-semibold">{{ $dataPasien->hubunganKeluarga }}</div>
-                        </div>
+                      <div class="vstack gap-3">
+                          <div>
+                          <div class="small text-muted">Pasien Merupakan</div>
+                          <div class="fw-semibold">{{ $dataPasien->hubunganKeluarga }}</div>
+                          </div>
 
-                        <div>
-                        <div class="small text-muted">Nama Pendamping</div>
-                        <div class="fw-semibold">
-                            @if (!empty($dataPemeriksaan->namaPendamping)) 
-                              {{ $dataPemeriksaan->namaPendamping }} 
-                            @else 
-                              - 
-                            @endif
-                        </div>
-                        </div>
+                          <div>
+                          <div class="small text-muted">Nama Pendamping</div>
+                          <div class="fw-semibold">
+                              @if (!empty($dataPemeriksaan->namaPendamping)) 
+                                {{ $dataPemeriksaan->namaPendamping }} 
+                              @else 
+                                - 
+                              @endif
+                          </div>
+                          </div>
 
-                        <div>
-                        <div class="small text-muted">Nomor Telepon Pendamping</div>
-                        <div class="fw-semibold">
-                            @if (!empty($dataPemeriksaan->nomorPendamping)) 
-                              {{ $dataPemeriksaan->nomorPendamping }} 
-                            @else 
-                              - 
-                            @endif
-                        </div>
-                        </div>
-                    </div>
+                          <div>
+                          <div class="small text-muted">Nomor Telepon Pendamping</div>
+                          <div class="fw-semibold">
+                              @if (!empty($dataPemeriksaan->nomorPendamping)) 
+                                {{ $dataPemeriksaan->nomorPendamping }} 
+                              @else 
+                                - 
+                              @endif
+                          </div>
+                          </div>
+
+                          <div>
+                            <div class="small text-muted">Pendamping Merupakan</div>
+                            <div class="fw-semibold">
+                              @if (!empty($dataPemeriksaan->hubunganPendamping))
+                                {{ $dataPemeriksaan->hubunganPendamping }}
+                              @else
+                                -
+                              @endif
+                            </div>
+                          </div>
+                      </div>
                     </div>
                 </div>
             </div>

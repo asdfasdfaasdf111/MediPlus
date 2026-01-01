@@ -19,12 +19,12 @@ class ModalitasSeeder extends Seeder
         ->kelompokJenisPemeriksaan()
         ->first();
 
-        for ($i = 0; $i < 5; $i++){
+        for ($i = 0; $i < 2; $i++){
             Modalitas::create([
                 'rumah_sakit_id' => $rumahSakit->id,
-                'namaModalitas' => 'AX'.$i,
+                'namaModalitas' => 'CT-'.$i,
                 'kelompok_jenis_pemeriksaan_id' => $kelompokJenisPemeriksaan->id,
-                'kodeRuang' => 'R001',
+                'kodeRuang' => 'CT',
             ]);
         }
     }

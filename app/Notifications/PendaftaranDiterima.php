@@ -43,14 +43,23 @@ class PendaftaranDiterima extends Notification implements ShouldQueue
         $jump = $jenisPemeriksaan->getJump();
         $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->format('H : i');
         return (new MailMessage)
-            ->subject('Pendaftaran Diterima')
-            ->line('Pendaftaran anda dengan detil:')
-            ->line('Nama Pasien: ' . $dataPasien->namaLengkap)
-            ->line('Rumah Sakit: ' . $rumahSakit->nama)
-            ->line('Nama Jenis Pemeriksaan: ' . $jenisPemeriksaan->namaJenisPemeriksaan)
-            ->line('Tanggal Pemeriksaan: ' . $dataPemeriksaan->tanggalPemeriksaan)
-            ->line('Rentang Waktu: '.$jamMulai.' - '.$jamAkhir)
-            ->line('Telah diterima oleh petugas, silahkan melakukan pembayaran di website');
+            ->subject('Konfirmasi Pendaftaran Layanan Radiologi - ' . $dataPasien->namaLengkap)
+            ->greeting('Yth. Bapak/Ibu ' . $notifiable->name . ',')
+            ->line('Terima kasih telah melakukan pendaftaran layanan radiologi melalui sistem kami.')
+            ->line('Kami menginformasikan bahwa pendaftaran Anda telah diterima dengan rincian sebagai berikut:')
+            
+
+            ->line('**Rincian Pemeriksaan:**')
+            ->line('• **Nama Pasien:** ' . $dataPasien->namaLengkap)
+            ->line('• **Rumah Sakit:** ' . $rumahSakit->nama)
+            ->line('• **Jenis Pemeriksaan:** ' . $jenisPemeriksaan->namaJenisPemeriksaan)
+            ->line('• **Tanggal Pemeriksaan:** ' . $dataPemeriksaan->tanggalPemeriksaan)
+            ->line('• **Waktu Kedatangan:** ' . $jamMulai . ' - ' . $jamAkhir)
+            
+            ->line('Untuk melanjutkan proses administrasi dan mengamankan nomor antrean Anda, mohon segera melakukan penyelesaian pembayaran melalui website Mediplus.')
+            
+           
+            ->line('Terima kasih atas kepercayaan Anda terhadap layanan kesehatan kami.');
     }
 
     /**

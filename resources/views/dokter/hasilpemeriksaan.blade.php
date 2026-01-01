@@ -23,7 +23,7 @@
 <div>
     <div>Jadwal Pemeriksaan</div>
     <div>Rumah Sakit: {{ $rumahSakit->nama }}</div>
-    <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} - {{ $jenisPemeriksaan->namaPemeriksaanSpesifik }}</div>
+    <div>Jenis Pemeriksaan: {{ $jenisPemeriksaan->namaJenisPemeriksaan }} </div>
     @if ($dataPemeriksaan->statusUtama != 'Dibatalkan')
         <div>Dokter Radiologi: {{ $dokter->user->name }}</div>
     @endif

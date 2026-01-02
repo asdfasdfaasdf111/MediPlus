@@ -46,13 +46,22 @@ class PengingatPemeriksaan extends Notification implements ShouldQueue
         $dataPemeriksaan->pengingatTerkirim = true;
         $dataPemeriksaan->save();
         return (new MailMessage)
-            ->subject('Pengingat Pemeriksaan')
-            ->line('Anda mempunyai pemeriksaan yang akan dimulai sebentar lagi dengan detil:')
-            ->line('Nama Pasien: ' . $dataPasien->namaLengkap)
-            ->line('Rumah Sakit: ' . $rumahSakit->nama)
-            ->line('Nama Jenis Pemeriksaan: ' . $jenisPemeriksaan->namaJenisPemeriksaan)
-            ->line('Tanggal Pemeriksaan: ' . $dataPemeriksaan->tanggalPemeriksaan)
-            ->line('Rentang Waktu: '.$jamMulai.' - '.$jamAkhir);
+            ->subject('Pengingat Jadwal Pemeriksaan Radiologi - ' . $dataPasien->namaLengkap)
+            ->greeting('Yth. Bapak/Ibu ' . $notifiable->name . ',')
+            ->line('Melalui email ini, kami ingin mengingatkan kembali mengenai jadwal pemeriksaan Anda.')
+
+            ->line('Berikut adalah rincian pemeriksaan terkait:')
+            ->line('**Rincian Jadwal:**')
+            ->line('• **Nama Pasien:** ' . $dataPasien->namaLengkap)
+            ->line('• **Rumah Sakit:** ' . $rumahSakit->nama)
+            ->line('• **Jenis Pemeriksaan:** ' . $jenisPemeriksaan->namaJenisPemeriksaan)
+            ->line('• **Tanggal Pemeriksaan:** ' . $dataPemeriksaan->tanggalPemeriksaan)
+            ->line('• **Waktu Kedatangan:** ' . $jamMulai . ' - ' . $jamAkhir)
+            
+            ->line('Kami menyarankan Anda tiba tepat waktu sesuai rentang waktu kedatangan untuk keperluan registrasi ulang.')
+
+
+            ->line('Terima kasih atas kepercayaan Anda terhadap layanan kesehatan kami.');
     }
 
     /**

@@ -48,7 +48,7 @@ class PendaftaranDiterima extends Notification implements ShouldQueue
             ->line('Terima kasih telah melakukan pendaftaran layanan radiologi melalui sistem kami.')
             ->line('Kami menginformasikan bahwa pendaftaran Anda telah diterima dengan rincian sebagai berikut:')
             
-
+            ->line('Berikut adalah rincian pemeriksaan terkait:')
             ->line('**Rincian Pemeriksaan:**')
             ->line('• **Nama Pasien:** ' . $dataPasien->namaLengkap)
             ->line('• **Rumah Sakit:** ' . $rumahSakit->nama)

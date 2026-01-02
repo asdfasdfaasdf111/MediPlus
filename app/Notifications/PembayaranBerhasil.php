@@ -44,14 +44,24 @@ class PembayaranBerhasil extends Notification implements ShouldQueue
         $jamAkhir = Carbon::parse($dataPemeriksaan->rentangWaktuKedatangan)->addHour($jump)->format('H : i');
         $pembayaran = $dataPemeriksaan->pembayaran;
         return (new MailMessage)
-            ->subject('Pembayaran Berhasil')
-            ->line('Detil Pembayaran:')
-            ->line('Nama Pasien: ' . $dataPasien->namaLengkap)
-            ->line('Rumah Sakit: ' . $rumahSakit->nama)
-            ->line('Nama Jenis Pemeriksaan: ' . $jenisPemeriksaan->namaJenisPemeriksaan)
-            ->line('Tanggal Pemeriksaan: ' . $dataPemeriksaan->tanggalPemeriksaan)
-            ->line('Rentang Waktu: '.$jamMulai.' - '.$jamAkhir)
-            ->line('Harga: '.$pembayaran->harga);
+            ->subject('Konfirmasi Pembayaran Berhasil - ' . $dataPasien->namaLengkap)
+            ->greeting('Yth. Bapak/Ibu ' . $notifiable->name . ',')
+            ->line('Pembayaran pendaftaran pemeriksaan Anda telah berhasil. Saat ini Anda telah terdaftar dalam antrian.')
+            ->line('Kami menginformasikan bahwa pendaftaran Anda telah diterima dengan rincian sebagai berikut:')
+            
+            ->line('Berikut adalah rincian pemeriksaan terkait:')
+            ->line('**Rincian Pembayaran:**')
+            ->line('• **Nama Pasien:** ' . $dataPasien->namaLengkap)
+            ->line('• **Rumah Sakit:** ' . $rumahSakit->nama)
+            ->line('• **Jenis Pemeriksaan:** ' . $jenisPemeriksaan->namaJenisPemeriksaan)
+            ->line('• **Tanggal Pemeriksaan:** ' . $dataPemeriksaan->tanggalPemeriksaan)
+            ->line('• **Waktu Kedatangan:** ' . $jamMulai . ' - ' . $jamAkhir)
+            ->line('• **Total Pembayaran:** Rp ' . number_format($pembayaran->harga, 0, ',', '.'))
+
+            ->line('Mohon hadir sesuai dengan waktu kedatangan yang telah ditentukan.')
+
+
+            ->line('Terima kasih atas kepercayaan Anda terhadap layanan kesehatan kami.');
     }
 
     /**

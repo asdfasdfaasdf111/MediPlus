@@ -64,11 +64,57 @@ class PetugasController extends Controller
             'user_id'=> $user->id,
             'admin_id' => $admin->id,
             'rumah_sakit_id' => $admin->rumahSakit->id,
-            'noHP' => '08123456789',
+            // 'noHP' => '08123456789',
             'foto' => $pathFoto,
         ]);
 
         return redirect()->route('admin.kelolapetugaspage')->with('success', 'Akun petugas berhasil dibuat!');
+    }
+
+    public function editAkunPetugas(Request $request, $id){
+        $petugas = Petugas::where('id', $id)->firstOrFail();
+        $petugasUser = $petugas->user;
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,'.$petugasUser->id,
+            'password' => 'nullable|confirmed|min:8',
+            'foto'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ],
+        [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 100 karakter.',
+
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan.',
+            
+            'password.confirmed' => 'Konfirmasi Password tidak sesuai.',
+            'password.min'         => 'Password minimal 8 karakter.',
+
+            'foto.image'  => 'File foto harus berupa gambar.',
+            'foto.mimes'  => 'Foto harus berformat jpeg, jpg, png, gif, atau svg.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $pathFoto = $request->file('foto')->store('foto_petugas', 'public');
+            $petugas->update([
+                'foto' => $pathFoto,
+            ]);
+        }
+
+        $petugasUser->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        if (!empty($request->password)) {
+            $petugasUser->update([
+                'password' => Hash::make($request->password),
+            ]);
+        }
+
+        return redirect()->route('admin.kelolapetugaspage')->with('success', 'Data akun petugas berhasil diubah!');
     }
 
     public function tampilkanPetugas(Request $request)

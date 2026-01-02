@@ -70,7 +70,7 @@ class DokterController extends Controller
             'rumah_sakit_id' => $admin->rumahSakit->id,
             'spesialis' => $request->spesialis,
             // Dokter ga pernah minta no hp tapi di databaseny masih ad no hp, kasih default biar ga error, nanti di databasenya hapus kalo ga kepake
-            'noHP' => '08123456789',
+            // 'noHP' => '08123456789',
             'foto' => $pathFoto,
         ]);
 
@@ -87,6 +87,58 @@ class DokterController extends Controller
         // dikomen dulu soalnya belum perlu, cuma mau tes bikin akunnya bisa atau engga, ga perlu beneran kirim email ke gmailnya
         // $user->sendEmailVerificationNotification();
         return redirect()->route('admin.keloladokterpage')->with('success', 'Akun dokter berhasil dibuat!');
+    }
+
+    public function editAkunDokter(Request $request, $id){
+        $dokter = Dokter::where('id', $id)->firstOrFail();
+        $dokterUser = $dokter->user;
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,'.$dokterUser->id,
+            'spesialis' => 'required|string|max:100',
+            'password' => 'nullable|confirmed|min:8',
+            'foto'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ],
+        [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.max' => 'Nama lengkap maksimal 100 karakter.',
+
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan.',
+            
+            'spesialis.required'  => 'Spesialis wajib diisi.',
+            'password.confirmed' => 'Konfirmasi Password tidak sesuai.',
+            'password.min'         => 'Password minimal 8 karakter.',
+
+            'foto.image'  => 'File foto harus berupa gambar.',
+            'foto.mimes'  => 'Foto harus berformat jpeg, jpg, png, gif, atau svg.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $pathFoto = $request->file('foto')->store('foto_dokter', 'public');
+            $dokter->update([
+                'foto' => $pathFoto,
+            ]);
+        }
+
+        $dokterUser->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        $dokter->update([
+            'spesialis' => $request->spesialis,
+        ]);
+
+        if (!empty($request->password)) {
+            $dokterUser->update([
+                'password' => Hash::make($request->password),
+            ]);
+        }
+
+        return redirect()->route('admin.keloladokterpage')->with('success', 'Data akun dokter berhasil diubah!');
     }
 
     public function updateJadwal(Request $request){

@@ -24,16 +24,37 @@ class DataPemeriksaanController extends Controller
             'status' => 'required|in:accepted,rejected',
             'dokterId' => 'required|exists:dokters,id',
         ]);
+        $petugas = auth()->user()->petugas;
+        if ($petugas && !$request->filled('catatanPetugas') && $request->status == 'rejected') {
+            return back()->withErrors([
+                'catatanPetugas' => 'Catatan petugas wajib diisi ketika menolak pendaftaran.',
+            ])->withInput();
+        }
         $dokter = Dokter::findOrFail($request->dokterId);
         $jenisPemeriksaan = $dataPemeriksaan->jenisPemeriksaan;
-        if (!$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) {
+        if ($request->status == 'accepted' && !$dokter->available($dataPemeriksaan->tanggalPemeriksaan, $dataPemeriksaan->rentangWaktuKedatangan, $jenisPemeriksaan->lamaPemeriksaan, $jenisPemeriksaan)) {
             return back()->withErrors([
                 'dokter_id' => 'Dokter ini tidak tersedia pada jadwal tersebut',
             ]);
         }
-        $petugas = auth()->user()->petugas;
 
-        if ($request->has('catatanPetugas')) {
+        $adaPerubahanJenis = $dataPemeriksaan->historyJenisPemeriksaan !== null 
+                     && $dataPemeriksaan->jenis_pemeriksaan_id != $dataPemeriksaan->historyJenisPemeriksaan;
+        $adaPerubahanTanggal = $dataPemeriksaan->historyTanggalPemeriksaan !== null 
+                     && $dataPemeriksaan->tanggalPemeriksaan != $dataPemeriksaan->historyTanggalPemeriksaan;
+        $adaPerubahanJam = $dataPemeriksaan->historyJamPemeriksaan !== null 
+                     && $dataPemeriksaan->rentangWaktuKedatangan != $dataPemeriksaan->historyJamPemeriksaan;
+
+        $adaPerubahan = $adaPerubahanJenis || $adaPerubahanTanggal || $adaPerubahanJam;
+
+        // CUMA PETUGAS yang boleh mengubah catatanPetugas
+        if ($petugas && $adaPerubahan && !$request->filled('catatanPetugas')) {
+            return back()->withErrors([
+                'catatanPetugas' => 'Catatan petugas wajib diisi ketika mengubah detail pemeriksaan.',
+            ])->withInput();
+        }
+
+        if ($request->filled('catatanPetugas')) {
             $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
         }
 
@@ -123,17 +144,6 @@ class DataPemeriksaanController extends Controller
         $adaPerubahanJam  = ($dataPemeriksaan->rentangWaktuKedatangan != $validated['rentangWaktuKedatangan']);
 
         $adaPerubahan = $adaPerubahanJenis || $adaPerubahanTanggal || $adaPerubahanJam;
-
-        // CUMA PETUGAS yang boleh mengubah catatanPetugas
-        if ($user->petugas && !$isDraft && $adaPerubahan && !$request->filled('catatanPetugas')) {
-            return back()->withErrors([
-                'catatanPetugas' => 'Catatan petugas wajib diisi ketika mengubah detail pemeriksaan.',
-            ])->withInput();
-        }
-
-        if (!$isDraft && $request->filled('catatanPetugas')) {
-            $dataPemeriksaan->catatanPetugas = $request->catatanPetugas;
-        }
 
         // Buat nyimpan history kalo ada perubahan dan bukan draft
         if ($user->petugas && !$isDraft && $adaPerubahan && empty($dataPemeriksaan->historyJenisPemeriksaan)) {
@@ -535,7 +545,10 @@ public function updateTipePasienPetugas(Request $request, DataPemeriksaan $dataP
         $query = $dokter->dataPemeriksaan()
                 ->with(['dataPasien', 'dataRujukan', 'jenisPemeriksaan', 'dokter.user'])
                 //with ini buat ngehindarin N+1 problem (lazy loading), jadi better ambil data relasiannya langsung
-                ->where('statusDokter', '!=', 'Menunggu Registrasi Ulang');
+                ->whereNotIn('statusDokter', [
+                    'Menunggu Registrasi Ulang',
+                    'Menunggu Pembayaran Offline',
+                ]);
 
         $statusMap = [
             'berlangsung' => 'Berlangsung',

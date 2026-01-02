@@ -38,6 +38,128 @@
         </div>
 
         <div class="row g-3">
+          @if (!empty($dataPemeriksaan->historyJenisPemeriksaan))
+            <div class="col-12">
+              <div class="card shadow-sm border-primary">
+                {{--  bg-warning-subtle ini buat jadi kuning --}}
+                <div class="card-header bg-primary-subtle fw-semibold d-flex align-items-center"> 
+                  <i class="bi bi-clock-history me-2"></i>
+                  Detail Perubahan
+                </div>
+                <div class="card-body">
+                  <div class="vstack gap-3">
+
+                    @if ($dataPemeriksaan->historyJenisPemeriksaan != $dataPemeriksaan->jenis_pemeriksaan_id)
+                      @php
+                        $jenisLama = \App\Models\JenisPemeriksaan::find($dataPemeriksaan->historyJenisPemeriksaan);
+                      @endphp
+                      <div>
+                        <div class="small text-muted mb-1">Jenis Pemeriksaan</div>
+                        <div class="row g-2">
+                          <div class="col-md-6">
+                            <div class="small text-muted">Data Sebelum</div>
+                            <div class="fw-semibold">
+                              {{ $jenisLama->namaJenisPemeriksaan }} 
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="small text-muted">Data Setelah</div>
+                            <div class="fw-semibold">
+                              {{ $jenisPemeriksaan->namaJenisPemeriksaan }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    @endif
+
+                    @if ($dataPemeriksaan->historyTanggalPemeriksaan != $dataPemeriksaan->tanggalPemeriksaan)
+                      <div>
+                        <div class="small text-muted mb-1">Tanggal Pemeriksaan</div>
+                        <div class="row g-2">
+                          <div class="col-md-6">
+                            <div class="small text-muted">Data Sebelum</div>
+                            <div class="fw-semibold">
+                              {{ $dataPemeriksaan->historyTanggalPemeriksaan }}
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="small text-muted">Data Setelah</div>
+                            <div class="fw-semibold">
+                              {{ $dataPemeriksaan->tanggalPemeriksaan }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    @endif
+
+                    @if ($dataPemeriksaan->historyJamPemeriksaan != $dataPemeriksaan->rentangWaktuKedatangan)
+                      <div>
+                        <div class="small text-muted mb-1">Jam Pemeriksaan</div>
+                        <div class="row g-2">
+                          <div class="col-md-6">
+                            <div class="small text-muted">Data Sebelum</div>
+                            <div class="fw-semibold">
+                              {{ $dataPemeriksaan->historyJamPemeriksaan }}
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="small text-muted">Data Setelah</div>
+                            <div class="fw-semibold">
+                              {{ $dataPemeriksaan->rentangWaktuKedatangan }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    @endif
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          @endif
+
+          @if (!empty($dataPemeriksaan->catatanPetugas) || !empty($dataPemeriksaan->catatanOtomatis))
+            <div class="col-12">
+              <div class="card shadow-sm border-primary">
+                {{--  bg-warning-subtle ini buat jadi kuning --}}
+                <div class="card-header bg-primary-subtle fw-semibold d-flex align-items-center"> 
+                  <i class="bi bi-info-circle me-2"></i>
+                  Catatan
+                </div>
+                <div class="card-body">
+                  <div class="vstack gap-3">
+
+                    @if (!empty($dataPemeriksaan->catatanPetugas))
+                      <div>
+                        <div class="small text-muted mb-1">Catatan Petugas</div>
+                        <div class="fw-semibold text-break">
+                          {{ $dataPemeriksaan->catatanPetugas }}
+                        </div>
+                      </div>
+                    @endif
+
+                    @if (!empty($dataPemeriksaan->catatanOtomatis))
+                      <div>
+                        <div class="small text-muted mb-1">Catatan Otomatis</div>
+                        <div class="fw-semibold text-break">
+                          {{ $dataPemeriksaan->catatanOtomatis }}
+                        </div>
+                      </div>
+                    @endif
+                    @if ($dataPemeriksaan->cancelled_at)
+                      <div class="text-danger small">
+                        Dibatalkan pada:
+                        {{ $dataPemeriksaan->cancelled_at->format('d M Y, H:i') }}
+                      </div>
+                    @endif
+
+                    
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          @endif
 
           {{-- Ringkasan Pemeriksaan --}}
           <div class="col-12">

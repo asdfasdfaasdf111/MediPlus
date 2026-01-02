@@ -46,7 +46,7 @@
               @enderror
             </div>
 
-            <div class="mb-3">
+            {{-- <div class="mb-3">
               <label for="noHP" class="form-label">Nomor Handphone</label>
               <input type="tel" class="form-control @error('noHP') is-invalid @enderror" name="noHP" id="noHP" value="{{ old('noHP') }}" placeholder="Nomor Handphone" required>
               @error('noHP')
@@ -54,7 +54,7 @@
                   Nomor HP harus dimulai dengan angka 08 dan berisi 10-13 digit.
                 </div>
               @enderror
-            </div>
+            </div> --}}
 
             <div class="mb-3">
               <label for="password" class="form-label">Password</label>

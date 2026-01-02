@@ -210,11 +210,7 @@ class PembayaranController extends Controller
             $userPasien->notify(new PembayaranBerhasil($dataPemeriksaan));
         }
         else if ($normalizedStatus === 'deny'){
-            $dataPemeriksaan->statusUtama = 'Dibatalkan';
-            $dataPemeriksaan->statusPasien = 'Pembayaran Gagal';
-            $dataPemeriksaan->statusPetugas = 'Pembayaran Gagal';
-            $dataPemeriksaan->statusDokter = 'Pembayaran Gagal';
-            $dataPemeriksaan->catatanPetugas = 'Pendaftaran otomatis dibatalkan karena pasien tidak melakukan pembayaran';
+            $dataPemeriksaan->cancelOtomatis('Pendaftaran otomatis dibatalkan karena pasien tidak berhasil melakukan pembayaran', 'Pembayaran Gagal');
         }
 
         $dataPemeriksaan->save();

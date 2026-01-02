@@ -8,7 +8,7 @@ class Petugas extends Model
 {
     protected $table = 'petugass';
     protected $fillable = [
-        'noHP',
+        // 'noHP',
         'user_id',
         'admin_id',
         'rumah_sakit_id',

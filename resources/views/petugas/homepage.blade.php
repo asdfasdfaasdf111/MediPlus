@@ -86,6 +86,14 @@
                 default                     => strtoupper($statusPetugasRaw ?? ''),
             };
 
+            $statusClassPetugas = match($dp->statusPetugas) {
+              'Pendaftaran Baru', 'Menunggu Registrasi Ulang', 'Menunggu Pembayaran', 'Menunggu Pembayaran Offline' => 'text-warning',
+	            'Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Laporan' => 'text-primary',
+              'Laporan Terkirim', 'Selesai' => 'text-success',
+              'Pendaftaran Dibatalkan', 'Pembayaran Gagal'   => 'text-danger',
+              default   => 'text-muted',
+            };
+
             $statusClass = match ($statusUtamaLower) {
                 'draft'       => 'text-secondary',
                 'pending'     => 'text-warning',
@@ -107,7 +115,7 @@
                 <div class="small">
                   No : <span class="fw-semibold">{{ $noReg }}</span>
                 </div>
-                <div class="small fw-semibold text-muted">
+                <div class="small fw-semibold {{ $statusClassPetugas }}">
                   {{ $labelKanan }}
                 </div>
               </div>
@@ -141,7 +149,7 @@
                     @endif
                     <div class="col-5 text-muted">Jenis Pemeriksaan</div>
                       <div class="col-6 fw-semibold">
-                        : {{ $jenisPemeriksaan->namaJenisPemeriksaan ?? '-' }}
+                        : {{ $jenis->namaJenisPemeriksaan ?? '-' }}
                     </div>
                     <div class="col-5 text-muted">Tanggal Pemeriksaan</div>
                     <div class="col-5 fw-semibold">

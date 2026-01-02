@@ -155,31 +155,7 @@
               </div>
             </div>
 
-            {{-- Catatan by Petugas -> sy bikin required --}}
-            <div class="border-top" style="padding:16px 20px;">
-              <div class="row">
-                <div class="col-12">
-                  <label for="catatanPetugas" class="form-label fw-semibold">
-                    Catatan Petugas
-                    <span class="text-muted fw-normal">(wajib jika ada perubahan)</span>
-                  </label>
-
-                  <textarea
-                    name="catatanPetugas"
-                    id="catatanPetugas"
-                    rows="4"
-                    class="form-control @error('catatanPetugas') is-invalid @enderror"
-                    placeholder="Contoh: Perubahan jadwal karena bentrok slot MRI, dialihkan ke jam 13.00"
-                    style="border-radius:12px;">{{ old('catatanPetugas', $dataPemeriksaan->catatanPetugas ?? '') }}</textarea>
-
-                  @error('catatanPetugas')
-                    <div class="invalid-feedback">
-                      {{ $message }}
-                    </div>
-                  @enderror
-                </div>
-              </div>
-            </div>
+            
 
 
           </div>

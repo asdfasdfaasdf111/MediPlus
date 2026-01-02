@@ -42,6 +42,7 @@ return new class extends Migration
             $table->unsignedInteger('nomorAntrian')->nullable();
             $table->timestamp('cancelled_at')->nullable();
             $table->boolean('pengingatTerkirim');
+            $table->string('catatanOtomatis')->nullable();
             $table->timestamps();
         });
     }

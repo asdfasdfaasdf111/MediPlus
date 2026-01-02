@@ -37,6 +37,7 @@ class DataPemeriksaan extends Model
         'nomorAntrian',
         'cancelled_at',
         'pengingatTerkirim',
+        'catatanOtomatis',
     ];
 
     protected $casts = [
@@ -103,13 +104,13 @@ class DataPemeriksaan extends Model
 
         switch ($subtype) {
             case 'statusPasien':
-                $statusUser = "'Pendaftaran Terkirim','Menunggu Pembayaran','Menunggu Pembayaran Offline','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Hasil', 'Hasil Tersedia', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
+                $statusUser = "'Pendaftaran Terkirim','Menunggu Pembayaran','Menunggu Pembayaran Offline','Menunggu Registrasi Ulang','Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Hasil', 'Hasil Tersedia', 'Selesai', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             case 'statusPetugas':
-                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Menunggu Pembayaran Offline','Menunggu Pembayaran','Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
+                $statusUser = "'Pendaftaran Baru','Menunggu Registrasi Ulang','Menunggu Pembayaran Offline','Menunggu Pembayaran','Dalam Antrian','Pemeriksaan Berlangsung','Menunggu Laporan', 'Laporan Terkirim', 'Selesai', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             case 'statusDokter':
-                $statusUser = "'Menunggu Laporan','Dalam Antrian','Pemeriksaan Berlangsung', 'Laporan Terkirim', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
+                $statusUser = "'Menunggu Laporan','Dalam Antrian','Pemeriksaan Berlangsung', 'Laporan Terkirim', 'Selesai', 'Pendaftaran Dibatalkan', 'Pembayaran Gagal'";
                 break;
             default:
                 $statusUser = "'default'";
@@ -139,7 +140,7 @@ class DataPemeriksaan extends Model
         return $hoursDiff >= 12;
     }
 
-    public function cancelPendaftaran($catatan, $statusPasien, $statusPetugas = null, $statusDokter = null){
+    public function cancelOtomatis($catatan, $statusPasien, $statusPetugas = null, $statusDokter = null){
         if ($this->statusUtama === 'Dibatalkan') {
             return false;
         }
@@ -155,7 +156,7 @@ class DataPemeriksaan extends Model
             'statusPasien' => $statusPasien,
             'statusPetugas' => $statusPetugas,
             'statusDokter' => $statusDokter,
-            'catatanPetugas' => $catatan,
+            'catatanOtomatis' => $catatan,
             'cancelled_at' => now(),
         ]);
         return true;

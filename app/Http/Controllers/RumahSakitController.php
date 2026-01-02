@@ -171,7 +171,8 @@ class RumahSakitController extends Controller
 
             'nama_admin' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email,'.$userAdmin->id,
-            'password' => 'nullable|confirmed|min:8'
+            'password' => 'nullable|confirmed|min:8',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ],
         [
             'nama_rs.required'=> 'Nama Rumah Sakit wajib diisi.',
@@ -180,6 +181,10 @@ class RumahSakitController extends Controller
             'nama_admin.required' => 'Nama Admin wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'email.unique'  => 'Email sudah digunakan.',
+
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berformat jpeg, jpg, atau png.', //format file
+            'foto.max'   => 'Ukuran foto maksimal 2MB.',
 
             'password.confirmed' => 'Konfirmasi Password tidak sesuai.',
             'password.min'         => 'Password minimal 8 karakter.',
@@ -195,6 +200,14 @@ class RumahSakitController extends Controller
             'name'     => $validated['nama_admin'],
             'email'    => $validated['email'],
         ]);
+
+        if ($request->hasFile('foto')) {
+            $pathFoto = null;
+            $pathFoto      = $request->file('foto')->store('foto_rumah_sakit', 'public');
+            $rumahSakit->update([
+                'foto' => $pathFoto,
+            ]);
+        }
 
         if (!empty($validated['password'])) {
             $userAdmin->update([

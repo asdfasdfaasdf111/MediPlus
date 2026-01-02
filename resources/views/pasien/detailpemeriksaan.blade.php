@@ -26,6 +26,7 @@
           <div class="text-muted small">
             Berikut terlampir ringkasan pemeriksaan radiologi beserta riwayat perubahan oleh petugas.
           </div>
+          
         </div>
 
         <div class="row g-3">
@@ -105,12 +106,48 @@
                       </div>
                     @endif
 
-                    <div>
-                      <div class="small text-muted mb-1">Catatan Petugas</div>
-                      <div class="fw-semibold text-break">
-                        {{ $dataPemeriksaan->catatanPetugas }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          @endif
+
+          @if (!empty($dataPemeriksaan->catatanPetugas) || !empty($dataPemeriksaan->catatanOtomatis))
+            <div class="col-12">
+              <div class="card shadow-sm border-primary">
+                {{--  bg-warning-subtle ini buat jadi kuning --}}
+                <div class="card-header bg-primary-subtle fw-semibold d-flex align-items-center"> 
+                  <i class="bi bi-info-circle me-2"></i>
+                  Catatan
+                </div>
+                <div class="card-body">
+                  <div class="vstack gap-3">
+
+                    @if (!empty($dataPemeriksaan->catatanPetugas))
+                      <div>
+                        <div class="small text-muted mb-1">Catatan Petugas</div>
+                        <div class="fw-semibold text-break">
+                          {{ $dataPemeriksaan->catatanPetugas }}
+                        </div>
                       </div>
-                    </div>
+                    @endif
+
+                    @if (!empty($dataPemeriksaan->catatanOtomatis))
+                      <div>
+                        <div class="small text-muted mb-1">Catatan Otomatis</div>
+                        <div class="fw-semibold text-break">
+                          {{ $dataPemeriksaan->catatanOtomatis }}
+                        </div>
+                      </div>
+                    @endif
+                    @if ($dataPemeriksaan->cancelled_at)
+                      <div class="text-danger small">
+                        Dibatalkan pada:
+                        {{ $dataPemeriksaan->cancelled_at->format('d M Y, H:i') }}
+                      </div>
+                    @endif
+
+                    
 
                   </div>
                 </div>

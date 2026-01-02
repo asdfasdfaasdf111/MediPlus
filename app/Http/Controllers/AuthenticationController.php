@@ -75,7 +75,7 @@ class AuthenticationController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
-            'noHP' => ['required', 'regex:/^08[0-9]{8,11}$/'],
+            // 'noHP' => ['required', 'regex:/^08[0-9]{8,11}$/'],
             'password' => 'required|confirmed|min:8'
         ]);
 
@@ -83,7 +83,7 @@ class AuthenticationController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'noHP' => $request->noHP,
+            // 'noHP' => $request->noHP,
             'role' => 'pasien',
             'status' => 'aktif'
         ]);

@@ -27,7 +27,7 @@
 
     <div class="content-wrapper bg-light">
         <div class="bg-white p-5 pt-4 pb-4 rounded m-5 mt-2 mb-1">
-            <form action="{{ route('superadmin.submitdata', $rumahSakit->id) }}" method="POST">
+            <form action="{{ route('superadmin.submitdata', $rumahSakit->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -53,6 +53,15 @@
                     <input type="text" name="noTelepon" class="form-control form-control-lg @error('noTelepon') is-invalid @enderror" value="{{ old('noTelepon', $rumahSakit->noTelepon) }}">
                     @error('noTelepon') 
                         <div class="invalid-feedback">{{ $message }}</div> 
+                    @enderror
+                </div>
+
+                <div class="form-group d-flex flex-column mt-3">
+                    <label>Foto Profil Rumah Sakit (opsional)</label>
+                    <input type="file"
+                        class="form-control form-control-lg @error('foto') is-invalid @enderror" name="foto" accept="image/*">
+                    @error('foto')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
 

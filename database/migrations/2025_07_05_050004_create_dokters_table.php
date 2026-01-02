@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('spesialis');
-            $table->string('noHP');
+            // $table->string('noHP');
             $table->string('foto')->nullable();
             $table->timestamps();
         });

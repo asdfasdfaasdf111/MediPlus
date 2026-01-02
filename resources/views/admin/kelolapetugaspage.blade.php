@@ -87,7 +87,10 @@
                             <div class="mt-auto pt-2">
                                 <hr class="my-2">
 
-                                <div class="d-flex justify-content-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ route('admin.editakunpetugaspage', $ptg) }}" class="btn btn-sm btn-warning d-inline-flex align-items-center">
+                                        <i class="bi bi-pencil-square me-1"></i> EDIT
+                                    </a>
                                     <form action="{{ route('admin.hapusAkunPetugas', $ptg->user->id) }}" method="POST"  class="m-0"  onsubmit="return confirm('Apakah anda yakin ingin menghapus akun ini?');">
                                         @csrf
                                         @method('DELETE')

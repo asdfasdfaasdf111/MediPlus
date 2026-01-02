@@ -32,7 +32,7 @@ class PetugasSeeder extends Seeder
             'user_id'=>$user->id,
             'admin_id'=>$admin->id,
             'rumah_sakit_id'=> $rumahsakit->id,
-            'noHP'=>'081234567890'
+            // 'noHP'=>'081234567890'
         ]);
     }
 }

@@ -149,9 +149,10 @@
     @foreach($pemeriksaanBerlangsung as $ex)
       @php
         $statusClassPasien = match($ex->statusPasien) {
-          'Pendaftaran Terkirim', 'Menunggu Registrasi Ulang' => 'text-warning',
-          'Dalam Antrian', 'Pemeriksaan Berlangsung', 'Hasil Tersedia' => 'text-success',
-          'Pendaftaran Dibatalkan'   => 'text-danger',
+          'Pendaftaran Terkirim', 'Menunggu Registrasi Ulang', 'Menunggu Pembayaran', 'Menunggu Pembayaran Offline' => 'text-warning',
+	        'Dalam Antrian', 'Pemeriksaan Berlangsung', 'Menunggu Hasil' => 'text-primary',
+          'Hasil Tersedia', 'Selesai' => 'text-success',
+          'Pendaftaran Dibatalkan', 'Pembayaran Gagal'   => 'text-danger',
           default   => 'text-muted',
         };
         $statusClassUtama = match($ex->statusUtama) {
@@ -238,6 +239,9 @@
 
           <hr class="my-0">
           <div class="px-4 py-2 d-flex justify-content-end align-items-center gap-2">
+            <a href="{{ route('pasien.detailpemeriksaan', $ex) }}" class="btn btn-sm btn-primary">
+              <i class="bi bi-pencil-square me-1"></i> LIHAT DETAIL
+            </a>
             @if ($ex->bisaDiedit())
               <a href="{{ route('pasien.editpendaftaran', $ex) }}" class="btn btn-sm btn-warning d-inline-flex align-items-center">
                 <i class="bi bi-pencil-square me-1"></i> EDIT
@@ -251,12 +255,7 @@
                   <i class="bi bi-trash me-1"></i> HAPUS
                 </button>
               </form>
-            @elseif ($ex->statusUtama != "Pending")
-              <a href="{{ route('pasien.detailpemeriksaan', $ex) }}" class="btn btn-sm btn-primary">
-                <i class="bi bi-pencil-square me-1"></i> LIHAT DETAIL
-              </a>
             @endif
-            {{-- blm slsai, bru tombol doang --}}
             @if ($ex->statusPasien == "Hasil Tersedia" || $ex->statusUtama == "Selesai")
               <a href="{{ route('pasien.hasilpemeriksaan', $ex) }}" class="btn btn-sm btn-primary">
                 <i class="bi bi-pencil-square me-1"></i> LIHAT HASIL

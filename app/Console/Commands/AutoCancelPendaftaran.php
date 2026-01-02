@@ -34,7 +34,12 @@ class AutoCancelPendaftaran extends Command
             ->addHours($data->jenisPemeriksaan->getJump());
 
             if ($waktuSelesai->lte(Carbon::now())) {
-                $data->cancelPendaftaran('Pendaftaran dibatalkan karena tidak terdapat balasan dari petugas rumah sakit', 'Pendaftaran Dibatalkan');
+                if ($data->statusPasien == 'Menunggu Pembayaran'){
+                    $data->cancelOtomatis('Pendaftaran dibatalkan secara otomatis karena pasien tidak menyelesaikan pembayaran', 'Pendaftaran Dibatalkan');
+                }
+                else{
+                    $data->cancelOtomatis('Pendaftaran dibatalkan secara otomatis karena tidak terdapat balasan dari petugas rumah sakit', 'Pendaftaran Dibatalkan');
+                }
             }
         }
 
@@ -48,7 +53,7 @@ class AutoCancelPendaftaran extends Command
                             return Carbon::now()->diffInHours($scheduled, false) <= -$bufferAutoCancel;
                         });
         foreach ($semuaData as $data){
-            $data->cancelPendaftaran('Pendaftaran dibatalkan karena pasien tidak datang untuk registrasi ulang', 'Pendaftaran Dibatalkan');
+            $data->cancelOtomatis('Pendaftaran dibatalkan secara otomatis karena pasien tidak datang untuk registrasi ulang', 'Pendaftaran Dibatalkan');
         }
     }
 }

@@ -24,8 +24,10 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\LogAktivitasController;
 use App\Livewire\AntrianController;
 use App\Models\DataPemeriksaan;
+use App\Models\Dokter;
 use App\Models\JenisPemeriksaan;
 use App\Models\MasterPasien;
+use App\Models\Petugas;
 use App\Models\RumahSakit;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Request;
@@ -176,6 +178,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
         return view('admin.tambahakunpetugaspage');
     })->name('admin.tambahakunpetugaspage');
 
+    Route::get('/editakundokterpage/{dokter}', function (Dokter $dokter) {
+        return view('admin.editakundokterpage', compact('dokter'));
+    })->name('admin.editakundokterpage');
+
+    Route::get('/editakunpetugaspage/{petugas}', function (Petugas $petugas) {
+        return view('admin.editakunpetugaspage', compact('petugas'));
+    })->name('admin.editakunpetugaspage');
+
 
     Route::post('/updateJadwal', [RumahSakitController::class, 'updateJadwal'])->name('admin.updateJadwal');
     Route::post('/updateJumlahPasien', [RumahSakitController::class, 'updateJumlahPasien'])->name('admin.updateJumlahPasien');
@@ -183,6 +193,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
     Route::post('/tambahAkunPetugas', [PetugasController::class, 'tambahAkunPetugas'])->name('admin.tambahAkunPetugas');
     Route::delete('/hapusAkunPetugas/{id}', [PetugasController::class, 'hapusAkunPetugas'])->name('admin.hapusAkunPetugas');
     Route::delete('/hapusAkunDokter/{id}', [DokterController::class, 'hapusAkunDokter'])->name('admin.hapusAkunDokter');
+    Route::put('/editAkunDokter/{id}', [DokterController::class, 'editAkunDokter'])->name('admin.editAkunDokter');
+    Route::put('/editAkunPetugas/{id}', [PetugasController::class, 'editAkunPetugas'])->name('admin.editAkunPetugas');
 
     Route::get('/password', [ProfileController::class, 'editPassword'])->name('admin.password.edit');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('admin.password.update');

@@ -74,10 +74,10 @@
                                 <div class="bg-white shadow-sm rounded p-3 w-100 h-100 d-flex flex-column">
                                     {{-- HEADER + ISI CARD --}}
                                     <div class="d-flex align-items-center mb-2 mt-3">
-                                        <img src="{{ asset('images/gambar_rumah_sakit.jpg') }}"
-                                            alt="Foto RS"
-                                            class="rounded-circle me-3"
-                                            width="50" height="50">
+                                        @php
+                                            $fotoRS = $rs->foto ? asset('storage/' . $rs->foto) : asset('images/gambar_rumah_sakit.jpg');
+                                        @endphp
+                                        <img src="{{ $fotoRS }}" alt="Foto RS" class="rounded-circle me-3" width="50" height="50">
                                         <div>
                                             <h6 class="mb-1 fw-bold">{{ $rs->nama }}</h6>
                                             <p class="mb-1">{{ $rs->alamat }}</p>

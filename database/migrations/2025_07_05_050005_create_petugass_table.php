@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('petugass', function (Blueprint $table) {
             $table->id();
-            $table->string('noHP');
+            // $table->string('noHP');
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('admin_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('rumah_sakit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');

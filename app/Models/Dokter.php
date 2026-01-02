@@ -12,7 +12,7 @@ class Dokter extends Model
         'rumah_sakit_id',
         'admin_id',
         'spesialis',
-        'noHP',
+        // 'noHP',
         'foto',
     ];
 

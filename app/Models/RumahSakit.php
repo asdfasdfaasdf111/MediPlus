@@ -408,6 +408,6 @@ class RumahSakit extends Model
                     ->whereHas('jenisPemeriksaan.kelompokJenisPemeriksaan', function ($query) use ($kelompokJenisPemeriksaanId) {
                         $query->where('id', $kelompokJenisPemeriksaanId);
                     })
-                    ->orderBy('nomorAntrian', 'asc');
+                    ->reorder('nomorAntrian', 'asc');
     }
 }

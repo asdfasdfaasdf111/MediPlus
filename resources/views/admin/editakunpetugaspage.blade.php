@@ -56,7 +56,7 @@
 
        <div class="col-md-10 p-4 bg-light">
             <div class="card shadow-sm">
-                <h4 class="text-center mb-4 pt-5">Tambah Akun Petugas</h4>
+                <h4 class="text-center mb-4 pt-5">Edit Akun Petugas</h4>
                 <div class="card-body px-5">
                 <form method="POST" action="{{ route('admin.editAkunPetugas', $petugas) }}" novalidate enctype="multipart/form-data">
                     @csrf
